@@ -9,6 +9,131 @@
         "SourceVersion.$": "$.head_commit.id"
       },
       "ResultPath": "$.BuildOutput",
+      "Next": "On Default Branch?"
+    },
+    "On Default Branch?": {
+      "Type": "Choice",
+      "Choices": [
+        {
+          "Variable": "$.on_default_branch",
+          "BooleanEquals": true,
+          "Next": "Check if Superseded"
+        },
+        {
+          "Variable": "$.on_default_branch",
+          "BooleanEquals": false,
+          "Next": "Success"
+        }
+      ]
+    },
+    "Check if Superseded": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::sqs:sendMessage.waitForTaskToken",
+      "ResultPath": "$.SupersededOutput",
+      "Next": "Was Superseded?",
+      "Parameters": {
+        "QueueUrl": "${SupersessionQueue}",
+        "MessageGroupId": "${GithubRepo}",
+        "MessageBody": {
+          "Pipeline": "${GithubRepo}",
+          "CommitTimestamp.$": "$.head_commit.timestamp",
+          "Token.$": "$$.Task.Token"
+        }
+      }
+    },
+    "Was Superseded?": {
+      "Type": "Choice",
+      "Choices": [
+        {
+          "Variable": "$.SupersededOutput.Superseded",
+          "BooleanEquals": true,
+          "Next": "Success"
+        },
+        {
+          "Variable": "$.SupersededOutput.Superseded",
+          "BooleanEquals": false,
+          "Next": "Deploy to Dev"
+        }
+      ]
+    },
+    "Deploy to Dev": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::sqs:sendMessage.waitForTaskToken",
+      "ResultPath": "$.DevOutputs",
+      "Parameters": {
+        "QueueUrl": "${DeploymentQueue}",
+        "MessageGroupId": "${GithubRepo}",
+        "MessageBody": {
+          "StackName": "${GithubRepo}",
+          "ZipLocation.$": "$.BuildOutput.Build.Artifacts.Location",
+          "TemplateFileName": "${GithubRepo}.template.yml",
+          "TemplateConfigurationFileName": "${GithubRepo}.dev.config.json",
+          "RoleArn": "${DevRoleArn}",
+          "Token.$": "$$.Task.Token",
+          "Capabilities": ["CAPABILITY_IAM"],
+          "EnvironmentName": "dev",
+          "CommitInfo": {
+            "GithubOwner": "${GithubOwner}",
+            "GithubRepository": "${GithubRepo}",
+            "GithubRef.$": "$.head_commit.id"
+          }
+        }
+      },
+      "Next": "Ask for Approval"
+    },
+    "Ask for Approval": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::lambda:invoke.waitForTaskToken",
+      "Next": "Was Approved?",
+      "ResultPath": "$.ApprovalDecision",
+      "Parameters": {
+        "FunctionName": "${ApprovalNotificationFunction}",
+        "Payload": {
+          "Pipeline": "${GithubRepo}",
+          "ArtifactStore": "${ArtifactStore}",
+          "CustomMessage": "${GithubRepo} requires manual approval for deployment to production",
+          "Token.$": "$$.Task.Token"
+        }
+      }
+    },
+    "Was Approved?": {
+      "Type": "Choice",
+      "Choices": [
+        {
+          "Variable": "$.ApprovalDecision.Action",
+          "StringEquals": "approve",
+          "Next": "Deploy to Prod"
+        },
+        {
+          "Variable": "$.ApprovalDecision.Action",
+          "StringEquals": "reject",
+          "Next": "Success"
+        }
+      ]
+    },
+    "Deploy to Prod": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::sqs:sendMessage.waitForTaskToken",
+      "ResultPath": "$.ProdOutputs",
+      "Parameters": {
+        "QueueUrl": "${DeploymentQueue}",
+        "MessageGroupId": "${GithubRepo}",
+        "MessageBody": {
+          "StackName": "${GithubRepo}",
+          "ZipLocation.$": "$.BuildOutput.Build.Artifacts.Location",
+          "TemplateFileName": "${GithubRepo}.template.yml",
+          "TemplateConfigurationFileName": "${GithubRepo}.prod.config.json",
+          "RoleArn": "${ProdRoleArn}",
+          "Token.$": "$$.Task.Token",
+          "Capabilities": ["CAPABILITY_IAM"],
+          "EnvironmentName": "prod",
+          "CommitInfo": {
+            "GithubOwner": "${GithubOwner}",
+            "GithubRepository": "${GithubRepo}",
+            "GithubRef.$": "$.head_commit.id"
+          }
+        }
+      },
       "Next": "Success"
     },
     "Success": {
