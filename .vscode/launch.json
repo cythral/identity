@@ -1,0 +1,32 @@
+{
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": ".NET Core Launch (console)",
+      "type": "coreclr",
+      "request": "launch",
+      "preLaunchTask": "build",
+      "justMyCode": false,
+      "program": "${workspaceFolder}/bin/Mutedac.StartDatabase/Release/netcoreapp3.1/Mutedac.StartDatabase.dll",
+      "args": [],
+      "env": {
+        "AWS_REGION": "us-east-1"
+      },
+      "cwd": "${workspaceFolder}/src/Mutedac.StartDatabase",
+      "console": "internalConsole",
+      "stopAtEntry": false,
+      "symbolOptions": {
+        "searchNuGetOrgSymbolServer": true
+      }
+    },
+    {
+      "name": ".NET Core Attach",
+      "type": "coreclr",
+      "request": "attach",
+      "processId": "${command:pickProcess}"
+    }
+  ]
+}

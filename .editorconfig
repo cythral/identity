@@ -1,0 +1,9 @@
+root = true
+
+[*.{cs,csx}]
+insert_final_newline = true
+dotnet_separate_import_directive_groups = true
+
+dotnet_diagnostic.CA1822.severity = none
+dotnet_diagnostic.CA1307.severity = none
+dotnet_diagnostic.CA1062.severity = none

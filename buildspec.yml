@@ -1,0 +1,27 @@
+version: 0.2
+phases:
+  install:
+    runtime-versions:
+      docker: 19
+      dotnet: 3.1
+
+  pre_build:
+    commands:
+      - $(aws ecr get-login --no-include-email)
+      - pip install cfn-lint
+
+  build:
+    commands:
+      - export image="$REPOSITORY_URI:$CODEBUILD_BUILD_NUMBER"
+
+      - docker build -t $image .
+      # - docker push $image
+
+      # - ./deploy/create-config-files.sh $image
+      # - cfn-lint deploy/identity.template.yml
+
+artifacts:
+  discard-paths: yes
+  files:
+    - "deploy/identity.template.yml"
+    - "identity.*.config.json"

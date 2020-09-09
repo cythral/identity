@@ -1,0 +1,18 @@
+{
+  "StartAt": "Build",
+  "States": {
+    "Build": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::codebuild:startBuild.sync",
+      "Parameters": {
+        "ProjectName": "${BuildProject}",
+        "SourceVersion.$": "$.head_commit.id"
+      },
+      "ResultPath": "$.BuildOutput",
+      "Next": "Success"
+    },
+    "Success": {
+      "Type": "Succeed"
+    }
+  }
+}

@@ -1,0 +1,151 @@
+Description: Brighid Identity
+Parameters:
+  EnvironmentName:
+    Type: String
+    Description: Name of the environment to deploy Brighid Identity to
+
+  Image:
+    Type: String
+    Description: Docker Image uri to pull
+
+  DomainName:
+    Type: String
+    Description: Domain name to use
+
+  EnableServiceStopping:
+    Type: String
+    AllowedValues:
+      - "true"
+      - "false"
+    Description: Whether or not to enable service stopping on the cluster
+
+Conditions:
+  InProd: !Equals
+    - !Ref EnvironmentName
+    - "prod"
+
+Resources:
+  DecryptedClientSecret:
+    Type: Custom::Secret
+    Properties:
+      ServiceToken: !ImportValue cfn-secret-resource:SecretLambdaArn
+      EncryptionRoleArn: !ImportValue cfn-secret-resource:EncryptionRoleArn
+      Ciphertext: !ImportValue sso-aws:GoogleClientSecret
+
+  ListenerRule:
+    Type: AWS::ElasticLoadBalancingV2::ListenerRule
+    Properties:
+      ListenerArn: !ImportValue cfn-utilities:HttpListenerArn
+      Priority: 5
+      Actions:
+        - !If
+          - InProd
+          - Type: authenticate-oidc
+            Order: 1
+            AuthenticateOidcConfig:
+              Issuer: https://accounts.google.com
+              AuthorizationEndpoint: https://accounts.google.com/o/oauth2/v2/auth
+              TokenEndpoint: https://oauth2.googleapis.com/token
+              UserInfoEndpoint: https://openidconnect.googleapis.com/v1/userinfo
+              ClientId: !ImportValue sso-aws:GoogleClientId
+              ClientSecret: !GetAtt DecryptedClientSecret.Plaintext
+              SessionTimeout: 86400
+          - !Ref AWS::NoValue
+        - Type: forward
+          Order: !If [InProd, 2, !Ref AWS::NoValue]
+          TargetGroupArn: !Ref TargetGroup
+      Conditions:
+        - Field: host-header
+          HostHeaderConfig:
+            Values:
+              - !Ref DomainName
+
+  TargetGroup:
+    Type: AWS::ElasticLoadBalancingV2::TargetGroup
+    Properties:
+      TargetType: ip
+      VpcId: !ImportValue cfn-utilities:VpcId
+      Protocol: HTTP
+      Port: 80
+      HealthCheckPath: /healthcheck
+      TargetGroupAttributes:
+        - Key: deregistration_delay.timeout_seconds
+          Value: "30"
+
+  Cluster:
+    Type: AWS::ECS::Cluster
+    Properties:
+      ClusterName: !Ref AWS::StackName
+      Tags:
+        - Key: ENABLE_SERVICE_STOPPING
+          Value: !Ref EnableServiceStopping
+
+  Service:
+    Type: AWS::ECS::Service
+    Properties:
+      Cluster: !Ref Cluster
+      ServiceName: !Ref AWS::StackName
+      LaunchType: FARGATE
+      EnableECSManagedTags: true
+      PropagateTags: TASK_DEFINITION
+      NetworkConfiguration:
+        AwsvpcConfiguration:
+          Subnets: !Split
+            - ","
+            - !ImportValue cfn-utilities:SubnetIds
+          SecurityGroups:
+            - !ImportValue cfn-utilities:WebSecurityGroupId
+          AssignPublicIp: ENABLED
+      LoadBalancers:
+        - ContainerName: !Ref AWS::StackName
+          ContainerPort: 80
+          TargetGroupArn: !Ref TargetGroup
+      TaskDefinition: !Ref TaskDefinition
+      DesiredCount: 1
+      DeploymentConfiguration:
+        MinimumHealthyPercent: 1
+        MaximumPercent: 200
+
+  TaskDefinition:
+    Type: AWS::ECS::TaskDefinition
+    Properties:
+      Cpu: "256"
+      Memory: "512"
+      Family: !Ref AWS::StackName
+      NetworkMode: awsvpc
+      ExecutionRoleArn: !GetAtt TaskRole.Arn
+      TaskRoleArn: !GetAtt TaskRole.Arn
+      RequiresCompatibilities:
+        - FARGATE
+      ContainerDefinitions:
+        - Name: !Ref AWS::StackName
+          Essential: true
+          Image: !Ref Image
+          PortMappings:
+            - ContainerPort: 80
+          LogConfiguration:
+            LogDriver: awslogs
+            Options:
+              awslogs-group: !Ref LogGroup
+              awslogs-region: !Ref AWS::Region
+              awslogs-stream-prefix: !Ref AWS::StackName
+
+  TaskRole:
+    Type: AWS::IAM::Role
+    Properties:
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/CloudWatchLogsFullAccess
+        - arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerServiceforEC2Role
+        - !ImportValue cfn-utilities:SecretsKeyDecryptPolicyArn
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Action: sts:AssumeRole
+            Principal:
+              Service: ecs-tasks.amazonaws.com
+
+  LogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      RetentionInDays: 14

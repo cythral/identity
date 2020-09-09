@@ -1,0 +1,11 @@
+version: "3.4"
+services:
+  api:
+    build:
+      context: .
+      target: development
+    restart: always
+    ports:
+      - "80:80"
+    volumes:
+      - ./src:/app

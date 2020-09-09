@@ -1,0 +1,5 @@
+{
+  "EnvironmentName": "prod",
+  "DomainName": "identity.brigh.id",
+  "EnableServiceStopping": "false"
+}
