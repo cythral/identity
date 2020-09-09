@@ -52,7 +52,10 @@ Resources:
               SessionTimeout: 86400
           - !Ref AWS::NoValue
         - Type: forward
-          Order: !If [InProd, 2, !Ref AWS::NoValue]
+          Order: !If
+            - InProd
+            - 2
+            - !Ref AWS::NoValue
           TargetGroupArn: !Ref TargetGroup
       Conditions:
         - Field: host-header
