@@ -15,10 +15,10 @@ phases:
       - export image="$REPOSITORY_URI:$CODEBUILD_BUILD_NUMBER"
 
       - docker build -t $image .
-      # - docker push $image
+      - docker push $image
 
-      # - ./deploy/create-config-files.sh $image
-      # - cfn-lint deploy/identity.template.yml
+      - ./deploy/create-config-files.sh $image
+      - cfn-lint deploy/identity.template.yml
 
 artifacts:
   discard-paths: yes
