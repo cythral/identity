@@ -38,24 +38,7 @@ Resources:
       ListenerArn: !ImportValue cfn-utilities:HttpListenerArn
       Priority: 5
       Actions:
-        - !If
-          - InProd
-          - Type: authenticate-oidc
-            Order: 1
-            AuthenticateOidcConfig:
-              Issuer: https://accounts.google.com
-              AuthorizationEndpoint: https://accounts.google.com/o/oauth2/v2/auth
-              TokenEndpoint: https://oauth2.googleapis.com/token
-              UserInfoEndpoint: https://openidconnect.googleapis.com/v1/userinfo
-              ClientId: !ImportValue sso-aws:GoogleClientId
-              ClientSecret: !GetAtt DecryptedClientSecret.Plaintext
-              SessionTimeout: 86400
-          - !Ref AWS::NoValue
         - Type: forward
-          Order: !If
-            - InProd
-            - 2
-            - !Ref AWS::NoValue
           TargetGroupArn: !Ref TargetGroup
       Conditions:
         - Field: host-header

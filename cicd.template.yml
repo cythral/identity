@@ -68,7 +68,7 @@ Resources:
     Type: AWS::ElasticLoadBalancingV2::ListenerRule
     Properties:
       ListenerArn: !ImportValue cfn-gateway:HttpsListenerArn
-      Priority: 6
+      Priority: 7
       Actions:
         - Type: authenticate-oidc
           Order: 1
