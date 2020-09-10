@@ -19,11 +19,6 @@ Parameters:
       - "false"
     Description: Whether or not to enable service stopping on the cluster
 
-Conditions:
-  InProd: !Equals
-    - !Ref EnvironmentName
-    - "prod"
-
 Resources:
   DecryptedClientSecret:
     Type: Custom::Secret
