@@ -15,7 +15,6 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace Brighid.Identity.Controllers
 {
-    [Route("/")]
     public class HomeController : Controller
     {
         private readonly JwtHeader jwtHeader;
@@ -51,7 +50,7 @@ namespace Brighid.Identity.Controllers
             }
         }
 
-        [HttpPost]
+        [HttpPost("/")]
         public IActionResult CreateToken([FromBody] Dictionary<string, JsonElement> givenClaims)
         {
             var payload = new JwtPayload();
@@ -63,6 +62,7 @@ namespace Brighid.Identity.Controllers
             payload["iss"] = "identity.brigh.id";
             payload["iat"] = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
             payload["exp"] = (DateTimeOffset.UtcNow + TimeSpan.FromHours(1)).ToUnixTimeMilliseconds();
+
             var token = new JwtSecurityToken(jwtHeader, payload);
             return Ok(tokenHandler.WriteToken(token));
         }
