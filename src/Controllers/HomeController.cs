@@ -28,6 +28,7 @@ namespace Brighid.Identity.Controllers
             this.tokenHandler = tokenHandler;
         }
 
+        [HttpGet]
         public IActionResult Index()
         {
             return View();
@@ -50,7 +51,13 @@ namespace Brighid.Identity.Controllers
             }
         }
 
-        [HttpPost("/")]
+        [HttpGet("/internal")]
+        public IActionResult GetToken()
+        {
+            return NoContent();
+        }
+
+        [HttpPost("/internal/service-tokens")]
         public IActionResult CreateToken([FromBody] Dictionary<string, JsonElement> givenClaims)
         {
             var payload = new JwtPayload();
