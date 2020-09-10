@@ -64,30 +64,30 @@ Resources:
       ServiceToken: !ImportValue cfn-secret-resource:SecretLambdaArn
       Ciphertext: !ImportValue sso-aws-registry:ProdGoogleClientSecret
 
-  ProdListenerRule:
-    Type: AWS::ElasticLoadBalancingV2::ListenerRule
-    Properties:
-      ListenerArn: !ImportValue cfn-gateway:HttpsListenerArn
-      Priority: 7
-      Actions:
-        - Type: authenticate-oidc
-          Order: 1
-          AuthenticateOidcConfig:
-            Issuer: https://accounts.google.com
-            AuthorizationEndpoint: https://accounts.google.com/o/oauth2/v2/auth
-            TokenEndpoint: https://oauth2.googleapis.com/token
-            UserInfoEndpoint: https://openidconnect.googleapis.com/v1/userinfo
-            ClientId: !ImportValue sso-aws-registry:ProdGoogleClientId
-            ClientSecret: !GetAtt DecryptedProdClientSecret.Plaintext
-            SessionTimeout: 86400
-        - Type: forward
-          Order: 2
-          TargetGroupArn: !ImportValue cfn-gateway:ProdTargetGroupArn
-      Conditions:
-        - Field: host-header
-          HostHeaderConfig:
-            Values:
-              - "identity.brigh.id"
+  # ProdListenerRule:
+  #   Type: AWS::ElasticLoadBalancingV2::ListenerRule
+  #   Properties:
+  #     ListenerArn: !ImportValue cfn-gateway:HttpsListenerArn
+  #     Priority: 7
+  #     Actions:
+  #       - Type: authenticate-oidc
+  #         Order: 1
+  #         AuthenticateOidcConfig:
+  #           Issuer: https://accounts.google.com
+  #           AuthorizationEndpoint: https://accounts.google.com/o/oauth2/v2/auth
+  #           TokenEndpoint: https://oauth2.googleapis.com/token
+  #           UserInfoEndpoint: https://openidconnect.googleapis.com/v1/userinfo
+  #           ClientId: !ImportValue sso-aws-registry:ProdGoogleClientId
+  #           ClientSecret: !GetAtt DecryptedProdClientSecret.Plaintext
+  #           SessionTimeout: 86400
+  #       - Type: forward
+  #         Order: 2
+  #         TargetGroupArn: !ImportValue cfn-gateway:ProdTargetGroupArn
+  #     Conditions:
+  #       - Field: host-header
+  #         HostHeaderConfig:
+  #           Values:
+  #             - "identity.brigh.id"
 
   ArtifactStore:
     Type: AWS::S3::Bucket
