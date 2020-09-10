@@ -1,9 +1,5 @@
 Description: Brighid Identity
 Parameters:
-  EnvironmentName:
-    Type: String
-    Description: Name of the environment to deploy Brighid Identity to
-
   Image:
     Type: String
     Description: Docker Image uri to pull

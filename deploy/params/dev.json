@@ -1,5 +1,4 @@
 {
-  "EnvironmentName": "dev",
   "DomainName": "identity.dev.brigh.id",
   "EnableServiceStopping": "true"
 }
