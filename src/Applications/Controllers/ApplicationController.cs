@@ -29,10 +29,12 @@ namespace Brighid.Identity.Applications
     public class ApplicationController : Controller
     {
         private readonly IApplicationService appService;
+        private readonly ILogger<ApplicationController> logger;
 
-        public ApplicationController(IApplicationService appService)
+        public ApplicationController(IApplicationService appService, ILogger<ApplicationController> logger)
         {
             this.appService = appService;
+            this.logger = logger;
         }
 
 
@@ -41,6 +43,7 @@ namespace Brighid.Identity.Applications
         {
             try
             {
+                logger.LogInformation($"Received request: {JsonSerializer.Serialize(request)}");
                 var application = request.Message.ResourceProperties;
                 var oldApplication = request.Message.OldResourceProperties;
                 var oldName = oldApplication.Name;
