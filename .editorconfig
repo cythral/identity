@@ -7,3 +7,10 @@ dotnet_separate_import_directive_groups = true
 dotnet_diagnostic.CA1822.severity = none
 dotnet_diagnostic.CA1307.severity = none
 dotnet_diagnostic.CA1062.severity = none
+dotnet_diagnostic.CA1062.severity = none
+dotnet_diagnostic.CA2227.severity = none
+dotnet_diagnostic.CS8618.severity = none
+dotnet_diagnostic.CA2007.severity = none
+
+[tests/**.{cs,csx}]
+dotnet_diagnostic.CA1707.severity = none

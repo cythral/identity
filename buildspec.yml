@@ -1,18 +1,28 @@
 version: 0.2
+env:
+  variables:
+    DOTNET_NOLOGO: true
+    
 phases:
   install:
     runtime-versions:
       docker: 19
-      dotnet: 3.1
 
+    commands:
+      - dotnet-install.sh --jsonfile global.json
+      - pip install cfn-lint
+      
   pre_build:
     commands:
       - $(aws ecr get-login --no-include-email)
-      - pip install cfn-lint
+      - dotnet --info
 
   build:
     commands:
       - export image="$REPOSITORY_URI:$CODEBUILD_BUILD_NUMBER"
+
+      - dotnet build
+      - dotnet test --no-build
 
       - docker build -t $image .
       - docker push $image

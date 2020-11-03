@@ -8,4 +8,23 @@ services:
     ports:
       - "80:80"
     volumes:
-      - ./src:/app
+      - ./:/app
+    environment:
+      Database__Host: db
+      Database__Name: ${DB_NAME}
+      Database__User: ${DB_USER}
+      Database__Password: ${DB_PASSWORD}
+
+  db:
+    image: mariadb/server:10.4
+    restart: always
+    environment:
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_RANDOM_ROOT_PASSWORD: "true"
+    volumes:
+      - my-db:/var/lib/mysql
+
+volumes:
+  my-db:
