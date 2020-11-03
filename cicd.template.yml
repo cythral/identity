@@ -213,6 +213,9 @@ Resources:
         ApprovalNotificationFunction: !ImportValue cfn-core:ApprovalNotificationFunctionArn
         FileFromZipArn: !ImportValue cfn-core:ExtractFileFromZipFunctionArn
         AccountId: !Ref AWS::AccountId
+        DevStartDatabaseFunctionArn: !ImportValue mutedac:DevStartDatabaseFunctionArn
+        DevDatabaseName: !ImportValue mutedac:DevClusterName
+        DatabaseAvailabilityTopic: !ImportValue mutedac:AvailabilityTopic
     Metadata:
       cfn-lint:
         config:
