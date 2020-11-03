@@ -21,17 +21,14 @@ phases:
     commands:
       - export image="$REPOSITORY_URI:$CODEBUILD_BUILD_NUMBER"
 
+      - dotnet build
+      - dotnet test --no-build
+
       - docker build -t $image .
-      - docker create --name build $image
-      
-      - dotnet publish tests -c Release
-      - docker cp build:/app/Identity.dll bin/IdentityTests/Release/net5.0
-      - dotnet test -c Release --no-build
+      - docker push $image
 
       - ./deploy/create-config-files.sh $image
       - cfn-lint deploy/identity.template.yml
-
-      - docker push $image
 
 artifacts:
   discard-paths: yes
