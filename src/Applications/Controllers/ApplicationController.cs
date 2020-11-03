@@ -37,8 +37,16 @@ namespace Brighid.Identity.Applications
             this.logger = logger;
         }
 
+        [HttpPost]
+        [HttpHeader("x-amz-sns-message-type", "SubscriptionConfirmation")]
+        public async Task<ActionResult> Subscribe([FromBody] SnsMessage<object> request)
+        {
+            await request.SubscribeUrl.GetAsync();
+            return Ok();
+        }
 
         [HttpPost]
+        [HttpHeader("x-amz-sns-message-type", "Notification")]
         public async Task<ActionResult> HandleSns([FromBody] SnsMessage<CloudFormationRequest<Application>> request)
         {
             try

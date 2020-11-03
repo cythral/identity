@@ -61,6 +61,11 @@ namespace Brighid.Identity.Sns
         public string Type { get; init; }
 
         /// <summary>
+        /// The message subscribe URL.
+        /// </summary>
+        public Uri SubscribeUrl { get; init; }
+
+        /// <summary>
         /// The message unsubscribe URL.
         /// </summary>
         public Uri UnsubscribeUrl { get; init; }
