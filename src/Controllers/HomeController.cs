@@ -15,17 +15,14 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace Brighid.Identity.Controllers
 {
+    [Route("/")]
     public class HomeController : Controller
     {
-        private readonly JwtHeader jwtHeader;
-        private readonly JwtSecurityTokenHandler tokenHandler;
         private readonly ILogger<HomeController> logger;
 
-        public HomeController(ILogger<HomeController> logger, JwtHeader jwtHeader, JwtSecurityTokenHandler tokenHandler)
+        public HomeController(ILogger<HomeController> logger)
         {
             this.logger = logger;
-            this.jwtHeader = jwtHeader;
-            this.tokenHandler = tokenHandler;
         }
 
         [HttpGet]
@@ -55,23 +52,6 @@ namespace Brighid.Identity.Controllers
         public IActionResult GetToken()
         {
             return NoContent();
-        }
-
-        [HttpPost("/internal/service-tokens")]
-        public IActionResult CreateToken([FromBody] Dictionary<string, JsonElement> givenClaims)
-        {
-            var payload = new JwtPayload();
-            foreach (var claim in givenClaims)
-            {
-                payload[claim.Key] = GetJsonValue(claim.Value);
-            }
-
-            payload["iss"] = "identity.brigh.id";
-            payload["iat"] = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
-            payload["exp"] = (DateTimeOffset.UtcNow + TimeSpan.FromHours(1)).ToUnixTimeMilliseconds();
-
-            var token = new JwtSecurityToken(jwtHeader, payload);
-            return Ok(tokenHandler.WriteToken(token));
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

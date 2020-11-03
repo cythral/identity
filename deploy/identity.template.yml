@@ -14,6 +14,18 @@ Parameters:
       - "true"
       - "false"
     Description: Whether or not to enable service stopping on the cluster
+  
+  DatabaseName:
+    Type: String
+    Description: The name of the database to use
+
+  DatabaseUser:
+    Type: String
+    Description: The name of the database user to use
+
+  DatabasePassword:
+    Type: String
+    Description: The encrypted database password
 
 Resources:
   DecryptedClientSecret:
@@ -106,6 +118,25 @@ Resources:
               awslogs-group: !Ref LogGroup
               awslogs-region: !Ref AWS::Region
               awslogs-stream-prefix: !Ref AWS::StackName
+          Environment:
+            - Name: Database__Host
+              Value: !ImportValue mutedac:ClusterAddress
+            - Name: Database__Name
+              Value: !Ref DatabaseName
+            - Name: Database__User
+              Value: !Ref DatabaseUser
+            - Name: Encrypted__Database__Password
+              Value: !Ref DatabasePassword
+
+  ApplicationTopic:
+    Type: AWS::SNS::Topic
+    
+  ApplicationTopicSubscription:
+    Type: AWS::SNS::Subscription
+    Properties:
+      Protocol: https
+      TopicArn: !Ref ApplicationTopic
+      Endpoint: !Sub https://${DomainName}/api/applications
 
   TaskRole:
     Type: AWS::IAM::Role
@@ -126,3 +157,10 @@ Resources:
     Type: AWS::Logs::LogGroup
     Properties:
       RetentionInDays: 14
+
+Outputs:
+  ApplicationTopicArn:
+    Value: !Ref ApplicationTopic
+    Description: ARN of the application topic used for creating/updating/deleting identity client applications.
+    Export:
+      Name: !Sub ${AWS::StackName}:ApplicationTopicArn

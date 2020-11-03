@@ -1,24 +1,35 @@
 version: 0.2
+env:
+  variables:
+    DOTNET_NOLOGO: true
+    
 phases:
   install:
     runtime-versions:
       docker: 19
-      dotnet: 3.1
 
+    commands:
+      - dotnet-install.sh --jsonfile global.json
+      - pip install cfn-lint
+      
   pre_build:
     commands:
       - $(aws ecr get-login --no-include-email)
-      - pip install cfn-lint
+      - dotnet --info
 
   build:
     commands:
       - export image="$REPOSITORY_URI:$CODEBUILD_BUILD_NUMBER"
 
+      - dotnet publish tests -c Release
       - docker build -t $image .
-      - docker push $image
+      - docker cp build:/app/Identity.dll bin/IdentityTests/Release/net5.0
+      - dotnet test -c Release --no-build
 
       - ./deploy/create-config-files.sh $image
       - cfn-lint deploy/identity.template.yml
+
+      - docker push $image
 
 artifacts:
   discard-paths: yes

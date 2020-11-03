@@ -3,3 +3,4 @@ obj/
 .nuget/
 .ionide
 .fake
+.env
