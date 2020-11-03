@@ -1,21 +1,22 @@
 FROM mcr.microsoft.com/dotnet/sdk:5.0.100-rc.2 AS development
-ENV DOCKER_ENV 1
+ENV \
+    DOCKER_ENV=1 \
+    CONFIGURATION=Release \
+    DLL_PATH=/app/bin/Identity/${CONFIGURATION}/net5.0/publish/Identity.dll
+
 WORKDIR /app
 
 COPY . /app/
-RUN dotnet restore
-
 COPY certs/ /certs/
-RUN dotnet publish -c Release
+RUN if [ ! -f ${DLL_PATH} ]; then dotnet publish; fi
 
 EXPOSE 80
-CMD ["dotnet", "watch", "--project", "/app/src", "run"]
-
+ENTRYPOINT ["dotnet", "watch", "--project", "/app/src", "run"]
 
 FROM mcr.microsoft.com/dotnet/aspnet:5.0-rc2 AS production
 
 WORKDIR /app
-COPY --from=development /publish /app
+COPY --from=development /app/bin/Identity/Release/net5.0/publish /app
 COPY --from=development /certs /certs
 COPY entrypoint.sh /
 
@@ -26,5 +27,5 @@ RUN  \
     chmod +x /entrypoint.sh
 
 EXPOSE 80
-CMD ["dotnet", "/app/Identity.dll"]
+ENTRYPOINT /entrypoint.sh
 

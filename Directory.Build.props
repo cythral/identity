@@ -13,18 +13,11 @@
         <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
     </PropertyGroup>
 
-    <PropertyGroup Condition="'$(DOCKER_ENV)' != '1'">
+    <PropertyGroup>
         <OutputPath>$(MSBuildThisFileDirectory)bin/$(MSBuildProjectName)/$(Configuration)</OutputPath>
         <BaseIntermediateOutputPath>$(MSBuildThisFileDirectory)obj/$(MSBuildProjectName)</BaseIntermediateOutputPath>
         <PackageOutputPath>$(MSBuildThisFileDirectory)bin/Packages/$(Configuration)</PackageOutputPath>
         <RestorePackagesPath>$(MSBuildThisFileDirectory).nuget</RestorePackagesPath>
-    </PropertyGroup>
-
-    <PropertyGroup Condition="'$(DOCKER_ENV)' == '1'">
-        <BaseIntermediateOutputPath>/obj</BaseIntermediateOutputPath>
-        <OutputPath>/appbin</OutputPath>
-        <PublishDir>/publish</PublishDir>
-        <RestorePackagesPath>/.nuget</RestorePackagesPath>
     </PropertyGroup>
 
     <ItemGroup Condition="Exists('$(MSBuildThisFileDirectory)\.editorconfig')">
