@@ -131,12 +131,14 @@ Resources:
   ApplicationTopic:
     Type: AWS::SNS::Topic
     
-  # ApplicationTopicSubscription:
-  #   Type: AWS::SNS::Subscription
-  #   Properties:
-  #     Protocol: https
-  #     TopicArn: !Ref ApplicationTopic
-  #     Endpoint: !Sub https://${DomainName}/api/applications
+  ApplicationTopicSubscription:
+    Type: AWS::SNS::Subscription
+    DependsOn:
+      - Service
+    Properties:
+      Protocol: https
+      TopicArn: !Ref ApplicationTopic
+      Endpoint: !Sub https://${DomainName}/api/applications
 
   TaskRole:
     Type: AWS::IAM::Role
