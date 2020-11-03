@@ -41,6 +41,7 @@ namespace Brighid.Identity.Applications
         [HttpHeader("x-amz-sns-message-type", "SubscriptionConfirmation")]
         public async Task<ActionResult> Subscribe([FromBody] SnsMessage<object> request)
         {
+            logger.LogInformation($"Received request: {JsonSerializer.Serialize(request)}");
             await request.SubscribeUrl.GetAsync();
             return Ok();
         }
