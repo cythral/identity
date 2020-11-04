@@ -14,8 +14,15 @@ namespace Brighid.Identity.Sns
                 return default;
             }
 
-            var result = JsonSerializer.Deserialize<T>(stringValue, options);
-            return result;
+            try
+            {
+                var result = JsonSerializer.Deserialize<T>(stringValue, options);
+                return result;
+            }
+            catch (JsonException)
+            {
+                return default;
+            }
         }
 
         public override void Write(Utf8JsonWriter writer, T value, JsonSerializerOptions options)
