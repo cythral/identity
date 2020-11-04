@@ -125,7 +125,7 @@ namespace Brighid.Identity
             {
                 context.Request.Headers.TryGetValue("content-type", out var contentType);
 
-                if (!contentType.Any() || contentType.Contains("text/plain"))
+                if (!contentType.Any() || contentType.Any(type => type.StartsWith("text/plain", StringComparison.OrdinalIgnoreCase)))
                 {
                     context.Request.Headers["content-type"] = "application/json";
                 }
