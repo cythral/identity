@@ -17,6 +17,7 @@ using NSubstitute;
 
 using NUnit.Framework;
 
+using OpenIddict.Abstractions;
 using OpenIddict.Core;
 using OpenIddict.EntityFrameworkCore.Models;
 
@@ -32,7 +33,7 @@ namespace Brighid.Identity.Applications
             string requestId,
             string logicalResourceId,
             Uri responseUrl,
-            OpenIddictApplication clientApp,
+            OpenIddictApplicationDescriptor clientApp,
             Application application,
             [Frozen] IApplicationService appService,
             [Target] ApplicationController appController
@@ -74,21 +75,21 @@ namespace Brighid.Identity.Applications
         }
 
         [Test, Auto]
-        public async Task HandleSns_CallsUpdate_AndRegenerateClientSecret_IfSerialIsDifferent(
+        public async Task HandleSns_CallsUpdate(
             string stackId,
             string requestId,
             string logicalResourceId,
             string physicalResourceId,
             string name,
             Uri responseUrl,
-            OpenIddictApplication clientApp,
+            OpenIddictApplicationDescriptor clientApp,
             [Frozen] IApplicationService appService,
             [Target] ApplicationController appController
         )
         {
             using var httpContext = new HttpTest();
             httpContext.RespondWith("OK", 200);
-            appService.Update(Any<Application>(), Any<bool>()).Returns(clientApp);
+            appService.Update(Any<Application>()).Returns(clientApp);
 
             var oldApplication = new Application { Name = name, Serial = 1 };
             var newApplication = new Application { Name = name, Serial = 2 };
@@ -108,7 +109,7 @@ namespace Brighid.Identity.Applications
                 }
             });
 
-            await appService.Received().Update(Is(newApplication), Is(true));
+            await appService.Received().Update(Is(newApplication));
             await appService.DidNotReceive().Create(Any<Application>());
             await appService.DidNotReceive().Delete(Any<Application>());
 
@@ -126,58 +127,6 @@ namespace Brighid.Identity.Applications
             });
         }
 
-        [Test, Auto]
-        public async Task HandleSns_CallsUpdate_WithoutRegenerateSecret_IfSerialIsSame(
-            string stackId,
-            string requestId,
-            string logicalResourceId,
-            string physicalResourceId,
-            string name,
-            Uri responseUrl,
-            OpenIddictApplication clientApp,
-            [Frozen] IApplicationService appService,
-            [Target] ApplicationController appController
-        )
-        {
-            using var httpContext = new HttpTest();
-            httpContext.RespondWith("OK", 200);
-            appService.Update(Any<Application>(), Any<bool>()).Returns(clientApp);
-
-            var oldApplication = new Application { Name = name, Serial = 1 };
-            var newApplication = new Application { Name = name, Serial = 1 };
-
-            await appController.HandleSns(new SnsMessage<CloudFormationRequest<Application>>
-            {
-                Message = new CloudFormationRequest<Application>
-                {
-                    ResponseURL = responseUrl,
-                    StackId = stackId,
-                    RequestId = requestId,
-                    LogicalResourceId = logicalResourceId,
-                    PhysicalResourceId = physicalResourceId,
-                    RequestType = CloudFormationRequestType.Update,
-                    ResourceProperties = newApplication,
-                    OldResourceProperties = oldApplication,
-                }
-            });
-
-            await appService.Received().Update(Is(newApplication), Is(false));
-            await appService.DidNotReceive().Create(Any<Application>());
-            await appService.DidNotReceive().Delete(Any<Application>());
-
-            httpContext
-            .ShouldHaveCalled(responseUrl.ToString())
-            .WithVerb(HttpMethod.Put)
-            .WithRequestJson(new CloudFormationResponse
-            {
-                Status = CloudFormationResponseStatus.SUCCESS,
-                StackId = stackId,
-                RequestId = requestId,
-                LogicalResourceId = logicalResourceId,
-                PhysicalResourceId = physicalResourceId,
-                Data = clientApp,
-            });
-        }
 
         [Test, Auto]
         public async Task HandleSns_CallsCreate_IfApplicationNameIsDifferent_AndRespondsWithNewNameAsPhysicalResourceId(
@@ -188,7 +137,7 @@ namespace Brighid.Identity.Applications
             string oldName,
             string newName,
             Uri responseUrl,
-            OpenIddictApplication clientApp,
+            OpenIddictApplicationDescriptor clientApp,
             [Frozen] IApplicationService appService,
             [Target] ApplicationController appController
         )
@@ -239,7 +188,7 @@ namespace Brighid.Identity.Applications
             string requestId,
             string logicalResourceId,
             Uri responseUrl,
-            OpenIddictApplication clientApp,
+            OpenIddictApplicationDescriptor clientApp,
             Application application,
             [Frozen] IApplicationService appService,
             [Target] ApplicationController appController
@@ -316,7 +265,7 @@ namespace Brighid.Identity.Applications
             using var httpContext = new HttpTest();
             httpContext.RespondWith("OK", 200);
 
-            appService.Create(Any<Application>()).Returns<OpenIddictApplication>(x => throw new Exception(errorMessage));
+            appService.Create(Any<Application>()).Returns<OpenIddictApplicationDescriptor>(x => throw new Exception(errorMessage));
 
             Func<Task> func = async () => await appController.HandleSns(new SnsMessage<CloudFormationRequest<Application>>
             {

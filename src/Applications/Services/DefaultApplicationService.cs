@@ -23,10 +23,10 @@ namespace Brighid.Identity.Applications
             this.generateRandomString = generateRandomString;
         }
 
-        public async Task<OpenIddictApplication> Create(Application application)
+        public async Task<OpenIddictApplicationDescriptor> Create(Application application)
         {
             await appRepository.Add(application);
-            return await appManager.CreateAsync(new OpenIddictApplicationDescriptor
+            var descriptor = new OpenIddictApplicationDescriptor
             {
                 ClientId = $"{application.Name}@identity.brigh.id",
                 ClientSecret = generateRandomString(128),
@@ -35,31 +35,38 @@ namespace Brighid.Identity.Applications
                     OpenIddictConstants.Permissions.Endpoints.Token,
                     OpenIddictConstants.Permissions.GrantTypes.ClientCredentials
                 }
-            });
+            };
+
+            await appManager.CreateAsync(descriptor);
+            return descriptor;
         }
 
-        public async Task<OpenIddictApplication> Update(Application application, bool regenerateClientSecret = false)
+        public async Task<OpenIddictApplicationDescriptor> Update(Application application)
         {
             await appRepository.Save(application);
             var client = await appManager.FindByClientIdAsync($"{application.Name}@identity.brigh.id");
-
-            if (regenerateClientSecret)
+            var descriptor = new OpenIddictApplicationDescriptor
             {
-                client.ClientSecret = generateRandomString(128);
-                await appManager.UpdateAsync(client);
-            }
+                ClientId = client.ClientId,
+                ClientSecret = generateRandomString(128)
+            };
 
-            return client;
+            client.ClientSecret = descriptor.ClientSecret;
+            await appManager.UpdateAsync(client);
+            return descriptor;
         }
 
-        public async Task<OpenIddictApplication> Delete(Application application)
+        public async Task<OpenIddictApplicationDescriptor> Delete(Application application)
         {
             await appRepository.Remove(application.Name);
 
             var client = await appManager.FindByClientIdAsync($"{application.Name}@identity.brigh.id");
             await appManager.DeleteAsync(client);
 
-            return client;
+            return new OpenIddictApplicationDescriptor
+            {
+                ClientId = client.ClientId
+            };
         }
     }
 }

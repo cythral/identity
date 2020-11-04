@@ -54,7 +54,9 @@ namespace Brighid.Identity.Applications
 
             var result = await applicationService.Create(application);
 
-            result.Should().BeSameAs(clientApp);
+            result.ClientId.Should().Be(application.Name + "@identity.brigh.id");
+            result.ClientSecret.Should().Be(clientSecret);
+
             await appManager.Received().CreateAsync(Is<OpenIddictApplicationDescriptor>(req =>
                 req.ClientId == application.Name + "@identity.brigh.id" &&
                 req.ClientSecret == clientSecret &&
@@ -78,33 +80,7 @@ namespace Brighid.Identity.Applications
         }
 
         [Test, Auto]
-        public async Task Update_ShouldRegenerateTheClientSecret_IfRegenerateClientSecretIsTrue(
-            string clientId,
-            string clientSecret,
-            Application application,
-            [Frozen, Substitute] GenerateRandomString generateRandomString,
-            [Frozen, Substitute] OpenIddictApplicationManager<OpenIddictApplication> applicationManager,
-            [Target] DefaultApplicationService applicationService
-        )
-        {
-            var client = new OpenIddictApplication { ClientId = clientId };
-            generateRandomString(Any<int>()).Returns(clientSecret);
-            applicationManager.FindByClientIdAsync(Any<string>()).Returns(client);
-
-            var result = await applicationService.Update(application, true);
-
-            result.Should().BeSameAs(client);
-
-            await applicationManager.Received().FindByClientIdAsync(Is(application.Name + "@identity.brigh.id"));
-            await applicationManager.Received().UpdateAsync(Is<OpenIddictApplication>(req =>
-                req.ClientId == clientId &&
-                req.ClientSecret == clientSecret
-            ));
-            generateRandomString.Received()(Is(128));
-        }
-
-        [Test, Auto]
-        public async Task Update_ShouldNotRegenerateTheClientSecret_IfRegenerateClientSecretIsFalse(
+        public async Task Update_ShouldUpdateTheClientApp(
             string clientId,
             string clientSecret,
             Application application,
@@ -119,11 +95,15 @@ namespace Brighid.Identity.Applications
 
             var result = await applicationService.Update(application);
 
-            result.Should().BeSameAs(client);
+            result.ClientId.Should().Be(clientId);
+            result.ClientSecret.Should().Be(clientSecret);
 
             await applicationManager.Received().FindByClientIdAsync(Is(application.Name + "@identity.brigh.id"));
-            await applicationManager.DidNotReceive().UpdateAsync(Any<OpenIddictApplication>());
-            generateRandomString.DidNotReceive()(Is(128));
+            await applicationManager.Received().UpdateAsync(Is<OpenIddictApplication>(req =>
+                req.ClientId == clientId &&
+                req.ClientSecret == clientSecret
+            ));
+            generateRandomString.Received()(Is(128));
         }
 
         [Test, Auto]
@@ -151,7 +131,7 @@ namespace Brighid.Identity.Applications
 
             var result = await applicationService.Delete(application);
 
-            result.Should().BeSameAs(clientApp);
+            result.Should().NotBeNull();
 
             await applicationManager.Received().FindByClientIdAsync(Is(application.Name + "@identity.brigh.id"));
             await applicationManager.Received().DeleteAsync(Is(clientApp));

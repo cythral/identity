@@ -50,7 +50,7 @@ namespace Brighid.Identity.Applications
         [HttpHeader("x-amz-sns-message-type", "Notification")]
         public async Task<ActionResult> HandleSns([FromBody] SnsMessage<CloudFormationRequest<Application>> request)
         {
-            if (request.Message == null)
+            if (request?.Message == null)
             {
                 throw new Exception("Expected message.");
             }
@@ -64,7 +64,6 @@ namespace Brighid.Identity.Applications
                 var newName = application.Name;
                 var physicalResourceId = request.Message.PhysicalResourceId ?? newName;
                 var requestType = request.Message.RequestType;
-                var regenerateSecret = oldApplication.Serial != application.Serial;
 
                 if (requestType == Update && oldName != newName)
                 {
@@ -75,7 +74,7 @@ namespace Brighid.Identity.Applications
                 var client = requestType switch
                 {
                     Create => await appService.Create(application),
-                    Update => await appService.Update(application, regenerateSecret),
+                    Update => await appService.Update(application),
                     Delete => await appService.Delete(application),
                     _ => throw new NotSupportedException(),
                 };
