@@ -123,7 +123,7 @@ namespace Brighid.Identity
             {
                 if (!context.Request.Headers.TryGetValue("content-type", out var _))
                 {
-                    context.Request.Headers.Add("content-type", "text/plain");
+                    context.Request.Headers.Add("content-type", "application/json");
                 }
 
                 await next.Invoke();
