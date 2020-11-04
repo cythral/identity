@@ -5,7 +5,6 @@ using System.Text;
 using System.Threading.Tasks;
 
 public delegate string GenerateRandomString(int length);
-public delegate Task<T> DeserializeAsync<T>(Stream stream);
 
 namespace Brighid.Identity
 {

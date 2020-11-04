@@ -17,6 +17,8 @@ using AspNetCore.ServiceRegistration.Dynamic.Interfaces;
 
 using Brighid.Identity.Users;
 
+using Flurl.Http;
+
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -30,7 +32,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Primitives;
-
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.Net.Http.Headers;
 
@@ -99,6 +100,11 @@ namespace Brighid.Identity
 
             JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
             JwtSecurityTokenHandler.DefaultOutboundClaimTypeMap.Clear();
+
+            var jsonOptions = new JsonSerializerOptions();
+            jsonOptions.Converters.Add(new JsonStringEnumConverter());
+
+            FlurlHttp.GlobalSettings.JsonSerializer = new Serializer(jsonOptions);
         }
 
         public void ConfigureDatabaseOptions(DbContextOptionsBuilder options)
