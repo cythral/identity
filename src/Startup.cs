@@ -48,11 +48,7 @@ namespace Brighid.Identity
         public void ConfigureServices(IServiceCollection services)
         {
             services
-            .AddControllersWithViews(options =>
-            {
-                var formatter = (SystemTextJsonInputFormatter)options.InputFormatters.Where(formatter => formatter.GetType() == typeof(SystemTextJsonInputFormatter)).First();
-                formatter.SupportedMediaTypes.Add("text/plain");
-            })
+            .AddControllersWithViews()
             .AddJsonOptions(options =>
             {
                 options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
