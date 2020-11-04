@@ -2,7 +2,7 @@ using System;
 
 namespace Brighid.Identity.Sns
 {
-    public class CloudFormationRequest<T> where T : notnull, new()
+    public class CloudFormationRequest<T> : ICloudFormationRequest<T> where T : new()
     {
 
         public CloudFormationRequestType RequestType { get; init; }

@@ -42,18 +42,19 @@ namespace Brighid.Identity.Applications
             using var httpContext = new HttpTest();
             httpContext.RespondWith("OK", 200);
             appService.Create(Any<Application>()).Returns(clientApp);
+            var request = new CloudFormationRequest<Application>
+            {
+                ResponseURL = responseUrl,
+                StackId = stackId,
+                RequestId = requestId,
+                LogicalResourceId = logicalResourceId,
+                RequestType = CloudFormationRequestType.Create,
+                ResourceProperties = application,
+            };
 
             await appController.HandleSns(new SnsMessage<CloudFormationRequest<Application>>
             {
-                Message = new CloudFormationRequest<Application>
-                {
-                    ResponseURL = responseUrl,
-                    StackId = stackId,
-                    RequestId = requestId,
-                    LogicalResourceId = logicalResourceId,
-                    RequestType = CloudFormationRequestType.Create,
-                    ResourceProperties = application,
-                }
+                Message = request,
             });
 
             await appService.Received().Create(Is(application));
@@ -63,13 +64,9 @@ namespace Brighid.Identity.Applications
             httpContext
             .ShouldHaveCalled(responseUrl.ToString())
             .WithVerb(HttpMethod.Put)
-            .WithRequestJson(new CloudFormationResponse
+            .WithRequestJson(new CloudFormationResponse(request, application.Name)
             {
                 Status = CloudFormationResponseStatus.SUCCESS,
-                StackId = stackId,
-                RequestId = requestId,
-                LogicalResourceId = logicalResourceId,
-                PhysicalResourceId = application.Name,
                 Data = clientApp,
             });
         }
@@ -93,20 +90,21 @@ namespace Brighid.Identity.Applications
 
             var oldApplication = new Application { Name = name, Serial = 1 };
             var newApplication = new Application { Name = name, Serial = 2 };
+            var request = new CloudFormationRequest<Application>
+            {
+                ResponseURL = responseUrl,
+                StackId = stackId,
+                RequestId = requestId,
+                LogicalResourceId = logicalResourceId,
+                PhysicalResourceId = physicalResourceId,
+                RequestType = CloudFormationRequestType.Update,
+                ResourceProperties = newApplication,
+                OldResourceProperties = oldApplication,
+            };
 
             await appController.HandleSns(new SnsMessage<CloudFormationRequest<Application>>
             {
-                Message = new CloudFormationRequest<Application>
-                {
-                    ResponseURL = responseUrl,
-                    StackId = stackId,
-                    RequestId = requestId,
-                    LogicalResourceId = logicalResourceId,
-                    PhysicalResourceId = physicalResourceId,
-                    RequestType = CloudFormationRequestType.Update,
-                    ResourceProperties = newApplication,
-                    OldResourceProperties = oldApplication,
-                }
+                Message = request,
             });
 
             await appService.Received().Update(Is(newApplication));
@@ -116,13 +114,9 @@ namespace Brighid.Identity.Applications
             httpContext
             .ShouldHaveCalled(responseUrl.ToString())
             .WithVerb(HttpMethod.Put)
-            .WithRequestJson(new CloudFormationResponse
+            .WithRequestJson(new CloudFormationResponse(request, physicalResourceId)
             {
                 Status = CloudFormationResponseStatus.SUCCESS,
-                StackId = stackId,
-                RequestId = requestId,
-                LogicalResourceId = logicalResourceId,
-                PhysicalResourceId = physicalResourceId,
                 Data = clientApp,
             });
         }
@@ -148,20 +142,21 @@ namespace Brighid.Identity.Applications
 
             var oldApplication = new Application { Name = oldName };
             var newApplication = new Application { Name = newName };
+            var request = new CloudFormationRequest<Application>
+            {
+                ResponseURL = responseUrl,
+                StackId = stackId,
+                RequestId = requestId,
+                LogicalResourceId = logicalResourceId,
+                PhysicalResourceId = physicalResourceId,
+                RequestType = CloudFormationRequestType.Update,
+                ResourceProperties = newApplication,
+                OldResourceProperties = oldApplication,
+            };
 
             await appController.HandleSns(new SnsMessage<CloudFormationRequest<Application>>
             {
-                Message = new CloudFormationRequest<Application>
-                {
-                    ResponseURL = responseUrl,
-                    StackId = stackId,
-                    RequestId = requestId,
-                    LogicalResourceId = logicalResourceId,
-                    PhysicalResourceId = physicalResourceId,
-                    RequestType = CloudFormationRequestType.Update,
-                    ResourceProperties = newApplication,
-                    OldResourceProperties = oldApplication,
-                }
+                Message = request,
             });
 
             await appService.Received().Create(Is(newApplication));
@@ -171,13 +166,9 @@ namespace Brighid.Identity.Applications
             httpContext
             .ShouldHaveCalled(responseUrl.ToString())
             .WithVerb(HttpMethod.Put)
-            .WithRequestJson(new CloudFormationResponse
+            .WithRequestJson(new CloudFormationResponse(request, newName)
             {
                 Status = CloudFormationResponseStatus.SUCCESS,
-                StackId = stackId,
-                RequestId = requestId,
-                LogicalResourceId = logicalResourceId,
-                PhysicalResourceId = newName,
                 Data = clientApp,
             });
         }
@@ -198,17 +189,19 @@ namespace Brighid.Identity.Applications
             httpContext.RespondWith("OK", 200);
             appService.Delete(Any<Application>()).Returns(clientApp);
 
+            var request = new CloudFormationRequest<Application>
+            {
+                StackId = stackId,
+                RequestId = requestId,
+                LogicalResourceId = logicalResourceId,
+                ResponseURL = responseUrl,
+                RequestType = CloudFormationRequestType.Delete,
+                ResourceProperties = application,
+            };
+
             await appController.HandleSns(new SnsMessage<CloudFormationRequest<Application>>
             {
-                Message = new CloudFormationRequest<Application>
-                {
-                    StackId = stackId,
-                    RequestId = requestId,
-                    LogicalResourceId = logicalResourceId,
-                    ResponseURL = responseUrl,
-                    RequestType = CloudFormationRequestType.Delete,
-                    ResourceProperties = application,
-                }
+                Message = request,
             });
 
             await appService.Received().Delete(Is(application));
@@ -218,13 +211,9 @@ namespace Brighid.Identity.Applications
             httpContext
             .ShouldHaveCalled(responseUrl.ToString())
             .WithVerb(HttpMethod.Put)
-            .WithRequestJson(new CloudFormationResponse
+            .WithRequestJson(new CloudFormationResponse(request, application.Name)
             {
                 Status = CloudFormationResponseStatus.SUCCESS,
-                StackId = stackId,
-                RequestId = requestId,
-                LogicalResourceId = logicalResourceId,
-                PhysicalResourceId = application.Name,
                 Data = clientApp,
             });
         }
@@ -267,30 +256,28 @@ namespace Brighid.Identity.Applications
 
             appService.Create(Any<Application>()).Returns<OpenIddictApplicationDescriptor>(x => throw new Exception(errorMessage));
 
+            var request = new CloudFormationRequest<Application>
+            {
+                ResponseURL = responseUrl,
+                StackId = stackId,
+                RequestId = requestId,
+                LogicalResourceId = logicalResourceId,
+                PhysicalResourceId = physicalResourceId,
+                RequestType = CloudFormationRequestType.Create,
+            };
+
             Func<Task> func = async () => await appController.HandleSns(new SnsMessage<CloudFormationRequest<Application>>
             {
-                Message = new CloudFormationRequest<Application>
-                {
-                    ResponseURL = responseUrl,
-                    StackId = stackId,
-                    RequestId = requestId,
-                    LogicalResourceId = logicalResourceId,
-                    PhysicalResourceId = physicalResourceId,
-                    RequestType = CloudFormationRequestType.Create,
-                }
+                Message = request,
             });
 
             await func.Should().NotThrowAsync();
             httpContext.ShouldHaveCalled(responseUrl.ToString())
                 .WithVerb(HttpMethod.Put)
                 .WithContentType("application/json")
-                .WithRequestJson(new CloudFormationResponse
+                .WithRequestJson(new CloudFormationResponse(request)
                 {
                     Status = CloudFormationResponseStatus.FAILED,
-                    StackId = stackId,
-                    RequestId = requestId,
-                    LogicalResourceId = logicalResourceId,
-                    PhysicalResourceId = physicalResourceId,
                     Reason = errorMessage,
                 });
         }

@@ -79,26 +79,18 @@ namespace Brighid.Identity.Applications
                     _ => throw new NotSupportedException(),
                 };
 
-                await request.Message.ResponseURL.PutJsonAsync(new CloudFormationResponse
+                await request.Message.ResponseURL.PutJsonAsync(new CloudFormationResponse(request.Message, physicalResourceId)
                 {
                     Status = CloudFormationResponseStatus.SUCCESS,
-                    StackId = request.Message.StackId,
-                    RequestId = request.Message.RequestId,
-                    LogicalResourceId = request.Message.LogicalResourceId,
-                    PhysicalResourceId = physicalResourceId,
                     Data = client,
                 });
             }
 #pragma warning disable CA1031
             catch (Exception e)
             {
-                await request.Message.ResponseURL.PutJsonAsync(new CloudFormationResponse
+                await request.Message.ResponseURL.PutJsonAsync(new CloudFormationResponse(request.Message)
                 {
                     Status = CloudFormationResponseStatus.FAILED,
-                    StackId = request.Message.StackId,
-                    RequestId = request.Message.RequestId,
-                    LogicalResourceId = request.Message.LogicalResourceId,
-                    PhysicalResourceId = request.Message.PhysicalResourceId,
                     Reason = e.Message,
                 });
             }
