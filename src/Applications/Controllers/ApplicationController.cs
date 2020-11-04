@@ -50,6 +50,11 @@ namespace Brighid.Identity.Applications
         [HttpHeader("x-amz-sns-message-type", "Notification")]
         public async Task<ActionResult> HandleSns([FromBody] SnsMessage<CloudFormationRequest<Application>> request)
         {
+            if (request.Message == null)
+            {
+                throw new Exception("Expected message.");
+            }
+
             try
             {
                 logger.LogInformation($"Received request: {JsonSerializer.Serialize(request)}");

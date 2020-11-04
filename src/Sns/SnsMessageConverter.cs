@@ -6,20 +6,15 @@ namespace Brighid.Identity.Sns
 {
     public class SnsMessageConverter<T> : JsonConverter<T>
     {
-        public override T Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        public override T? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
             var stringValue = reader.GetString();
-            if (stringValue == null)
+            if (string.IsNullOrEmpty(stringValue))
             {
-                throw new Exception("Could not read string value");
+                return default;
             }
 
             var result = JsonSerializer.Deserialize<T>(stringValue, options);
-            if (result == null)
-            {
-                throw new Exception("Failed to deserialize string.");
-            }
-
             return result;
         }
 

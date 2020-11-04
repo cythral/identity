@@ -13,7 +13,7 @@ namespace Brighid.Identity.Sns
         /// The message.
         /// </summary>
         [JsonConverter(typeof(SnsMessageConverterFactory))]
-        public T Message { get; init; }
+        public T? Message { get; init; }
 
         /// <summary>
         /// The attributes associated with the message.
