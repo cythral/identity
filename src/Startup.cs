@@ -29,6 +29,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Primitives;
+
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.Net.Http.Headers;
 
@@ -121,9 +123,11 @@ namespace Brighid.Identity
 
             app.Use(async (context, next) =>
             {
-                if (!context.Request.Headers.TryGetValue("content-type", out var _))
+                context.Request.Headers.TryGetValue("content-type", out var contentType);
+
+                if (!contentType.Any() || contentType.Contains("text/plain"))
                 {
-                    context.Request.Headers.Add("content-type", "application/json");
+                    context.Request.Headers["content-type"] = "application/json";
                 }
 
                 await next.Invoke();
