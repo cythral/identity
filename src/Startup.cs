@@ -101,7 +101,7 @@ namespace Brighid.Identity
             JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
             JwtSecurityTokenHandler.DefaultOutboundClaimTypeMap.Clear();
 
-            var jsonOptions = new JsonSerializerOptions();
+            var jsonOptions = new JsonSerializerOptions { DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull };
             jsonOptions.Converters.Add(new JsonStringEnumConverter());
 
             FlurlHttp.GlobalSettings.JsonSerializer = new Serializer(jsonOptions);
