@@ -22,6 +22,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -29,6 +30,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.Net.Http.Headers;
 
 namespace Brighid.Identity
 {
@@ -46,7 +48,11 @@ namespace Brighid.Identity
         public void ConfigureServices(IServiceCollection services)
         {
             services
-            .AddControllersWithViews()
+            .AddControllersWithViews(options =>
+            {
+                var formatter = (SystemTextJsonInputFormatter)options.InputFormatters.Where(formatter => formatter.GetType() == typeof(SystemTextJsonInputFormatter)).First();
+                formatter.SupportedMediaTypes.Add("text/plain");
+            })
             .AddJsonOptions(options =>
             {
                 options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
@@ -80,6 +86,11 @@ namespace Brighid.Identity
                 options.DisableHttpsRequirement();
                 options.AllowClientCredentialsFlow();
 
+                if (!Directory.Exists("/certs"))
+                {
+                    return;
+                }
+
                 foreach (var file in Directory.GetFiles("/certs"))
                 {
                     var certificate = new X509Certificate2(file);
@@ -111,6 +122,16 @@ namespace Brighid.Identity
                 dbContext.Database.EnsureDeleted();
                 dbContext.Database.EnsureCreated();
             }
+
+            app.Use(async (context, next) =>
+            {
+                if (!context.Request.Headers.TryGetValue("content-type", out var _))
+                {
+                    context.Request.Headers.Add("content-type", "text/plain");
+                }
+
+                await next.Invoke();
+            });
 
             app.UseStaticFiles();
             app.UseRouting();
