@@ -33,12 +33,12 @@ public class TargetRelay : ISpecimenBuilder
 
         var parameters = parameterTypes.ToArray();
         var instance = Activator.CreateInstance(type, parameters);
-        return instance ?? new NoSpecimen() as object;
+        return instance ?? new NoSpecimen();
     }
 
     private static object? GetOrDefault(Dictionary<Type, object> dictionary, Type key)
     {
-        dictionary.TryGetValue(key, out object? result);
+        dictionary.TryGetValue(key, out var result);
         return result;
     }
 }

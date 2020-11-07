@@ -2,7 +2,6 @@ using System;
 using System.Net.Http;
 using System.Threading.Tasks;
 
-using AutoFixture.AutoNSubstitute;
 using AutoFixture.NUnit3;
 
 using Brighid.Identity.Sns;
@@ -18,8 +17,6 @@ using NSubstitute;
 using NUnit.Framework;
 
 using OpenIddict.Abstractions;
-using OpenIddict.Core;
-using OpenIddict.EntityFrameworkCore.Models;
 
 using static NSubstitute.Arg;
 

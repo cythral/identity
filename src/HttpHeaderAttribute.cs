@@ -20,12 +20,9 @@ namespace Brighid.Identity
 
         public bool Accept(ActionConstraintContext context)
         {
-            if (context.RouteContext.HttpContext.Request.Headers.TryGetValue(Header, out var value) && value.Any())
-            {
-                return value[0] == Value;
-            }
-
-            return false;
+            var headers = context.RouteContext.HttpContext.Request.Headers;
+            headers.TryGetValue(Header, out var value);
+            return value.FirstOrDefault() == Value;
         }
     }
 }

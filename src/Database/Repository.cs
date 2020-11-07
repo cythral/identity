@@ -12,7 +12,7 @@ namespace Brighid.Identity
         protected DatabaseContext Context { get; private set; }
         protected DbSet<TEntity> Set { get; private set; }
         protected static string? PrimaryKeyName { get; private set; }
-        protected static Action<TEntity, TPrimaryKeyType> SetPrimaryKey { get; private set; } = null!;
+        protected static Action<TEntity, TPrimaryKeyType>? SetPrimaryKey { get; private set; } = null!;
 
         public Repository(DatabaseContext context)
         {
@@ -24,11 +24,13 @@ namespace Brighid.Identity
                 PrimaryKeyName = Context.Model.FindEntityType(typeof(TEntity)).FindPrimaryKey().Properties[0].Name;
 
                 var prop = typeof(TEntity).GetProperties().Where(prop => prop.Name == PrimaryKeyName).First();
+                var setterMethod = prop.GetSetMethod();
 
-                var setterMethod = prop.GetSetMethod()!;
-                var setPrimaryKeyType = Type.GetType($"System.Action`2[{typeof(TEntity).FullName}, {typeof(TPrimaryKeyType).FullName}]")!;
-
-                SetPrimaryKey = (Action<TEntity, TPrimaryKeyType>)Delegate.CreateDelegate(setPrimaryKeyType, setterMethod);
+                if (prop != null && setterMethod != null)
+                {
+                    var setPrimaryKeyType = Type.GetType($"System.Action`2[{typeof(TEntity).FullName}, {typeof(TPrimaryKeyType).FullName}]")!;
+                    SetPrimaryKey = (Action<TEntity, TPrimaryKeyType>)Delegate.CreateDelegate(setPrimaryKeyType, setterMethod);
+                }
             }
         }
 
@@ -86,6 +88,11 @@ namespace Brighid.Identity
 
         public async Task<TEntity> Remove(TPrimaryKeyType primaryKey)
         {
+            if (SetPrimaryKey == null)
+            {
+                throw new NotSupportedException();
+            }
+
             var entity = new TEntity();
             SetPrimaryKey(entity, primaryKey);
 
@@ -98,6 +105,11 @@ namespace Brighid.Identity
 
         public TEntity Track(TPrimaryKeyType primaryKey)
         {
+            if (SetPrimaryKey == null)
+            {
+                throw new NotSupportedException();
+            }
+
             var entity = new TEntity();
             SetPrimaryKey(entity, primaryKey);
             Set.Attach(entity);

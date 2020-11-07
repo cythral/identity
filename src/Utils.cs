@@ -1,10 +1,12 @@
 using System;
-using System.IO;
 using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
 
+using AspNet.Security.OpenIdConnect.Primitives;
+
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.DependencyInjection;
 public delegate string GenerateRandomString(int length);
+public delegate OpenIdConnectRequest GetOpenIdConnectRequest(Controller controller);
 
 namespace Brighid.Identity
 {
@@ -16,6 +18,11 @@ namespace Brighid.Identity
             var buffer = new byte[length];
             cryptoRandomDataGenerator.GetBytes(buffer);
             return Convert.ToBase64String(buffer);
+        }
+
+        public static OpenIdConnectRequest GetOpenIdConnectRequest(Controller controller)
+        {
+            return controller.HttpContext.GetOpenIdConnectRequest();
         }
     }
 }

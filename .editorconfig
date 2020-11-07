@@ -1,6 +1,11 @@
 root = true
 
+
 [*.{cs,csx}]
+csharp_style_var_for_built_in_types = true:error
+csharp_style_var_when_type_is_apparent = true:error
+csharp_style_var_elsewhere = true:error
+
 insert_final_newline = true
 dotnet_separate_import_directive_groups = true
 
@@ -12,5 +17,20 @@ dotnet_diagnostic.CA2227.severity = none
 dotnet_diagnostic.CS8618.severity = none
 dotnet_diagnostic.CA2007.severity = none
 
+# EOF Newline
+dotnet_style_code_must_not_contain_blank_lines_at_end_of_file = true:require
+dotnet_diagnostic.SA1518.severity = error
+
+# Imports - Organization and Remove Unnecessary Ones
+dotnet_separate_import_directive_groups = true
+dotnet_diagnostic.IDE0005.severity = error
+
+dotnet_analyzer_diagnostic.category-Style.severity = error
+dotnet_diagnostic.IDE0058.severity = none
+dotnet_diagnostic.IDE0007.severity = error
+dotnet_diagnostic.IDE0008.severity = none
+
 [tests/**.{cs,csx}]
 dotnet_diagnostic.CA1707.severity = none
+dotnet_diagnostic.CA1052.severity = none
+dotnet_diagnostic.CA1034.severity = none

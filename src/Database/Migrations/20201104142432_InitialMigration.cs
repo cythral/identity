@@ -1,4 +1,5 @@
-﻿using System;
+﻿#pragma warning disable IDE0050
+using System;
 
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;

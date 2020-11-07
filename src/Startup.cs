@@ -1,13 +1,10 @@
 using System;
-using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.IO;
 using System.Linq;
-using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using System.Threading.Tasks;
 
 using AspNet.Security.OpenIdConnect.Primitives;
 
@@ -19,21 +16,13 @@ using Brighid.Identity.Users;
 
 using Flurl.Http;
 
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc.Formatters;
-using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Primitives;
-using Microsoft.IdentityModel.Tokens;
-using Microsoft.Net.Http.Headers;
 
 namespace Brighid.Identity
 {
@@ -62,6 +51,7 @@ namespace Brighid.Identity
             services.AddDbContextPool<DatabaseContext>(ConfigureDatabaseOptions);
 
             services.AddSingleton<GenerateRandomString>(Utils.GenerateRandomString);
+            services.AddSingleton<GetOpenIdConnectRequest>(Utils.GetOpenIdConnectRequest);
             services.AddIdentity<User, IdentityRole>()
             .AddEntityFrameworkStores<DatabaseContext>()
             .AddDefaultTokenProviders();
@@ -84,6 +74,7 @@ namespace Brighid.Identity
                 options.UseJsonWebTokens();
                 options.DisableHttpsRequirement();
                 options.AllowClientCredentialsFlow();
+                options.RegisterClaims("role");
 
                 if (!Directory.Exists("/certs"))
                 {

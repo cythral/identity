@@ -1,5 +1,3 @@
-using System;
-
 namespace Brighid.Identity.Models
 {
     public class ErrorViewModel
