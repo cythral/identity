@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/dotnet/sdk:5.0.100-rc.2 AS development
+FROM mcr.microsoft.com/dotnet/sdk:5.0.100 AS development
 ENV \
     DOCKER_ENV=1 \
     CONFIGURATION=Release \

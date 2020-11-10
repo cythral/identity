@@ -1,23 +1,15 @@
-
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
+using Brighid.Identity;
 
-namespace Brighid.Identity
+CreateHostBuilder(args).Build().Run();
+
+static IHostBuilder CreateHostBuilder(string[] args)
 {
-    public static class Program
+    return Host
+    .CreateDefaultBuilder(args)
+    .ConfigureWebHostDefaults(webBuilder =>
     {
-        public static void Main(string[] args)
-        {
-            CreateHostBuilder(args).Build().Run();
-        }
-
-        public static IHostBuilder CreateHostBuilder(string[] args)
-        {
-            return Host.CreateDefaultBuilder(args)
-.ConfigureWebHostDefaults(webBuilder =>
-{
-    webBuilder.UseStartup<Startup>();
-});
-        }
-    }
+        webBuilder.UseStartup<Startup>();
+    });
 }
