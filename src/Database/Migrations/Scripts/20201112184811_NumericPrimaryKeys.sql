@@ -95,10 +95,6 @@ ALTER TABLE `ApplicationRoles` DROP PRIMARY KEY;
 
 ALTER TABLE `ApplicationRoles` DROP INDEX `IX_ApplicationRoles_RoleName`;
 
-ALTER TABLE `ApplicationRoles` DROP COLUMN `ApplicationName`;
-
-ALTER TABLE `ApplicationRoles` DROP COLUMN `RoleName`;
-
 ALTER TABLE `Roles` ADD `Id` bigint unsigned NOT NULL DEFAULT 0;
 
 ALTER TABLE `Applications` ADD `Id` bigint unsigned NOT NULL DEFAULT 0;
@@ -106,6 +102,10 @@ ALTER TABLE `Applications` ADD `Id` bigint unsigned NOT NULL DEFAULT 0;
 ALTER TABLE `ApplicationRoles` ADD `ApplicationId` bigint unsigned NOT NULL DEFAULT 0;
 
 ALTER TABLE `ApplicationRoles` ADD `RoleId` bigint unsigned NOT NULL DEFAULT 0;
+
+ALTER TABLE `ApplicationRoles` DROP COLUMN `ApplicationName`;
+
+ALTER TABLE `ApplicationRoles` DROP COLUMN `RoleName`;
 
 ALTER TABLE `Roles` ADD CONSTRAINT `PK_Roles` PRIMARY KEY (`Id`);
 CALL POMELO_AFTER_ADD_PRIMARY_KEY(NULL, 'Roles', 'Id');

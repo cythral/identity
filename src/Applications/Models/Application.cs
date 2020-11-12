@@ -75,14 +75,8 @@ namespace Brighid.Identity.Applications
         /// <param name="cancellationToken">Cancellation token to use for cancelling the task.</param>
         public virtual async Task Normalize([NotNull] DatabaseContext databaseContext, CancellationToken cancellationToken = default)
         {
-            var givenRoles = ApplicationRoles;
             ApplicationRoles = await NormalizeApplicationRoles(databaseContext, cancellationToken)
-            .SelectAwait(async appRole =>
-            {
-                appRole.Role = await NormalizeRole(databaseContext, appRole.Role, cancellationToken).ConfigureAwait(false);
-                return appRole;
-            })
-            .ToListAsync(cancellationToken)
+            .ToArrayAsync(cancellationToken)
             .ConfigureAwait(false);
         }
 
@@ -102,10 +96,13 @@ namespace Brighid.Identity.Applications
                     continue;
                 }
 
+                var role = new Role { Name = givenRoleName };
+                var normalizedRole = await NormalizeRole(databaseContext, role, cancellationToken).ConfigureAwait(false);
+
                 yield return new ApplicationRole
                 {
                     Application = this,
-                    Role = new Role { Name = givenRoleName }
+                    Role = normalizedRole,
                 };
             }
         }

@@ -72,6 +72,7 @@ namespace Brighid.Identity
                 options.EnableUserinfoEndpoint("/oauth2/userinfo");
                 options.EnableTokenEndpoint("/oauth2/token");
                 options.UseJsonWebTokens();
+                options.DisableHttpsRequirement();
                 options.AllowClientCredentialsFlow();
                 options.RegisterClaims("role");
 
@@ -126,6 +127,7 @@ namespace Brighid.Identity
                     context.Request.Headers["content-type"] = "application/json";
                 }
 
+                context.Request.Scheme = "https";
                 await next.Invoke();
             });
 
