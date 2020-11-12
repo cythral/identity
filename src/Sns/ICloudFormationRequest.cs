@@ -19,8 +19,8 @@ namespace Brighid.Identity.Sns
 
         string PhysicalResourceId { get; }
 
-        T ResourceProperties { get; }
+        T? ResourceProperties { get; }
 
-        T OldResourceProperties { get; }
+        T? OldResourceProperties { get; }
     }
 }

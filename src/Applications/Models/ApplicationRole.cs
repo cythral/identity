@@ -4,14 +4,25 @@ namespace Brighid.Identity.Applications
 {
     public class ApplicationRole
     {
-        public string ApplicationName { get; init; } = "";
+        public ApplicationRole(Application application, string roleName)
+        {
+            Application = application;
+            ApplicationId = application.Id;
+            Role = new Role { Name = roleName };
+        }
 
-        public string RoleName { get; init; } = "";
+        public ApplicationRole()
+        {
+        }
 
-        [ForeignKey("ApplicationName")]
-        public Application Application { get; init; } = new Application();
+        public ulong ApplicationId { get; set; }
 
-        [ForeignKey("RoleName")]
-        public Role Role { get; init; } = new Role();
+        public ulong RoleId { get; set; }
+
+        [ForeignKey("ApplicationId")]
+        public Application Application { get; set; }
+
+        [ForeignKey("RoleId")]
+        public Role Role { get; set; }
     }
 }

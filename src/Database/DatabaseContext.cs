@@ -1,4 +1,3 @@
-
 using Brighid.Identity.Applications;
 using Brighid.Identity.Users;
 
@@ -12,19 +11,34 @@ namespace Brighid.Identity
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
-#pragma warning disable IDE0050
+#pragma warning disable IDE0050, CA1507
+            builder
+            .Entity<Application>()
+            .HasIndex(app => app.Name)
+            .IsUnique();
+
             builder
             .Entity<ApplicationRole>()
-            .HasKey(appRole => new { appRole.ApplicationName, appRole.RoleName });
-#pragma warning restore IDE0050
+            .HasKey(appRole => new { appRole.ApplicationId, appRole.RoleId });
+
+            builder
+            .Entity<Application>()
+            .HasMany<ApplicationRole>("ApplicationRoles")
+            .WithOne(appRole => appRole.Application);
+
+            builder
+            .Entity<Role>()
+            .HasIndex(role => role.Name)
+            .IsUnique();
+#pragma warning restore IDE0050, CA1507
         }
 
-        public DbSet<User> Users { get; init; }
+        public virtual DbSet<User> Users { get; init; }
 
-        public DbSet<Application> Applications { get; init; }
+        public virtual DbSet<Application> Applications { get; init; }
 
-        public DbSet<Role> Roles { get; init; }
+        public virtual DbSet<Role> Roles { get; init; }
 
-        public DbSet<ApplicationRole> ApplicationRoles { get; init; }
+        public virtual DbSet<ApplicationRole> ApplicationRoles { get; init; }
     }
 }

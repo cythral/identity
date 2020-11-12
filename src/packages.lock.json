@@ -131,6 +131,12 @@
           "Microsoft.IdentityModel.Tokens": "6.7.1"
         }
       },
+      "System.Linq.Async": {
+        "type": "Direct",
+        "requested": "[5.0.0, )",
+        "resolved": "5.0.0",
+        "contentHash": "cPtIuuH8TIjVHSi2ewwReWGW1PfChPE0LxPIDlfwVcLuTM9GANFTXiMB7k3aC4sk3f0cQU25LNKzx+jZMxijqw=="
+      },
       "System.Security.Cryptography.Algorithms": {
         "type": "Direct",
         "requested": "[4.3.1, )",

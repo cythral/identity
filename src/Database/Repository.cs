@@ -1,13 +1,15 @@
 using System;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Runtime.Serialization;
+using System.Threading;
 using System.Threading.Tasks;
 
 using Microsoft.EntityFrameworkCore;
 
 namespace Brighid.Identity
 {
-    public abstract class Repository<TEntity, TPrimaryKeyType> : IRepository<TEntity, TPrimaryKeyType> where TEntity : class, new() where TPrimaryKeyType : class
+    public abstract class Repository<TEntity, TPrimaryKeyType> : IRepository<TEntity, TPrimaryKeyType> where TEntity : class where TPrimaryKeyType : notnull
     {
         protected DatabaseContext Context { get; private set; }
         protected DbSet<TEntity> Set { get; private set; }
@@ -38,6 +40,7 @@ namespace Brighid.Identity
 
         public async Task<TEntity> Add(TEntity entity)
         {
+            await Normalize(entity);
             var result = await Set.AddAsync(entity);
 
             try
@@ -81,6 +84,7 @@ namespace Brighid.Identity
 
         public async Task<TEntity> Save(TEntity entity)
         {
+            await Normalize(entity);
             Set.Attach(entity);
             await Context.SaveChangesAsync();
             return entity;
@@ -93,7 +97,7 @@ namespace Brighid.Identity
                 throw new NotSupportedException();
             }
 
-            var entity = new TEntity();
+            var entity = (TEntity)FormatterServices.GetUninitializedObject(typeof(TEntity));
             SetPrimaryKey(entity, primaryKey);
 
             Set.Attach(entity);
@@ -103,17 +107,12 @@ namespace Brighid.Identity
             return entity;
         }
 
-        public TEntity Track(TPrimaryKeyType primaryKey)
+        public async Task Normalize(TEntity entity, CancellationToken cancellationToken = default)
         {
-            if (SetPrimaryKey == null)
+            if (entity is INormalizeable<DatabaseContext> normalizeable)
             {
-                throw new NotSupportedException();
+                await normalizeable.Normalize(Context, cancellationToken);
             }
-
-            var entity = new TEntity();
-            SetPrimaryKey(entity, primaryKey);
-            Set.Attach(entity);
-            return entity;
         }
     }
 }

@@ -20,7 +20,5 @@ namespace Brighid.Identity
         Task<TEntity> Save(TEntity entity);
 
         Task<TEntity> Remove(TPrimaryKeyType primaryKey);
-
-        TEntity Track(TPrimaryKeyType primaryKey);
     }
 }

@@ -6,11 +6,16 @@ namespace Brighid.Identity.Applications
     public class Role
     {
         /// <summary>
+        /// Gets the ID number for this role.
+        /// </summary>
+        /// <value>A unique id number.</value>
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public ulong Id { get; init; }
+
+        /// <summary>
         /// Gets the name of the role.
         /// </summary>
         /// <value>The name of the role.</value>
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public string Name { get; init; } = "";
 
         /// <summary>

@@ -237,6 +237,45 @@ namespace Brighid.Identity.Applications
         }
 
         [Test, Auto]
+        public async Task HandleSns_ThrowsIfResourcePropertiesAreNull(
+            string stackId,
+            string requestId,
+            string logicalResourceId,
+            string physicalResourceId,
+            Uri responseUrl,
+            [Target] ApplicationController appController
+        )
+        {
+            using var httpContext = new HttpTest();
+            httpContext.RespondWith("OK", 200);
+
+            var request = new CloudFormationRequest<Application>
+            {
+                ResponseURL = responseUrl,
+                StackId = stackId,
+                RequestId = requestId,
+                LogicalResourceId = logicalResourceId,
+                PhysicalResourceId = physicalResourceId,
+                RequestType = CloudFormationRequestType.Create,
+            };
+
+            Func<Task> func = async () => await appController.HandleSns(new SnsMessage<CloudFormationRequest<Application>>
+            {
+                Message = request,
+            });
+
+            await func.Should().NotThrowAsync();
+            httpContext.ShouldHaveCalled(responseUrl.ToString())
+                .WithVerb(HttpMethod.Put)
+                .WithContentType("application/json")
+                .WithRequestJson(new CloudFormationResponse(request)
+                {
+                    Status = CloudFormationResponseStatus.FAILED,
+                    Reason = "Application properties must be specified.",
+                });
+        }
+
+        [Test, Auto]
         public async Task HandleSns_CatchesExceptionsAndResponds(
             string stackId,
             string requestId,
@@ -244,6 +283,7 @@ namespace Brighid.Identity.Applications
             string physicalResourceId,
             string errorMessage,
             Uri responseUrl,
+            Application application,
             [Frozen] IApplicationService appService,
             [Target] ApplicationController appController
         )
@@ -261,6 +301,7 @@ namespace Brighid.Identity.Applications
                 LogicalResourceId = logicalResourceId,
                 PhysicalResourceId = physicalResourceId,
                 RequestType = CloudFormationRequestType.Create,
+                ResourceProperties = application,
             };
 
             Func<Task> func = async () => await appController.HandleSns(new SnsMessage<CloudFormationRequest<Application>>

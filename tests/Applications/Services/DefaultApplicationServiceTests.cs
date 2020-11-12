@@ -108,7 +108,7 @@ namespace Brighid.Identity.Applications
         {
             await applicationService.Delete(application);
 
-            await applicationRepository.Received().Remove(application.Name);
+            await applicationRepository.Received().Remove(application.Id);
         }
 
         [Test, Auto]

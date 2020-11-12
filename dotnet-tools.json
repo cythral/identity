@@ -5,7 +5,13 @@
     "dotnet-format": {
       "version": "5.0.142002",
       "commands": [
-          "dotnet-format"
+        "dotnet-format"
+      ]
+    },
+    "dotnet-ef": {
+      "version": "5.0.0",
+      "commands": [
+        "dotnet-ef"
       ]
     }
   }

@@ -59,7 +59,7 @@ namespace Brighid.Identity.Applications
 
         public async Task<OpenIddictApplicationDescriptor> Delete(Application application)
         {
-            await appRepository.Remove(application.Name);
+            await appRepository.Remove(application.Id);
 
             var client = await appManager.FindByClientIdAsync($"{application.Name}@identity.brigh.id");
             await appManager.DeleteAsync(client);

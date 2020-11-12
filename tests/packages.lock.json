@@ -1320,6 +1320,11 @@
           "System.Runtime.Extensions": "4.3.0"
         }
       },
+      "System.Linq.Async": {
+        "type": "Transitive",
+        "resolved": "5.0.0",
+        "contentHash": "cPtIuuH8TIjVHSi2ewwReWGW1PfChPE0LxPIDlfwVcLuTM9GANFTXiMB7k3aC4sk3f0cQU25LNKzx+jZMxijqw=="
+      },
       "System.Linq.Expressions": {
         "type": "Transitive",
         "resolved": "4.3.0",
@@ -1776,6 +1781,7 @@
           "OpenIddict.EntityFrameworkCore": "2.0.1",
           "Pomelo.EntityFrameworkCore.MySql": "3.1.2",
           "System.IdentityModel.Tokens.Jwt": "6.7.1",
+          "System.Linq.Async": "5.0.0",
           "System.Security.Cryptography.Algorithms": "4.3.1",
           "System.Security.Cryptography.OpenSsl": "4.7.0"
         }

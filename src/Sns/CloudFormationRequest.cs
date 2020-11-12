@@ -2,7 +2,7 @@ using System;
 
 namespace Brighid.Identity.Sns
 {
-    public class CloudFormationRequest<T> : ICloudFormationRequest<T> where T : new()
+    public class CloudFormationRequest<T> : ICloudFormationRequest<T>
     {
 
         public CloudFormationRequestType RequestType { get; init; }
@@ -19,8 +19,8 @@ namespace Brighid.Identity.Sns
 
         public string PhysicalResourceId { get; init; }
 
-        public T ResourceProperties { get; init; } = new T();
+        public T? ResourceProperties { get; init; }
 
-        public T OldResourceProperties { get; init; } = new T();
+        public T? OldResourceProperties { get; init; }
     }
 }

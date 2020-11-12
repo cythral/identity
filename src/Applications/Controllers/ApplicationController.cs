@@ -38,6 +38,8 @@ namespace Brighid.Identity.Applications
         [HttpHeader("x-amz-sns-message-type", "Notification")]
         public async Task<ActionResult> HandleSns([FromBody] SnsMessage<CloudFormationRequest<Application>> request)
         {
+            logger.LogInformation($"Received request: {JsonSerializer.Serialize(request)}");
+
             if (request?.Message == null)
             {
                 throw new Exception("Expected message.");
@@ -45,13 +47,17 @@ namespace Brighid.Identity.Applications
 
             try
             {
-                logger.LogInformation($"Received request: {JsonSerializer.Serialize(request)}");
                 var application = request.Message.ResourceProperties;
                 var oldApplication = request.Message.OldResourceProperties;
-                var oldName = oldApplication.Name;
-                var newName = application.Name;
+                var oldName = oldApplication?.Name;
+                var newName = application?.Name;
                 var physicalResourceId = request.Message.PhysicalResourceId ?? newName;
                 var requestType = request.Message.RequestType;
+
+                if (application == null)
+                {
+                    throw new InvalidOperationException("Application properties must be specified.");
+                }
 
                 if (requestType == Update && oldName != newName)
                 {
