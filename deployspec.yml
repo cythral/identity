@@ -1,0 +1,21 @@
+version: 0.2
+env:
+  variables:
+    DOTNET_NOLOGO: true
+    CONFIGURATION: Release
+    
+phases:
+  install:
+    runtime-versions:
+      docker: 19
+    commands:
+      - dotnet-install.sh --jsonfile global.json
+      
+  build:
+    commands:
+      - |
+        set -eo pipefail
+        export ENCRYPTED_NUGET_TOKEN=$(cat cicd.secrets.json | jq -r '.NugetToken');
+        export NUGET_TOKEN=$(./scripts/decrypt.sh ${ENCRYPTED_NUGET_TOKEN});
+
+      - dotnet nuget push ${CODEBUILD_SRC_DIR_PACKAGES}/*.nupkg -k ${NUGET_TOKEN}

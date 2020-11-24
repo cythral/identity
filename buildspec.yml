@@ -2,6 +2,7 @@ version: 0.2
 env:
   variables:
     DOTNET_NOLOGO: true
+    CONFIGURATION: Release
     
 phases:
   install:
@@ -35,3 +36,4 @@ artifacts:
   files:
     - "deploy/identity.template.yml"
     - "identity.*.config.json"
+    - "bin/Packages/"
