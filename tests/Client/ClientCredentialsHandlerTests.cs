@@ -39,9 +39,9 @@ namespace Brighid.Identity.Client
             Token token,
             HttpRequestMessage requestMessage,
             [NotNull, Substitute, Frozen] TokenCache tokenCache,
-            [NotNull, Substitute, Frozen] BrighidClientCredentials clientCredentials,
+            [NotNull, Substitute, Frozen] IClientCredentials clientCredentials,
             [NotNull, Substitute, Frozen] IdentityServerClient identityServerClient,
-            [NotNull, Target] ClientCredentialsHandler handler
+            [NotNull, Target] ClientCredentialsHandler<IClientCredentials> handler
         )
         {
             var cancellationToken = new CancellationToken(false);
@@ -71,9 +71,9 @@ namespace Brighid.Identity.Client
             Token token,
             HttpRequestMessage requestMessage,
             [Substitute, Frozen] TokenCache tokenCache,
-            [Substitute, Frozen] BrighidClientCredentials clientCredentials,
+            [Substitute, Frozen] IClientCredentials clientCredentials,
             [Substitute, Frozen] IdentityServerClient identityServerClient,
-            [NotNull, Target] ClientCredentialsHandler handler
+            [NotNull, Target] ClientCredentialsHandler<IClientCredentials> handler
         )
         {
             var cancellationToken = new CancellationToken(false);
@@ -103,7 +103,7 @@ namespace Brighid.Identity.Client
             Token token,
             HttpRequestMessage requestMessage,
             [NotNull, Substitute, Frozen] TokenCache tokenCache,
-            [NotNull, Target] ClientCredentialsHandler handler
+            [NotNull, Target] ClientCredentialsHandler<IClientCredentials> handler
         )
         {
             var cancellationToken = new CancellationToken(false);
