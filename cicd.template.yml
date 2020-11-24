@@ -191,9 +191,8 @@ Resources:
         NamespaceType: BUILD_ID
         Packaging: ZIP
       Source:
-        Type: GITHUB
-        Location: !Sub https://github.com/${GithubOwner}/${GithubRepo}.git
-        ReportBuildStatus: true
+        Type: S3
+        Location: !Sub s3://${ArtifactStore}/0/0.zip
         BuildSpec: deployspec.yml
 
   SupersessionQueue:

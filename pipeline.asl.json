@@ -61,16 +61,9 @@
       "Resource": "arn:aws:states:::codebuild:startBuild.sync",
       "Parameters": {
         "ProjectName": "${NugetDeployProject}",
-        "SourceVersion.$": "$.head_commit_id",
-        "SecondarySources": [
-          {
-            "SourceIdentifier": "PACKAGES",
-            "Type": "S3",
-            "Location.$": "$.BuildOutput.Build.Artifacts.Location"
-          }
-        ]
+        "SourceLocation.$": "$.BuildOutput.Build.Artifacts.Location"
       },
-      "ResultPath": "$.BuildOutput",
+      "ResultPath": null,
       "Next": "Start Dev Database"
     },
     "Start Dev Database": {
