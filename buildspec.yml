@@ -36,4 +36,4 @@ artifacts:
   files:
     - "deploy/identity.template.yml"
     - "identity.*.config.json"
-    - "bin/Packages/"
+    - "bin/Packages/Release/*"
