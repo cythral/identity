@@ -11,4 +11,4 @@ decrypt() {
 
 export Database__Password=$(decrypt ${Encrypted__Database__Password})
 
-dotnet /app/Identity.dll
+dotnet /app/Server.dll

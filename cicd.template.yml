@@ -165,6 +165,37 @@ Resources:
         Location: !Sub https://github.com/${GithubOwner}/${GithubRepo}.git
         ReportBuildStatus: true
 
+  NugetDeployProject:
+    Type: AWS::CodeBuild::Project
+    Properties:
+      Name: !Sub ${AWS::StackName}-nuget-deploy
+      BadgeEnabled: true
+      ServiceRole: !ImportValue cfn-utilities:BuilderRoleArn
+      EncryptionKey: !ImportValue cfn-utilities:ArtifactKeyArn
+      Environment:
+        PrivilegedMode: true
+        Image: aws/codebuild/standard:4.0
+        ComputeType: BUILD_GENERAL1_SMALL
+        EnvironmentVariables:
+          - Name: ARTIFACT_STORE
+            Value: !Ref ArtifactStore
+        Type: LINUX_CONTAINER
+      Cache:
+        Type: LOCAL
+        Modes:
+          - LOCAL_DOCKER_LAYER_CACHE
+      Artifacts:
+        Type: S3
+        Location: !Ref ArtifactStore
+        Name: buildResults.zip
+        NamespaceType: BUILD_ID
+        Packaging: ZIP
+      Source:
+        Type: GITHUB
+        Location: !Sub https://github.com/${GithubOwner}/${GithubRepo}.git
+        ReportBuildStatus: true
+        BuildSpec: deployspec.yml
+
   SupersessionQueue:
     Type: AWS::SQS::Queue
     Properties:
@@ -205,6 +236,7 @@ Resources:
         GithubOwner: !Ref GithubOwner
         ArtifactStore: !Ref ArtifactStore
         BuildProject: !Ref BuildProject
+        NugetDeployProject: !Ref NugetDeployProject
         DeploymentQueue: !Ref DeploymentQueue
         SupersessionQueue: !Ref SupersessionQueue
         DevRoleArn: !ImportValue cfn-metadata:DevAgentRoleArn

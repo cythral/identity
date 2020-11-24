@@ -2,6 +2,7 @@ version: 0.2
 env:
   variables:
     DOTNET_NOLOGO: true
+    CONFIGURATION: Release
     
 phases:
   install:
@@ -14,7 +15,7 @@ phases:
       
   pre_build:
     commands:
-      - $(aws ecr get-login --no-include-email)
+      - aws ecr get-login-password | docker login --username AWS --password-stdin $REPOSITORY_URI
       - dotnet --info
 
   build:
@@ -35,3 +36,4 @@ artifacts:
   files:
     - "deploy/identity.template.yml"
     - "identity.*.config.json"
+    - "bin/Packages/Release/*"
