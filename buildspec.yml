@@ -10,6 +10,7 @@ phases:
       docker: 19
 
     commands:
+      - ./scripts/codebuild-extras.sh
       - dotnet-install.sh --jsonfile global.json
       - pip install cfn-lint
       
