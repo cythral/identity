@@ -169,6 +169,7 @@ Resources:
     Type: AWS::CodeBuild::Project
     Properties:
       Name: !Sub ${AWS::StackName}-nuget-deploy
+      BadgeEnabled: true
       ServiceRole: !ImportValue cfn-utilities:BuilderRoleArn
       EncryptionKey: !ImportValue cfn-utilities:ArtifactKeyArn
       Environment:
@@ -184,9 +185,12 @@ Resources:
         Modes:
           - LOCAL_DOCKER_LAYER_CACHE
       Artifacts:
-        Type: CODEPIPELINE
+        Type: NO_ARTIFACTS
       Source:
-        Type: CODEPIPELINE
+        Type: GITHUB
+        Location: !Sub https://github.com/${GithubOwner}/${GithubRepo}.git
+        ReportBuildStatus: true
+        BuildSpec: deployspec.yml
 
   SupersessionQueue:
     Type: AWS::SQS::Queue

@@ -37,6 +37,3 @@ artifacts:
     - "deploy/identity.template.yml"
     - "identity.*.config.json"
     - "bin/Packages/Release/*"
-    - "deployspec.yml"
-    - "global.json"
-    - "cicd.secrets.json"
