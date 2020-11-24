@@ -142,7 +142,7 @@ Resources:
       EncryptionKey: !ImportValue cfn-utilities:ArtifactKeyArn
       Environment:
         PrivilegedMode: true
-        Image: aws/codebuild/amazonlinux2-x86_64-standard:3.0
+        Image: aws/codebuild/standard:4.0
         ComputeType: BUILD_GENERAL1_SMALL
         EnvironmentVariables:
           - Name: ARTIFACT_STORE
@@ -174,7 +174,7 @@ Resources:
       EncryptionKey: !ImportValue cfn-utilities:ArtifactKeyArn
       Environment:
         PrivilegedMode: true
-        Image: aws/codebuild/amazonlinux2-x86_64-standard:3.0
+        Image: aws/codebuild/standard:4.0
         ComputeType: BUILD_GENERAL1_SMALL
         EnvironmentVariables:
           - Name: ARTIFACT_STORE
