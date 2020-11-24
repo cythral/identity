@@ -142,6 +142,24 @@ Resources:
       Protocol: https
       TopicArn: !Ref ApplicationTopic
       Endpoint: !Sub https://${DomainName}/api/applications
+  
+  ApplicationTopicPolicy:
+    Type: AWS::SNS::TopicPolicy
+    Properties:
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Action: sns:Publish
+            Resource: "*"
+            Principal:
+              AWS:
+                - !Sub arn:aws:iam::${AWS::AccountId}:root
+                - !Sub 
+                  - arn:aws:iam::${MasterAccountId}:root
+                  - MasterAccountId: !ImportValue cfn-utilities:MasterAccountId
+      Topics:
+        - !Ref ApplicationTopic
 
   TaskRole:
     Type: AWS::IAM::Role
