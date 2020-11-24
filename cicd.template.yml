@@ -185,13 +185,9 @@ Resources:
         Modes:
           - LOCAL_DOCKER_LAYER_CACHE
       Artifacts:
-        Type: S3
-        Location: !Ref ArtifactStore
-        Name: buildResults.zip
-        NamespaceType: BUILD_ID
-        Packaging: ZIP
+        Type: NO_ARTIFACTS
       Source:
-        Type: NO_SOURCE
+        Type: CODEPIPELINE
 
   SupersessionQueue:
     Type: AWS::SQS::Queue
