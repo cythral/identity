@@ -5,6 +5,7 @@ using AspNet.Security.OpenIdConnect.Primitives;
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
+
 public delegate string GenerateRandomString(int length);
 public delegate OpenIdConnectRequest GetOpenIdConnectRequest(Controller controller);
 
