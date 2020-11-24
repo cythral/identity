@@ -63,7 +63,8 @@
         "ProjectName": "${NugetDeployProject}",
         "SourceType": "S3",
         "SourceLocation.$": "$.BuildOutput.Build.Artifacts.Location",
-        "BuildSpec": "deployspec.yml"
+        "BuildSpec": "deployspec.yml",
+        "ArtifactsType": "NO_ARTIFACTS"
       },
       "ResultPath": null,
       "Next": "Start Dev Database"
