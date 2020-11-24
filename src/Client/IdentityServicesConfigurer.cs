@@ -44,12 +44,7 @@ namespace Brighid.Identity.Client
             .AddHttpMessageHandler<ClientCredentialsHandler<TCredentials>>();
         }
 
-        private IConfiguration Configuration => (IConfiguration)
-            (
-                from service in services
-                where service.ServiceType == typeof(IConfiguration)
-                select service.ImplementationInstance
-            )
-            .First();
+        private IConfiguration Configuration =>
+            services.BuildServiceProvider().GetRequiredService<IConfiguration>();
     }
 }
