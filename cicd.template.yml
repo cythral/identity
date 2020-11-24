@@ -191,9 +191,7 @@ Resources:
         NamespaceType: BUILD_ID
         Packaging: ZIP
       Source:
-        Type: S3
-        Location: !Sub s3://${ArtifactStore}/0/0.zip
-        BuildSpec: deployspec.yml
+        Type: NO_SOURCE
 
   SupersessionQueue:
     Type: AWS::SQS::Queue

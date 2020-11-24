@@ -61,7 +61,9 @@
       "Resource": "arn:aws:states:::codebuild:startBuild.sync",
       "Parameters": {
         "ProjectName": "${NugetDeployProject}",
-        "SourceLocation.$": "$.BuildOutput.Build.Artifacts.Location"
+        "SourceType": "S3",
+        "SourceLocation.$": "$.BuildOutput.Build.Artifacts.Location",
+        "BuildSpec": "deployspec.yml"
       },
       "ResultPath": null,
       "Next": "Start Dev Database"
