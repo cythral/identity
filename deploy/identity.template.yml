@@ -150,6 +150,7 @@ Resources:
         - arn:aws:iam::aws:policy/CloudWatchLogsFullAccess
         - arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerServiceforEC2Role
         - !ImportValue cfn-utilities:SecretsKeyDecryptPolicyArn
+        - !ImportValue cfn-utilities:SecretsKeyEncryptPolicyArn
       AssumeRolePolicyDocument:
         Version: 2012-10-17
         Statement:
