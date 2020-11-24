@@ -6,7 +6,7 @@
       "Resource": "arn:aws:states:::codebuild:startBuild.sync",
       "Parameters": {
         "ProjectName": "${BuildProject}",
-        "SourceVersion.$": "States.Format('{}^\{{}\}', $.ref, $.head_commit_id)"
+        "SourceVersion.$": "States.Format('{}^{{{}}}', $.ref, $.head_commit_id)"
       },
       "ResultPath": "$.BuildOutput",
       "Next": "On Default Branch?"
