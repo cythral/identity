@@ -9,7 +9,8 @@ namespace Microsoft.Extensions.DependencyInjection
     public static class ServiceCollectionExtensions
     {
         public static void UseBrighidIdentity<TServiceType, TImplementation>(this IServiceCollection serviceCollection, string baseAddress)
-            where TClass : class
+            where TServiceType : class
+            where TImplementation : class, TServiceType
         {
             serviceCollection.TryAddSingleton<TokenCache>();
             serviceCollection.TryAddScoped<IdentityServerClient>();
@@ -17,9 +18,9 @@ namespace Microsoft.Extensions.DependencyInjection
 
             serviceCollection
             .AddHttpClient<IdentityServerClient>(options => options.BaseAddress = new Uri("https://identity.brigh.id/"));
-            
+
             serviceCollection
-            .AddHttpClient<TServiceType, TImplementation>(options => options.BaseAddress = new Uri(baseAddress))
+            .AddHttpClient<TServiceType, TImplementation>(typeof(TImplementation).FullName, options => options.BaseAddress = new Uri(baseAddress))
             .AddHttpMessageHandler<ClientCredentialsHandler>();
         }
     }
