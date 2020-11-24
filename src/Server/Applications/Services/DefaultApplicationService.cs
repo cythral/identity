@@ -11,21 +11,24 @@ namespace Brighid.Identity.Applications
         private readonly OpenIddictApplicationManager<OpenIddictApplication> appManager;
         private readonly IApplicationRepository appRepository;
         private readonly GenerateRandomString generateRandomString;
+        private readonly IEncryptionService encryptionService;
 
         public DefaultApplicationService(
            IApplicationRepository appRepository,
            OpenIddictApplicationManager<OpenIddictApplication> appManager,
-           GenerateRandomString generateRandomString
+           GenerateRandomString generateRandomString,
+           IEncryptionService encryptionService
        )
         {
             this.appRepository = appRepository;
             this.appManager = appManager;
             this.generateRandomString = generateRandomString;
+            this.encryptionService = encryptionService;
         }
 
-        public async Task<OpenIddictApplicationDescriptor> Create(Application application)
+        public async Task<ApplicationCredentials> Create(Application application)
         {
-            await appRepository.Add(application);
+            await appRepository.Add(application).ConfigureAwait(false);
             var descriptor = new OpenIddictApplicationDescriptor
             {
                 ClientId = $"{application.Name}@identity.brigh.id",
@@ -38,36 +41,42 @@ namespace Brighid.Identity.Applications
                 }
             };
 
-            await appManager.CreateAsync(descriptor);
-            return descriptor;
+            await appManager.CreateAsync(descriptor).ConfigureAwait(false);
+
+            var clientId = descriptor.ClientId;
+            var clientSecret = await encryptionService.Encrypt(descriptor.ClientSecret).ConfigureAwait(false);
+
+            return new ApplicationCredentials(clientId, clientSecret);
         }
 
-        public async Task<OpenIddictApplicationDescriptor> Update(Application application)
+        public async Task<ApplicationCredentials> Update(Application application)
         {
-            await appRepository.Save(application);
-            var client = await appManager.FindByClientIdAsync($"{application.Name}@identity.brigh.id");
+            await appRepository.Save(application).ConfigureAwait(false);
+            var client = await appManager.FindByClientIdAsync($"{application.Name}@identity.brigh.id").ConfigureAwait(false);
             var descriptor = new OpenIddictApplicationDescriptor
             {
                 ClientId = client.ClientId,
-                ClientSecret = generateRandomString(128)
+                ClientSecret = generateRandomString(128),
             };
 
             client.ClientSecret = descriptor.ClientSecret;
-            await appManager.UpdateAsync(client);
-            return descriptor;
+            await appManager.UpdateAsync(client).ConfigureAwait(false);
+
+            var clientId = descriptor.ClientId;
+            var clientSecret = await encryptionService.Encrypt(descriptor.ClientSecret).ConfigureAwait(false);
+
+            return new ApplicationCredentials(clientId, clientSecret);
         }
 
-        public async Task<OpenIddictApplicationDescriptor> Delete(Application application)
+        public async Task<ApplicationCredentials> Delete(Application application)
         {
-            await appRepository.Remove(application.Id);
+            await appRepository.Remove(application.Id).ConfigureAwait(false);
 
-            var client = await appManager.FindByClientIdAsync($"{application.Name}@identity.brigh.id");
-            await appManager.DeleteAsync(client);
+            var client = await appManager.FindByClientIdAsync($"{application.Name}@identity.brigh.id").ConfigureAwait(false);
+            await appManager.DeleteAsync(client).ConfigureAwait(false);
 
-            return new OpenIddictApplicationDescriptor
-            {
-                ClientId = client.ClientId
-            };
+
+            return new ApplicationCredentials(client.ClientId, "");
         }
     }
 }

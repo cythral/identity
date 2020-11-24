@@ -127,6 +127,9 @@ Resources:
               Value: !Ref DatabaseUser
             - Name: Encrypted__Database__Password
               Value: !Ref DatabasePassword
+            - Name: EncryptionOptions__KmsKeyId
+              Value: alias/SecretsKey
+
 
   ApplicationTopic:
     Type: AWS::SNS::Topic

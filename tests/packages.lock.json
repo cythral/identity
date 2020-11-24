@@ -162,6 +162,19 @@
           "System.ComponentModel.Annotations": "4.3.0"
         }
       },
+      "AWSSDK.Core": {
+        "type": "Transitive",
+        "resolved": "3.5.1.41",
+        "contentHash": "l+XvNGhWIeIIht4T+hmuif1IJ2ChNjwUu0YIeDUjCtW2vm0GT3k8o3W5/vBl9cwS7S4PBly1Mo9vrOaG7AIrXw=="
+      },
+      "AWSSDK.KeyManagementService": {
+        "type": "Transitive",
+        "resolved": "3.5.0.41",
+        "contentHash": "2bp0KqzvCNJsmoUZtwf0Ae0TyZWLKQi3WVqEQd17H49lUejGxK46IVcqtMmJSHqZzmORTQNeX7oZaldO1cW8Vw==",
+        "dependencies": {
+          "AWSSDK.Core": "[3.5.1.41, 3.6.0)"
+        }
+      },
       "Castle.Core": {
         "type": "Transitive",
         "resolved": "4.4.0",
@@ -1810,6 +1823,7 @@
       "server": {
         "type": "Project",
         "dependencies": {
+          "AWSSDK.KeyManagementService": "3.5.0.41",
           "AspNetCore.ServiceRegistration.Dynamic": "1.2.0",
           "Flurl": "3.0.0",
           "Flurl.Http": "3.0.0",

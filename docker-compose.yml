@@ -9,11 +9,14 @@ services:
       - "80:80"
     volumes:
       - ./:/app
+      - ~/.aws:/root/.aws
     environment:
       Database__Host: db
       Database__Name: ${DB_NAME}
       Database__User: ${DB_USER}
       Database__Password: ${DB_PASSWORD}
+      EncryptionOptions__KmsKeyId: ${ENCRYPTION_KEY_ID}
+      AWS_REGION: us-east-1
 
   db:
     image: mariadb/server:10.4

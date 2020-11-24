@@ -16,8 +16,6 @@ using NSubstitute;
 
 using NUnit.Framework;
 
-using OpenIddict.Abstractions;
-
 using static NSubstitute.Arg;
 
 namespace Brighid.Identity.Applications
@@ -30,7 +28,7 @@ namespace Brighid.Identity.Applications
             string requestId,
             string logicalResourceId,
             Uri responseUrl,
-            OpenIddictApplicationDescriptor clientApp,
+            ApplicationCredentials creds,
             Application application,
             [Frozen] IApplicationService appService,
             [Target] ApplicationController appController
@@ -38,7 +36,7 @@ namespace Brighid.Identity.Applications
         {
             using var httpContext = new HttpTest();
             httpContext.RespondWith("OK", 200);
-            appService.Create(Any<Application>()).Returns(clientApp);
+            appService.Create(Any<Application>()).Returns(creds);
             var request = new CloudFormationRequest<Application>
             {
                 ResponseURL = responseUrl,
@@ -64,7 +62,7 @@ namespace Brighid.Identity.Applications
             .WithRequestJson(new CloudFormationResponse(request, application.Name)
             {
                 Status = CloudFormationResponseStatus.SUCCESS,
-                Data = clientApp,
+                Data = creds,
             });
         }
 
@@ -76,14 +74,14 @@ namespace Brighid.Identity.Applications
             string physicalResourceId,
             string name,
             Uri responseUrl,
-            OpenIddictApplicationDescriptor clientApp,
+            ApplicationCredentials creds,
             [Frozen] IApplicationService appService,
             [Target] ApplicationController appController
         )
         {
             using var httpContext = new HttpTest();
             httpContext.RespondWith("OK", 200);
-            appService.Update(Any<Application>()).Returns(clientApp);
+            appService.Update(Any<Application>()).Returns(creds);
 
             var oldApplication = new Application { Name = name, Serial = 1 };
             var newApplication = new Application { Name = name, Serial = 2 };
@@ -114,7 +112,7 @@ namespace Brighid.Identity.Applications
             .WithRequestJson(new CloudFormationResponse(request, physicalResourceId)
             {
                 Status = CloudFormationResponseStatus.SUCCESS,
-                Data = clientApp,
+                Data = creds,
             });
         }
 
@@ -128,14 +126,14 @@ namespace Brighid.Identity.Applications
             string oldName,
             string newName,
             Uri responseUrl,
-            OpenIddictApplicationDescriptor clientApp,
+            ApplicationCredentials creds,
             [Frozen] IApplicationService appService,
             [Target] ApplicationController appController
         )
         {
             using var httpContext = new HttpTest();
             httpContext.RespondWith("OK", 200);
-            appService.Create(Any<Application>()).Returns(clientApp);
+            appService.Create(Any<Application>()).Returns(creds);
 
             var oldApplication = new Application { Name = oldName };
             var newApplication = new Application { Name = newName };
@@ -166,7 +164,7 @@ namespace Brighid.Identity.Applications
             .WithRequestJson(new CloudFormationResponse(request, newName)
             {
                 Status = CloudFormationResponseStatus.SUCCESS,
-                Data = clientApp,
+                Data = creds,
             });
         }
 
@@ -176,7 +174,7 @@ namespace Brighid.Identity.Applications
             string requestId,
             string logicalResourceId,
             Uri responseUrl,
-            OpenIddictApplicationDescriptor clientApp,
+            ApplicationCredentials creds,
             Application application,
             [Frozen] IApplicationService appService,
             [Target] ApplicationController appController
@@ -184,7 +182,7 @@ namespace Brighid.Identity.Applications
         {
             using var httpContext = new HttpTest();
             httpContext.RespondWith("OK", 200);
-            appService.Delete(Any<Application>()).Returns(clientApp);
+            appService.Delete(Any<Application>()).Returns(creds);
 
             var request = new CloudFormationRequest<Application>
             {
@@ -211,7 +209,7 @@ namespace Brighid.Identity.Applications
             .WithRequestJson(new CloudFormationResponse(request, application.Name)
             {
                 Status = CloudFormationResponseStatus.SUCCESS,
-                Data = clientApp,
+                Data = creds,
             });
         }
 
@@ -291,7 +289,7 @@ namespace Brighid.Identity.Applications
             using var httpContext = new HttpTest();
             httpContext.RespondWith("OK", 200);
 
-            appService.Create(Any<Application>()).Returns<OpenIddictApplicationDescriptor>(x => throw new Exception(errorMessage));
+            appService.Create(Any<Application>()).Returns<ApplicationCredentials>(x => throw new Exception(errorMessage));
 
             var request = new CloudFormationRequest<Application>
             {

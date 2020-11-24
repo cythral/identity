@@ -6,6 +6,9 @@ using System.Security.Cryptography.X509Certificates;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
+using Amazon.KeyManagementService;
+using Amazon.Runtime;
+
 using AspNet.Security.OpenIdConnect.Primitives;
 
 using AspNetCore.ServiceRegistration.Dynamic.Attributes;
@@ -46,6 +49,8 @@ namespace Brighid.Identity
                 options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
             });
 
+            services.Configure<EncryptionOptions>(Configuration.GetSection("EncryptionOptions"));
+            services.AddScoped<IAmazonKeyManagementService, AmazonKeyManagementServiceClient>();
             services.AddServicesOfType<IScopedService>();
             services.AddServicesWithAttributeOfType<ScopedServiceAttribute>();
             services.AddDbContextPool<DatabaseContext>(ConfigureDatabaseOptions);

@@ -11,6 +11,15 @@
           "Microsoft.Extensions.DependencyInjection.Abstractions": "2.0.0"
         }
       },
+      "AWSSDK.KeyManagementService": {
+        "type": "Direct",
+        "requested": "[3.5.0.41, )",
+        "resolved": "3.5.0.41",
+        "contentHash": "2bp0KqzvCNJsmoUZtwf0Ae0TyZWLKQi3WVqEQd17H49lUejGxK46IVcqtMmJSHqZzmORTQNeX7oZaldO1cW8Vw==",
+        "dependencies": {
+          "AWSSDK.Core": "[3.5.1.41, 3.6.0)"
+        }
+      },
       "Flurl": {
         "type": "Direct",
         "requested": "[3.0.0, )",
@@ -202,6 +211,11 @@
           "Microsoft.AspNetCore.Hosting.Abstractions": "2.0.0",
           "Microsoft.IdentityModel.Protocols.OpenIdConnect": "5.2.1"
         }
+      },
+      "AWSSDK.Core": {
+        "type": "Transitive",
+        "resolved": "3.5.1.41",
+        "contentHash": "l+XvNGhWIeIIht4T+hmuif1IJ2ChNjwUu0YIeDUjCtW2vm0GT3k8o3W5/vBl9cwS7S4PBly1Mo9vrOaG7AIrXw=="
       },
       "CryptoHelper": {
         "type": "Transitive",

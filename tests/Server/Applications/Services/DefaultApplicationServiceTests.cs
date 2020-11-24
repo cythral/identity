@@ -1,3 +1,4 @@
+using System.Threading;
 using System.Threading.Tasks;
 
 using AutoFixture.AutoNSubstitute;
@@ -35,19 +36,21 @@ namespace Brighid.Identity.Applications
         public async Task Create_ShouldCreateAnOpenIdDictApplication(
             string clientSecret,
             OpenIddictApplication clientApp,
-            [Frozen, Substitute] GenerateRandomString generateRandomString,
             Application application,
+            [Frozen, Substitute] GenerateRandomString generateRandomString,
+            [Frozen] IEncryptionService encryptionService,
             [Frozen, Substitute] OpenIddictApplicationManager<OpenIddictApplication> appManager,
             [Target] DefaultApplicationService applicationService
         )
         {
+            encryptionService.Encrypt(Any<string>()).Returns(x => $"encrypted {x.ArgAt<string>(0)}");
             generateRandomString(Any<int>()).Returns(clientSecret);
             appManager.CreateAsync(Any<OpenIddictApplicationDescriptor>()).Returns(clientApp);
 
             var result = await applicationService.Create(application);
 
             result.ClientId.Should().Be(application.Name + "@identity.brigh.id");
-            result.ClientSecret.Should().Be(clientSecret);
+            result.ClientSecret.Should().Be($"encrypted {clientSecret}");
 
             await appManager.Received().CreateAsync(Is<OpenIddictApplicationDescriptor>(req =>
                 req.ClientId == application.Name + "@identity.brigh.id" &&
@@ -77,18 +80,20 @@ namespace Brighid.Identity.Applications
             string clientSecret,
             Application application,
             [Frozen, Substitute] GenerateRandomString generateRandomString,
+            [Frozen] IEncryptionService encryptionService,
             [Frozen, Substitute] OpenIddictApplicationManager<OpenIddictApplication> applicationManager,
             [Target] DefaultApplicationService applicationService
         )
         {
             var client = new OpenIddictApplication { ClientId = clientId };
+            encryptionService.Encrypt(Any<string>()).Returns(x => $"encrypted {x.ArgAt<string>(0)}");
             generateRandomString(Any<int>()).Returns(clientSecret);
             applicationManager.FindByClientIdAsync(Any<string>()).Returns(client);
 
             var result = await applicationService.Update(application);
 
             result.ClientId.Should().Be(clientId);
-            result.ClientSecret.Should().Be(clientSecret);
+            result.ClientSecret.Should().Be($"encrypted {clientSecret}");
 
             await applicationManager.Received().FindByClientIdAsync(Is(application.Name + "@identity.brigh.id"));
             await applicationManager.Received().UpdateAsync(Is<OpenIddictApplication>(req =>
