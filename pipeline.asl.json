@@ -109,7 +109,37 @@
           }
         }
       },
-      "Next": "Deploy to Prod"
+      "Next": "Ask for Approval"
+    },
+    "Ask for Approval": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::lambda:invoke.waitForTaskToken",
+      "Next": "Was Approved?",
+      "ResultPath": "$.ApprovalDecision",
+      "Parameters": {
+        "FunctionName": "${ApprovalNotificationFunction}",
+        "Payload": {
+          "Pipeline": "${GithubRepo}",
+          "ArtifactStore": "${ArtifactStore}",
+          "CustomMessage": "${GithubRepo} requires manual approval for deployment to production",
+          "Token.$": "$$.Task.Token"
+        }
+      }
+    },
+    "Was Approved?": {
+      "Type": "Choice",
+      "Choices": [
+        {
+          "Variable": "$.ApprovalDecision.Action",
+          "StringEquals": "approve",
+          "Next": "Deploy to Prod"
+        },
+        {
+          "Variable": "$.ApprovalDecision.Action",
+          "StringEquals": "reject",
+          "Next": "Success"
+        }
+      ]
     },
     "Deploy to Prod": {
       "Type": "Task",
