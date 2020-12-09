@@ -21,7 +21,7 @@ using static NSubstitute.Arg;
 
 namespace Brighid.Identity.Auth
 {
-    public class AuthControllerTests
+    public class OAuthControllerTests
     {
         public class Exchange
         {
@@ -30,7 +30,7 @@ namespace Brighid.Identity.Auth
                 OpenIdConnectRequest request,
                 [Frozen, Substitute] HttpContext httpContext,
                 [Frozen, Substitute] GetOpenIdConnectRequest getOpenIdConnectRequest,
-                [Target] AuthController authController
+                [Target] OAuthController authController
             )
             {
                 getOpenIdConnectRequest(Any<Controller>()).Returns(request);
@@ -49,7 +49,7 @@ namespace Brighid.Identity.Auth
                 [Frozen, Substitute] HttpContext httpContext,
                 [Frozen, Substitute] IAuthService authService,
                 [Frozen, Substitute] GetOpenIdConnectRequest getOpenIdConnectRequest,
-                [Target] AuthController authController
+                [Target] OAuthController authController
             )
             {
                 getOpenIdConnectRequest(Any<Controller>()).Returns(request);
@@ -75,7 +75,7 @@ namespace Brighid.Identity.Auth
                 [Frozen, Substitute] HttpContext httpContext,
                 [Frozen, Substitute] IAuthService authService,
                 [Frozen, Substitute] GetOpenIdConnectRequest getOpenIdConnectRequest,
-                [Target] AuthController authController
+                [Target] OAuthController authController
             )
             {
                 getOpenIdConnectRequest(Any<Controller>()).Returns(request);
@@ -101,7 +101,7 @@ namespace Brighid.Identity.Auth
                 [Frozen, Substitute] HttpContext httpContext,
                 [Frozen, Substitute] IAuthService authService,
                 [Frozen, Substitute] GetOpenIdConnectRequest getOpenIdConnectRequest,
-                [Target] AuthController authController
+                [Target] OAuthController authController
             )
             {
                 getOpenIdConnectRequest(Any<Controller>()).Returns(request);
@@ -126,7 +126,7 @@ namespace Brighid.Identity.Auth
                 AuthenticationTicket ticket,
                 [Frozen, Substitute] IAuthService authService,
                 [Frozen, Substitute] GetOpenIdConnectRequest getOpenIdConnectRequest,
-                [Target] AuthController authController
+                [Target] OAuthController authController
             )
             {
                 getOpenIdConnectRequest(Any<Controller>()).Returns(request);

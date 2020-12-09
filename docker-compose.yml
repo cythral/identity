@@ -7,9 +7,12 @@ services:
     restart: always
     ports:
       - "80:80"
+      - "443:443"
+      - "8736:8736"
     volumes:
       - ./:/app
       - ~/.aws:/root/.aws
+      - ./certs:/certs
     environment:
       Database__Host: db
       Database__Name: ${DB_NAME}

@@ -20,6 +20,7 @@ using Brighid.Identity.Users;
 using Flurl.Http;
 
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -43,17 +44,24 @@ namespace Brighid.Identity
         public void ConfigureServices(IServiceCollection services)
         {
             services
-            .AddControllersWithViews()
+            .AddControllers()
             .AddJsonOptions(options =>
             {
                 options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
             });
 
             services.Configure<EncryptionOptions>(Configuration.GetSection("EncryptionOptions"));
+            services.AddHealthChecks();
             services.AddScoped<IAmazonKeyManagementService, AmazonKeyManagementServiceClient>();
             services.AddServicesOfType<IScopedService>();
             services.AddServicesWithAttributeOfType<ScopedServiceAttribute>();
             services.AddDbContextPool<DatabaseContext>(ConfigureDatabaseOptions);
+
+            services
+            .AddRazorPages()
+            .WithRazorPagesRoot("/Common/Pages");
+
+            services.AddServerSideBlazor();
 
             services.AddSingleton<GenerateRandomString>(Utils.GenerateRandomString);
             services.AddSingleton<GetOpenIdConnectRequest>(Utils.GetOpenIdConnectRequest);
@@ -132,7 +140,11 @@ namespace Brighid.Identity
                     context.Request.Headers["content-type"] = "application/json";
                 }
 
-                context.Request.Scheme = "https";
+                if (!env.IsDevelopment())
+                {
+                    context.Request.Scheme = "https";
+                }
+
                 await next.Invoke();
             });
 
@@ -142,10 +154,10 @@ namespace Brighid.Identity
             app.UseAuthorization();
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapHealthChecks("/healthcheck");
                 endpoints.MapControllers();
-                endpoints.MapControllerRoute(
-                    name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}");
+                endpoints.MapBlazorHub();
+                endpoints.MapFallbackToPage("/_Host");
             });
         }
     }
