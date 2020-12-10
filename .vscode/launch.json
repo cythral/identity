@@ -5,28 +5,25 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": ".NET Core Launch (console)",
-      "type": "coreclr",
+      "name": "Docker .NET Core Launch",
+      "type": "docker",
       "request": "launch",
-      "preLaunchTask": "build",
-      "justMyCode": false,
-      "program": "${workspaceFolder}/bin/Mutedac.StartDatabase/Release/netcoreapp3.1/Mutedac.StartDatabase.dll",
-      "args": [],
-      "env": {
-        "AWS_REGION": "us-east-1"
-      },
-      "cwd": "${workspaceFolder}/src/Mutedac.StartDatabase",
-      "console": "internalConsole",
-      "stopAtEntry": false,
-      "symbolOptions": {
-        "searchNuGetOrgSymbolServer": true
+      "preLaunchTask": "docker-run: debug",
+      "containerName": "identity_api_1",
+      "netCore": {
+        "appProject": "${workspaceFolder}/src/Server/Server.csproj"
       }
     },
     {
-      "name": ".NET Core Attach",
-      "type": "coreclr",
+      "name": "Docker .NET Core Attach (Preview)",
+      "type": "docker",
       "request": "attach",
-      "processId": "${command:pickProcess}"
-    }
+      "platform": "netCore",
+      "containerName": "identity_api_1",
+      "processName": "/app/bin/Server/Debug/net5.0/Server",
+      "sourceFileMap": {
+        "/app/src/Server": "${workspaceFolder}/src/Server",
+      }
+    },
   ]
 }

@@ -8,6 +8,8 @@ using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 
+using Brighid.Identity.Roles;
+
 using Microsoft.EntityFrameworkCore;
 
 namespace Brighid.Identity.Applications
@@ -18,8 +20,8 @@ namespace Brighid.Identity.Applications
         /// Gets the ID number for this application.
         /// </summary>
         /// <value>A unique id number.</value>
-        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public ulong Id { get; init; }
+        [Key]
+        public Guid Id { get; init; } = Guid.NewGuid();
 
         /// <summary>
         /// Gets the unique name for this application.

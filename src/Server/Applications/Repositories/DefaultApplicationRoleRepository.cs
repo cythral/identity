@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
@@ -6,9 +7,11 @@ using System.Threading.Tasks;
 
 using Microsoft.EntityFrameworkCore;
 
+using Brighid.Identity.Roles;
+
 namespace Brighid.Identity.Applications
 {
-    public class DefaultApplicationRoleRepository : Repository<ApplicationRole, ulong>, IApplicationRoleRepository
+    public class DefaultApplicationRoleRepository : Repository<ApplicationRole, Guid>, IApplicationRoleRepository
     {
         public DefaultApplicationRoleRepository(DatabaseContext context) : base(context) { }
 

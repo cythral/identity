@@ -1,6 +1,9 @@
+using System;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Brighid.Identity.Applications
+using Brighid.Identity.Applications;
+
+namespace Brighid.Identity.Roles
 {
     public class ApplicationRole
     {
@@ -15,9 +18,9 @@ namespace Brighid.Identity.Applications
         {
         }
 
-        public ulong ApplicationId { get; set; }
+        public Guid ApplicationId { get; set; }
 
-        public ulong RoleId { get; set; }
+        public Guid RoleId { get; set; }
 
         [ForeignKey("ApplicationId")]
         public Application Application { get; set; }

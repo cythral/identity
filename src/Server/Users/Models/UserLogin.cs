@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 using Microsoft.AspNetCore.Identity;
@@ -7,11 +8,10 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Brighid.Identity.Users
 {
-    [Table("UserLogins")]
-    public class UserLogin : IdentityUserLogin<string>
+    public class UserLogin : IdentityUserLogin<Guid>
     {
-        [Key, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public ulong Id { get; set; }
+        [Key]
+        public Guid Id { get; set; } = Guid.NewGuid();
 
         public ICollection<UserLoginAttribute> Attributes { get; set; }
     }

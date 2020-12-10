@@ -5,7 +5,9 @@
       "label": "build",
       "command": "dotnet",
       "type": "process",
-      "args": ["build"],
+      "args": [
+        "build"
+      ],
       "problemMatcher": "$msCompile"
     },
     {
@@ -19,6 +21,60 @@
         "info"
       ],
       "problemMatcher": "$msCompile"
+    },
+    {
+      "type": "docker-build",
+      "label": "docker-build: debug",
+      "dockerBuild": {
+        "tag": "identity_api",
+        "target": "development",
+        "dockerfile": "${workspaceFolder}/Dockerfile",
+        "context": "${workspaceFolder}",
+        "pull": true
+      },
+      "netCore": {
+        "appProject": "${workspaceFolder}/src/Server/Server.csproj"
+      }
+    },
+    {
+      "type": "docker-build",
+      "label": "docker-build: release",
+      "dependsOn": [
+        "build"
+      ],
+      "dockerBuild": {
+        "tag": "identity:latest",
+        "dockerfile": "${workspaceFolder}/src/Server/Dockerfile",
+        "context": "${workspaceFolder}",
+        "pull": true
+      },
+      "netCore": {
+        "appProject": "${workspaceFolder}/src/Server/Server.csproj"
+      }
+    },
+    {
+      "type": "docker-run",
+      "label": "docker-run: debug",
+      "dependsOn": [
+        "docker-build: debug"
+      ],
+      "dockerRun": {
+      },
+      "netCore": {
+        "appProject": "${workspaceFolder}/src/Server/Server.csproj",
+        "enableDebugging": true,
+      }
+    },
+    {
+      "type": "docker-run",
+      "label": "docker-run: release",
+      "dependsOn": [
+        "docker-build: release"
+      ],
+      "dockerRun": {},
+      "netCore": {
+        "appProject": "${workspaceFolder}/src/Server/Server.csproj"
+      }
     }
   ]
 }

@@ -1,5 +1,5 @@
 @namespace Brighid.Identity.Auth
-@model Brighid.Identity.Auth.LoginRequest
+@model Brighid.Identity.Auth.SignupRequest
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 
 @{
@@ -22,5 +22,10 @@
         <span asp-validation-for="Password" class="text-danger"></span>
     </div>
 
-    <input value="Login" type="submit" class="w-25" />
+    <div class="form-field w-100 my-2">
+        <input placeholder="Confirm Password" type="password" asp-for="ConfirmPassword" class="w-100" />
+        <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+    </div>
+
+    <input value="Signup" type="submit" class="w-25" />
 </form>

@@ -1,6 +1,7 @@
 using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.IO;
+using System.Security.Claims;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Text.Json;
@@ -16,6 +17,9 @@ using AspNetCore.ServiceRegistration.Dynamic.Extensions;
 using AspNetCore.ServiceRegistration.Dynamic.Interfaces;
 
 using Brighid.Identity.Users;
+using Brighid.Identity.Roles;
+
+using System.Threading.Tasks;
 
 using Flurl.Http;
 
@@ -23,6 +27,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -65,9 +70,17 @@ namespace Brighid.Identity
 
             services.AddSingleton<GenerateRandomString>(Utils.GenerateRandomString);
             services.AddSingleton<GetOpenIdConnectRequest>(Utils.GetOpenIdConnectRequest);
-            services.AddIdentity<User, IdentityRole>()
+            services.AddIdentity<User, Role>(options =>
+            {
+                options.User.RequireUniqueEmail = true;
+            })
             .AddEntityFrameworkStores<DatabaseContext>()
             .AddDefaultTokenProviders();
+
+            // Replace Default User Manager with an overridden one
+            var serviceDescriptor = services.First(descriptor => descriptor.ServiceType == typeof(UserManager<User>));
+            services.Remove(serviceDescriptor);
+            services.AddScoped<UserManager<User>, DefaultUserManager>();
 
             services.Configure<IdentityOptions>(options =>
             {
@@ -116,9 +129,11 @@ namespace Brighid.Identity
             var conn = $"Server={DatabaseConfig.Host};";
             conn += $"Database={DatabaseConfig.Name};";
             conn += $"User={DatabaseConfig.User};";
-            conn += $"Password=\"{DatabaseConfig.Password}\"";
+            conn += $"Password=\"{DatabaseConfig.Password}\";";
+            conn += "GuidFormat=Binary16";
 
             options.UseMySql(conn);
+            options.EnableSensitiveDataLogging();
             options.UseOpenIddict();
         }
 
@@ -159,6 +174,29 @@ namespace Brighid.Identity
                 endpoints.MapBlazorHub();
                 endpoints.MapFallbackToPage("/_Host");
             });
+
+            var provider = app.ApplicationServices;
+            SeedBasicRole(provider).GetAwaiter().GetResult();
+        }
+
+        public async Task SeedBasicRole(IServiceProvider provider)
+        {
+            using var scope = provider.CreateScope();
+
+            var services = scope.ServiceProvider;
+            var roleManager = services.GetRequiredService<RoleManager<Role>>();
+            var role = new Role { Name = "Basic" };
+
+            if (await roleManager.RoleExistsAsync(role.Name))
+            {
+                return;
+            }
+
+            var result = await roleManager.CreateAsync(role);
+            if (!result.Succeeded)
+            {
+                throw new Exception("Could not seed database with the Basic role.");
+            }
         }
     }
 }

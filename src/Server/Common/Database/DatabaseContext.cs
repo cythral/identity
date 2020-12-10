@@ -1,11 +1,17 @@
+using System;
+
 using Brighid.Identity.Applications;
 using Brighid.Identity.Users;
+using Brighid.Identity.Roles;
 
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace Brighid.Identity
 {
-    public class DatabaseContext : DbContext
+    public class DatabaseContext
+        : IdentityDbContext<User, Role, Guid, UserClaim, UserRole, UserLogin, RoleClaim, UserToken>
     {
         public DatabaseContext(DbContextOptions options) : base(options) { }
 
@@ -27,6 +33,15 @@ namespace Brighid.Identity
             .WithOne(appRole => appRole.Application);
 
             builder
+            .Entity<UserRole>()
+            .HasKey(userRole => new { userRole.UserId, userRole.RoleId });
+
+            builder
+            .Entity<User>()
+            .HasMany<UserRole>("UserRoles")
+            .WithOne(userRole => userRole.User);
+
+            builder
             .Entity<Role>()
             .HasIndex(role => role.Name)
             .IsUnique();
@@ -37,11 +52,7 @@ namespace Brighid.Identity
 #pragma warning restore IDE0050, CA1507
         }
 
-        public virtual DbSet<User> Users { get; init; }
-
         public virtual DbSet<Application> Applications { get; init; }
-
-        public virtual DbSet<Role> Roles { get; init; }
 
         public virtual DbSet<ApplicationRole> ApplicationRoles { get; init; }
     }

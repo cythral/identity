@@ -9,6 +9,7 @@ using AspNet.Security.OpenIdConnect.Primitives;
 using AutoFixture.NUnit3;
 
 using Brighid.Identity.Applications;
+using Brighid.Identity.Roles;
 
 using FluentAssertions;
 
