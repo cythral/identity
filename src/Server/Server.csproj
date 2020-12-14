@@ -4,6 +4,9 @@
     <TargetFramework>net5.0</TargetFramework>
     <NoWarn>IDE0058;CA1062</NoWarn>
     <RootNamespace>Brighid.Identity</RootNamespace>
+    <Configuration Condition="$(Configuration) == ''">Debug</Configuration>
+    <NuGetLockFilePath Condition="$(Configuration) == 'Debug'">packages-debug.lock.json</NuGetLockFilePath>
+    <NuGetLockFilePath Condition="$(Configuration) == 'Release'">packages-release.lock.json</NuGetLockFilePath>
   </PropertyGroup>
 
   <ItemGroup>
