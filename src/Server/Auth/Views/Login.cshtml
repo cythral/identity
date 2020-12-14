@@ -6,6 +6,10 @@
     Layout = "_Layout";
 }
 
+@{
+    var redirectUri = Uri.EscapeDataString(Model.RedirectUri.ToString());
+}
+
 <!-- TODO: Remove Bootstrap -->
 <form method="post" class="container align-center">
     <input type="hidden" asp-for="RedirectUri" />
@@ -22,5 +26,5 @@
         <span asp-validation-for="Password" class="text-danger"></span>
     </div>
 
-    <input value="Login" type="submit" class="w-25" />
+    <input value="Login" type="submit" class="w-25" /> or <a href="/signup?redirect_uri=@redirectUri">Signup</a>
 </form>
