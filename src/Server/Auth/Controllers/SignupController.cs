@@ -13,6 +13,7 @@ namespace Brighid.Identity.Auth
     [Route("/signup")]
     public class SignupController : Controller
     {
+        private const string defaultRedirectUri = "/";
         private readonly SignInManager<User> signinManager;
         private readonly UserManager<User> userManager;
 
@@ -26,8 +27,10 @@ namespace Brighid.Identity.Auth
         }
 
         [HttpGet]
-        public IActionResult Render([FromQuery(Name = "redirect_uri")] string destination = "/")
+        public IActionResult Render([FromQuery(Name = "redirect_uri")] string? destination = defaultRedirectUri)
         {
+            destination ??= defaultRedirectUri;
+            // return LocalRedirect(destination);
             return signinManager.IsSignedIn(User)
                 ? LocalRedirect(destination)
                 : View("~/Auth/Views/Signup.cshtml", new SignupRequest
