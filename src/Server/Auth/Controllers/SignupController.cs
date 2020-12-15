@@ -16,21 +16,23 @@ namespace Brighid.Identity.Auth
         private const string defaultRedirectUri = "/";
         private readonly SignInManager<User> signinManager;
         private readonly UserManager<User> userManager;
+        private readonly IUserService userService;
 
         public SignupController(
             SignInManager<User> signinManager,
-            UserManager<User> userManager
+            UserManager<User> userManager,
+            IUserService userService
         )
         {
             this.signinManager = signinManager;
             this.userManager = userManager;
+            this.userService = userService;
         }
 
         [HttpGet]
         public IActionResult Render([FromQuery(Name = "redirect_uri")] string? destination = defaultRedirectUri)
         {
             destination ??= defaultRedirectUri;
-            // return LocalRedirect(destination);
             return signinManager.IsSignedIn(User)
                 ? LocalRedirect(destination)
                 : View("~/Auth/Views/Signup.cshtml", new SignupRequest
@@ -57,23 +59,12 @@ namespace Brighid.Identity.Auth
                     throw new SignupException("Passwords do not match.");
                 }
 
-                var user = new User { UserName = request.Username, Email = request.Username };
-                var createUserResult = await userManager.CreateAsync(user, request.Password);
-                if (!createUserResult.Succeeded)
-                {
-                    throw new SignupException("An unknown error occurred.");
-                }
-
-                var assignUserToRoleResult = await userManager.AddToRoleAsync(user, "Basic");
-                if (!assignUserToRoleResult.Succeeded)
-                {
-                    throw new SignupException("Could not add user to Basic Role");
-                }
-
+                var user = await userService.Create(request.Username, request.Password);
                 var signinResult = await signinManager.PasswordSignInAsync(user, request.Password, false, false);
+
                 if (!signinResult.Succeeded)
                 {
-                    throw new SignupException("Could not sign in user.");
+                    throw new SignupException("Unable to sign in.");
                 }
 
                 return LocalRedirect(redirectUri);
@@ -82,11 +73,18 @@ namespace Brighid.Identity.Auth
             {
                 if (e.Message != null)
                 {
-                    ModelState.AddModelError(string.Empty, e.Message);
+                    ModelState.AddModelError("signupError", e.Message);
                 }
-
-                return Render(redirectUri);
             }
+            catch (AggregateException e)
+            {
+                foreach (var innerException in e.InnerExceptions)
+                {
+                    ModelState.AddModelError("signupError", innerException.Message);
+                }
+            }
+
+            return Render(redirectUri);
         }
     }
 }

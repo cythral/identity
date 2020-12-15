@@ -8,6 +8,8 @@ using Microsoft.AspNetCore.Mvc;
 
 using static AspNet.Security.OpenIdConnect.Primitives.OpenIdConnectConstants;
 
+#pragma warning disable IDE0046 // if statements can be simplified to ternaries
+
 namespace Brighid.Identity.Auth
 {
     [Route("/login")]
@@ -39,19 +41,32 @@ namespace Brighid.Identity.Auth
         public async Task<IActionResult> Login([FromForm] LoginRequest request)
         {
             var redirectUri = request.RedirectUri.ToString();
-            if (!ModelState.IsValid)
+
+            try
             {
-                return Render(redirectUri);
+                if (!ModelState.IsValid)
+                {
+                    throw new LoginException();
+                }
+
+                var result = await signinManager.PasswordSignInAsync(request.Username, request.Password, false, false);
+
+                if (!result.Succeeded)
+                {
+                    throw new LoginException("Username and/or password were incorrect.");
+                }
+
+                return LocalRedirect(redirectUri);
+            }
+            catch (LoginException e)
+            {
+                if (e.Message != null)
+                {
+                    ModelState.AddModelError("loginErrors", e.Message);
+                }
             }
 
-            var result = await signinManager.PasswordSignInAsync(request.Username, request.Password, false, false);
-            if (!result.Succeeded)
-            {
-                ModelState.AddModelError(string.Empty, "Username and/or password were incorrect.");
-                return Render(redirectUri);
-            }
-
-            return LocalRedirect(redirectUri);
+            return Render(redirectUri);
         }
     }
 }
