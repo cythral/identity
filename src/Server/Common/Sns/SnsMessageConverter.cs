@@ -17,6 +17,7 @@ namespace Brighid.Identity.Sns
             try
             {
                 var result = JsonSerializer.Deserialize<T>(stringValue, options);
+
                 return result;
             }
             catch (JsonException)

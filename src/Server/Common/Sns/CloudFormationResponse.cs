@@ -7,7 +7,7 @@ namespace Brighid.Identity.Sns
             StackId = request.StackId;
             LogicalResourceId = request.LogicalResourceId;
             RequestId = request.RequestId;
-            PhysicalResourceId = givenPhysicalResourceId ?? request.PhysicalResourceId; ;
+            PhysicalResourceId = givenPhysicalResourceId ?? request.PhysicalResourceId;
         }
 
         public CloudFormationResponseStatus Status { get; init; } = CloudFormationResponseStatus.SUCCESS;

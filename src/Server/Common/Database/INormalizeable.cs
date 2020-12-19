@@ -5,8 +5,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Brighid.Identity
 {
-    public interface INormalizeable<in TDbContext> where TDbContext : DbContext
+    public interface INormalizeable
     {
-        Task Normalize(TDbContext dbContext, CancellationToken cancellationToken = default);
+        bool IsNormalized { get; }
+        Task Normalize(DatabaseContext dbContext, CancellationToken cancellationToken = default);
     }
 }

@@ -1,4 +1,5 @@
 using System;
+using System.Globalization;
 using System.IdentityModel.Tokens.Jwt;
 using System.IO;
 using System.Security.Claims;
@@ -18,6 +19,7 @@ using AspNetCore.ServiceRegistration.Dynamic.Interfaces;
 
 using Brighid.Identity.Users;
 using Brighid.Identity.Roles;
+using Brighid.Identity.Sns;
 
 using System.Threading.Tasks;
 
@@ -32,6 +34,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+
+using Morcatko.AspNetCore.JsonMergePatch;
 
 namespace Brighid.Identity
 {
@@ -49,10 +53,15 @@ namespace Brighid.Identity
         public void ConfigureServices(IServiceCollection services)
         {
             services
+            .AddMvc()
+            .AddSystemTextJsonMergePatch();
+
+            services
             .AddControllers()
             .AddJsonOptions(options =>
             {
                 options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+                options.JsonSerializerOptions.Converters.Add(new UserRoleConverter());
             });
 
             services.Configure<EncryptionOptions>(Configuration.GetSection("EncryptionOptions"));
@@ -132,9 +141,11 @@ namespace Brighid.Identity
             conn += $"Password=\"{DatabaseConfig.Password}\";";
             conn += "GuidFormat=Binary16";
 
-            options.UseMySql(conn);
-            options.EnableSensitiveDataLogging();
+            options.UseMySql(conn, new MySqlServerVersion(new Version(5, 7, 0)));
             options.UseOpenIddict();
+            options.AddInterceptors(new NormalizingInterceptor());
+            // options.EnableSensitiveDataLogging();
+            // options.LogTo(Console.WriteLine);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -160,10 +171,11 @@ namespace Brighid.Identity
                     context.Request.Scheme = "https";
                 }
 
-                await next.Invoke();
+                await next();
             });
 
             app.UseStaticFiles();
+            app.UseMiddleware<SnsMiddleware>();
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();
@@ -176,27 +188,57 @@ namespace Brighid.Identity
             });
 
             var provider = app.ApplicationServices;
+
             SeedBasicRole(provider).GetAwaiter().GetResult();
+            SeedUser(env, provider, "test@example.com", "Password123!").GetAwaiter().GetResult();
         }
 
         public async Task SeedBasicRole(IServiceProvider provider)
         {
             using var scope = provider.CreateScope();
-
             var services = scope.ServiceProvider;
             var roleManager = services.GetRequiredService<RoleManager<Role>>();
             var role = new Role { Name = "Basic" };
 
-            if (await roleManager.RoleExistsAsync(role.Name))
+            if (await roleManager.RoleExistsAsync(role.Name).ConfigureAwait(false))
             {
                 return;
             }
 
-            var result = await roleManager.CreateAsync(role);
+            var result = await roleManager.CreateAsync(role).ConfigureAwait(false);
             if (!result.Succeeded)
             {
                 throw new Exception("Could not seed database with the Basic role.");
             }
+        }
+
+        public async Task SeedUser(IWebHostEnvironment env, IServiceProvider provider, string username, string password)
+        {
+            if (!env.IsDevelopment())
+            {
+                return;
+            }
+
+            using var scope = provider.CreateScope();
+            var services = scope.ServiceProvider;
+            var roleManager = services.GetRequiredService<RoleManager<Role>>();
+            var userManager = services.GetRequiredService<UserManager<User>>();
+            var context = services.GetRequiredService<DatabaseContext>();
+            var id = new Guid("D4759009EB67427ABF21272509A27F1A");
+            var concurrencyStamp = Guid.NewGuid().ToString();
+            var user = new User { Id = id, UserName = username, Email = username, ConcurrencyStamp = concurrencyStamp };
+
+            var createResult = await userManager.CreateAsync(user, password);
+            if (!createResult.Succeeded)
+            {
+                throw new Exception("Could not seed database with test user.");
+            }
+
+            var role = await roleManager.FindByNameAsync("Basic");
+            var userRole = new UserRole { User = user, Role = role };
+
+            context.UserRoles.Add(userRole);
+            await context.SaveChangesAsync();
         }
     }
 }

@@ -13,12 +13,16 @@ namespace Brighid.Identity
 
         Task<TEntity?> TryAdd(TEntity entity);
 
-        Task<TEntity> GetById(TPrimaryKeyType primaryKey, params Expression<Func<TEntity, object?>>[] embeds);
+        Task<TEntity> GetById(TPrimaryKeyType primaryKey, params string[] embeds);
 
         Task<bool> Exists(TPrimaryKeyType primaryKey);
 
         Task<TEntity> Save(TEntity entity);
 
         Task<TEntity> Remove(TPrimaryKeyType primaryKey);
+
+        Task<TEntity> Remove(TEntity entity);
+
+        void TrackAsDeleted(TEntity entity);
     }
 }

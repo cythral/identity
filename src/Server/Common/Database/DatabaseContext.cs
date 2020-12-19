@@ -7,6 +7,7 @@ using Brighid.Identity.Roles;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace Brighid.Identity
 {
@@ -14,6 +15,7 @@ namespace Brighid.Identity
         : IdentityDbContext<User, Role, Guid, UserClaim, UserRole, UserLogin, RoleClaim, UserToken>
     {
         public DatabaseContext(DbContextOptions options) : base(options) { }
+        internal DatabaseContext() { }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -28,18 +30,8 @@ namespace Brighid.Identity
             .HasKey(appRole => new { appRole.ApplicationId, appRole.RoleId });
 
             builder
-            .Entity<Application>()
-            .HasMany<ApplicationRole>("ApplicationRoles")
-            .WithOne(appRole => appRole.Application);
-
-            builder
             .Entity<UserRole>()
             .HasKey(userRole => new { userRole.UserId, userRole.RoleId });
-
-            builder
-            .Entity<User>()
-            .HasMany<UserRole>("UserRoles")
-            .WithOne(userRole => userRole.User);
 
             builder
             .Entity<Role>()
@@ -55,5 +47,7 @@ namespace Brighid.Identity
         public virtual DbSet<Application> Applications { get; init; }
 
         public virtual DbSet<ApplicationRole> ApplicationRoles { get; init; }
+
+        public override DbSet<UserRole> UserRoles { get; set; }
     }
 }

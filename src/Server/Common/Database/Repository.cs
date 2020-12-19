@@ -36,11 +36,10 @@ namespace Brighid.Identity
             }
         }
 
-        public IQueryable<TEntity> All => Set.AsQueryable();
+        public virtual IQueryable<TEntity> All => Set.AsQueryable();
 
         public async Task<TEntity> Add(TEntity entity)
         {
-            await Normalize(entity);
             var result = await Set.AddAsync(entity);
 
             try
@@ -66,13 +65,17 @@ namespace Brighid.Identity
 #pragma warning restore CA1031
         }
 
-        public async Task<TEntity> GetById(TPrimaryKeyType primaryKey, params Expression<Func<TEntity, object?>>[] embeds)
+        public async Task<TEntity> GetById(TPrimaryKeyType primaryKey, params string[] embeds)
         {
-            var queryable = embeds.Aggregate(All, (query, embed) => query.Include(embed));
+            var entitySet = embeds
+                .Aggregate(All, (query, embed) => query.Include(embed))
+                .AsQueryable();
 
-            return await queryable.FirstOrDefaultAsync(entity =>
-                EF.Property<TPrimaryKeyType>(entity, PrimaryKeyName).Equals(primaryKey)
-            );
+            var query = from entity in entitySet
+                        where EF.Property<TPrimaryKeyType>(entity, PrimaryKeyName).Equals(primaryKey)
+                        select entity;
+
+            return await query.FirstOrDefaultAsync();
         }
 
         public async Task<bool> Exists(TPrimaryKeyType primaryKey)
@@ -84,8 +87,7 @@ namespace Brighid.Identity
 
         public async Task<TEntity> Save(TEntity entity)
         {
-            await Normalize(entity);
-            Set.Attach(entity);
+            Context.Attach(entity);
             await Context.SaveChangesAsync();
             return entity;
         }
@@ -101,18 +103,19 @@ namespace Brighid.Identity
             SetPrimaryKey(entity, primaryKey);
 
             Set.Attach(entity);
+            return await Remove(entity);
+        }
+
+        public async Task<TEntity> Remove(TEntity entity)
+        {
             Set.Remove(entity);
             await Context.SaveChangesAsync();
-
             return entity;
         }
 
-        public async Task Normalize(TEntity entity, CancellationToken cancellationToken = default)
+        public void TrackAsDeleted(TEntity entity)
         {
-            if (entity is INormalizeable<DatabaseContext> normalizeable)
-            {
-                await normalizeable.Normalize(Context, cancellationToken);
-            }
+            Context.Entry(entity).State = EntityState.Deleted;
         }
     }
 }

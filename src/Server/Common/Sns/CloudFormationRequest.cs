@@ -1,10 +1,11 @@
 using System;
+using System.Text.Json.Serialization;
 
 namespace Brighid.Identity.Sns
 {
     public class CloudFormationRequest<T> : ICloudFormationRequest<T>
     {
-
+        [JsonConverter(typeof(CloudFormationRequestTypeConverter))]
         public CloudFormationRequestType RequestType { get; init; }
 
         public Uri ResponseURL { get; init; }

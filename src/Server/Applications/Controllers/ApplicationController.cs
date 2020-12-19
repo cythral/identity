@@ -1,5 +1,6 @@
 using System;
 using System.Text.Json;
+using System.IO;
 using System.Threading.Tasks;
 
 using Brighid.Identity.Sns;
@@ -17,11 +18,17 @@ namespace Brighid.Identity.Applications
     public class ApplicationController : Controller
     {
         private readonly IApplicationService appService;
+        private readonly IApplicationRepository appRepository;
         private readonly ILogger<ApplicationController> logger;
 
-        public ApplicationController(IApplicationService appService, ILogger<ApplicationController> logger)
+        public ApplicationController(
+            IApplicationService appService,
+            IApplicationRepository appRepository,
+            ILogger<ApplicationController> logger
+        )
         {
             this.appService = appService;
+            this.appRepository = appRepository;
             this.logger = logger;
         }
 
@@ -29,68 +36,49 @@ namespace Brighid.Identity.Applications
         [HttpHeader("x-amz-sns-message-type", "SubscriptionConfirmation")]
         public async Task<ActionResult> Subscribe([FromBody] SnsMessage<object> request)
         {
-            logger.LogInformation($"Received request: {JsonSerializer.Serialize(request)}");
             await request.SubscribeUrl.GetAsync();
             return Ok();
         }
 
         [HttpPost]
-        [HttpHeader("x-amz-sns-message-type", "Notification")]
-        public async Task<ActionResult> HandleSns([FromBody] SnsMessage<CloudFormationRequest<Application>> request)
+        public async Task<ActionResult<Application>> Create([FromBody] Application application)
         {
-            logger.LogInformation($"Received request: {JsonSerializer.Serialize(request)}");
+            var result = await appService.Create(application);
+            var destination = new Uri($"/api/applications/{application.Id}", UriKind.Relative);
 
-            if (request?.Message == null)
-            {
-                throw new Exception("Expected message.");
-            }
+            HttpContext.Items["identity:id"] = result.Id;
+            HttpContext.Items["identity:model"] = result;
 
-            try
-            {
-                var application = request.Message.ResourceProperties;
-                var oldApplication = request.Message.OldResourceProperties;
-                var oldName = oldApplication?.Name;
-                var newName = application?.Name;
-                var physicalResourceId = request.Message.PhysicalResourceId ?? newName;
-                var requestType = request.Message.RequestType;
+            return Created(destination, result);
+        }
 
-                if (application == null)
-                {
-                    throw new InvalidOperationException("Application properties must be specified.");
-                }
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Application>> Get(Guid id)
+        {
+            var result = await appRepository.GetById(id);
+            return result == null ? NotFound() : Ok(result);
+        }
 
-                if (requestType == Update && oldName != newName)
-                {
-                    requestType = Create;
-                    physicalResourceId = newName;
-                }
+        [HttpPut("{id}")]
+        public async Task<ActionResult<Application>> Update(Guid id, [FromBody] Application application)
+        {
+            var result = await appService.Update(id, application);
 
-                var client = requestType switch
-                {
-                    Create => await appService.Create(application),
-                    Update => await appService.Update(application),
-                    Delete => await appService.Delete(application),
-                    _ => throw new NotSupportedException(),
-                };
+            HttpContext.Items["identity:id"] = id;
+            HttpContext.Items["identity:model"] = result;
 
-                await request.Message.ResponseURL.PutJsonAsync(new CloudFormationResponse(request.Message, physicalResourceId)
-                {
-                    Status = CloudFormationResponseStatus.SUCCESS,
-                    Data = client,
-                });
-            }
-#pragma warning disable CA1031
-            catch (Exception e)
-            {
-                await request.Message.ResponseURL.PutJsonAsync(new CloudFormationResponse(request.Message)
-                {
-                    Status = CloudFormationResponseStatus.FAILED,
-                    Reason = e.Message,
-                });
-            }
-#pragma warning restore CA1031
+            return Ok(result);
+        }
 
-            return Ok();
+        [HttpDelete("{id}")]
+        public async Task<ActionResult<Application>> Delete(Guid id)
+        {
+            var result = await appService.Delete(id);
+
+            HttpContext.Items["identity:id"] = id;
+            HttpContext.Items["identity:model"] = result;
+
+            return Ok(result);
         }
     }
 }

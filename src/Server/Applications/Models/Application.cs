@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Text.Json.Serialization;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
@@ -14,20 +15,20 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Brighid.Identity.Applications
 {
-    public class Application : INormalizeable<DatabaseContext>
+    public class Application
     {
         /// <summary>
-        /// Gets the ID number for this application.
+        /// Gets the ID number for this application.  This also serves as the ClientId.
         /// </summary>
         /// <value>A unique id number.</value>
         [Key]
-        public Guid Id { get; init; } = Guid.NewGuid();
+        public Guid Id { get; set; } = Guid.NewGuid();
 
         /// <summary>
         /// Gets the unique name for this application.
         /// </summary>
         /// <value>A globally unique identifier for the application.</value>
-        public string Name { get; init; } = "";
+        public string Name { get; set; } = "";
 
         /// <summary>
         /// Gets or sets a description of the application.
@@ -36,9 +37,12 @@ namespace Brighid.Identity.Applications
         public string Description { get; set; } = "";
 
         /// <summary>
-        /// Gets or sets the application's serial
+        /// Gets or sets the application's serial.
         /// </summary>
-        /// <value>Whenever this number changes, the client secret is regenerated.</value>
+        /// <remarks>
+        /// Whenever this number changes, the client secret is regenerated.
+        /// </remarks>
+        /// <value>The application's serial.</value>
         public ulong Serial { get; set; }
 
         /// <summary>
@@ -49,76 +53,30 @@ namespace Brighid.Identity.Applications
         public DateTimeOffset CreatedDate { get; init; }
 
         /// <summary>
-        /// Gets a collection of application roles that belong to this Application. This is the backing property for roles.
-        /// </summary>
-        /// <value>The role mappings this application is allowed to use.</value>
-        private ICollection<ApplicationRole> ApplicationRoles { get; set; } = Array.Empty<ApplicationRole>();
-
-        /// <summary>
-        /// Gets the roles this application is allowed to use.
-        /// </summary>
-        /// <returns>The roles this application is allowed to use.</returns>
-        [NotMapped]
-        public IEnumerable<string> Roles
-        {
-            get => ApplicationRoles.Select(appRole => appRole.Role.Name);
-            set => ApplicationRoles = value
-                    .Select(role => new ApplicationRole(this, role))
-                    .ToArray();
-        }
-
-        /// <summary>
-        /// Normalizes data so the entity can be safely added/updated in the database.
+        /// Gets or sets the roles this application is allowed to use.
         /// </summary>
         /// <remarks>
-        /// TODO: Unit test this
+        /// This gets serialized to/from a list of role names.
         /// </remarks>
-        /// <param name="databaseContext">The database context to use for interacting with the database.</param>
-        /// <param name="cancellationToken">Cancellation token to use for cancelling the task.</param>
-        public virtual async Task Normalize([NotNull] DatabaseContext databaseContext, CancellationToken cancellationToken = default)
-        {
-            ApplicationRoles = await NormalizeApplicationRoles(databaseContext, cancellationToken)
-            .ToArrayAsync(cancellationToken)
-            .ConfigureAwait(false);
-        }
+        /// <value>The roles this application is allowed to use.</value>
+        public ICollection<ApplicationRole> Roles { get; set; } = new List<ApplicationRole>();
 
-        private async IAsyncEnumerable<ApplicationRole> NormalizeApplicationRoles([NotNull] DatabaseContext databaseContext, [EnumeratorCancellation] CancellationToken cancellationToken = default)
-        {
-            foreach (var givenRole in ApplicationRoles)
-            {
-                var givenRoleName = givenRole.Role.Name;
-                var appRoleQuery = from appRole in databaseContext.ApplicationRoles.AsQueryable()
-                                   where appRole.ApplicationId == Id
-                                   where appRole.Role.Name == givenRoleName
-                                   select appRole;
+        /// <summary>
+        /// Gets or sets the encrypted form of the application/client secret, which is a randomly-generated,
+        /// long-lived credential along with the application/client id. 
+        /// </summary>
+        /// <value>The encrypted application/client secret.</value>
+        public string EncryptedSecret { get; set; } = "";
 
-                if (await appRoleQuery.AnyAsync(cancellationToken).ConfigureAwait(false))
-                {
-                    yield return await appRoleQuery.FirstAsync(cancellationToken).ConfigureAwait(false);
-                    continue;
-                }
-
-                var role = new Role { Name = givenRoleName };
-                var normalizedRole = await NormalizeRole(databaseContext, role, cancellationToken).ConfigureAwait(false);
-
-                yield return new ApplicationRole
-                {
-                    Application = this,
-                    Role = normalizedRole,
-                };
-            }
-        }
-
-        private async Task<Role> NormalizeRole([NotNull] DatabaseContext databaseContext, Role role, CancellationToken cancellationToken = default)
-        {
-            var roleQuery = from existingRole in databaseContext.Roles.AsQueryable()
-                            where existingRole.Name == role.Name
-                            select existingRole;
-
-            var roleExists = await roleQuery.AnyAsync(cancellationToken);
-            return roleExists
-                ? await roleQuery.FirstAsync(cancellationToken)
-                : role;
-        }
+        /// <summary>
+        /// Gets or sets the un-encrypted form of the application/client secret.
+        /// </summary>
+        /// <remarks>
+        /// This is not stored in the database and will only appear in API requests
+        /// that result in the regeneration of the secret.
+        /// </remarks>
+        /// <value>The un-encrypted application/client secret.</value>
+        [NotMapped]
+        public string Secret { get; set; } = "";
     }
 }

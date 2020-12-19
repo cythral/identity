@@ -1,7 +1,10 @@
 using System;
+using System.Collections.Generic;
 using System.Net.Http;
+using System.Text.Json;
 using System.Threading.Tasks;
 
+using AutoFixture.AutoNSubstitute;
 using AutoFixture.NUnit3;
 
 using Brighid.Identity.Sns;
@@ -10,6 +13,7 @@ using FluentAssertions;
 
 using Flurl.Http.Testing;
 
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 using NSubstitute;
@@ -22,300 +26,248 @@ namespace Brighid.Identity.Applications
 {
     public class ApplicationControllerTests
     {
-        [Test, Auto]
-        public async Task HandleSns_CallsCreate(
-            string stackId,
-            string requestId,
-            string logicalResourceId,
-            Uri responseUrl,
-            ApplicationCredentials creds,
-            Application application,
-            [Frozen] IApplicationService appService,
-            [Target] ApplicationController appController
-        )
+        public class CreateTests
         {
-            using var httpContext = new HttpTest();
-            httpContext.RespondWith("OK", 200);
-            appService.Create(Any<Application>()).Returns(creds);
-            var request = new CloudFormationRequest<Application>
+            [Test, Auto]
+            public async Task ShouldCreateAndReturnApplication(
+                Application application,
+                HttpContext httpContext,
+                [Frozen, Substitute] IApplicationService appService,
+                [Target] ApplicationController controller
+            )
             {
-                ResponseURL = responseUrl,
-                StackId = stackId,
-                RequestId = requestId,
-                LogicalResourceId = logicalResourceId,
-                RequestType = CloudFormationRequestType.Create,
-                ResourceProperties = application,
-            };
+                appService.Create(Any<Application>()).Returns(application);
 
-            await appController.HandleSns(new SnsMessage<CloudFormationRequest<Application>>
+                var controllerContext = new ControllerContext { HttpContext = httpContext };
+                controller.ControllerContext = controllerContext;
+
+                var response = await controller.Create(application);
+                var result = response.Result;
+
+                result.As<CreatedResult>().Value.Should().Be(application);
+                await appService.Received().Create(Is(application));
+            }
+
+            [Test, Auto]
+            public async Task ShouldRedirectToApplicationPage(
+                Guid id,
+                Application application,
+                HttpContext httpContext,
+                [Frozen, Substitute] IApplicationService appService,
+                [Target] ApplicationController controller
+            )
             {
-                Message = request,
-            });
+                application.Id = id;
+                appService.Create(Any<Application>()).Returns(application);
 
-            await appService.Received().Create(Is(application));
-            await appService.DidNotReceive().Update(Any<Application>());
-            await appService.DidNotReceive().Delete(Any<Application>());
+                var controllerContext = new ControllerContext { HttpContext = httpContext };
+                controller.ControllerContext = controllerContext;
 
-            httpContext
-            .ShouldHaveCalled(responseUrl.ToString())
-            .WithVerb(HttpMethod.Put)
-            .WithRequestJson(new CloudFormationResponse(request, application.Name)
+                var response = await controller.Create(application);
+                var result = response.Result;
+
+                result.As<CreatedResult>().Location.Should().Be($"/api/applications/{id}");
+            }
+
+            [Test, Auto]
+            public async Task ShouldSetIdItemInHttpContext(
+                Guid id,
+                Application application,
+                HttpContext httpContext,
+                [Frozen, Substitute] IApplicationService appService,
+                [Target] ApplicationController controller
+            )
             {
-                Status = CloudFormationResponseStatus.SUCCESS,
-                Data = creds,
-            });
+                application.Id = id;
+                appService.Create(Any<Application>()).Returns(application);
+
+                var controllerContext = new ControllerContext { HttpContext = httpContext };
+                controller.ControllerContext = controllerContext;
+
+                await controller.Create(application);
+
+                httpContext.Items["identity:id"].Should().Be(id);
+            }
+
+            [Test, Auto]
+            public async Task ShouldSetModelItemInHttpContext(
+                Guid id,
+                Application application,
+                HttpContext httpContext,
+                [Frozen, Substitute] IApplicationService appService,
+                [Target] ApplicationController controller
+            )
+            {
+                application.Id = id;
+                appService.Create(Any<Application>()).Returns(application);
+
+                var controllerContext = new ControllerContext { HttpContext = httpContext };
+                controller.ControllerContext = controllerContext;
+
+                await controller.Create(application);
+
+                httpContext.Items["identity:model"].Should().Be(application);
+            }
         }
 
-        [Test, Auto]
-        public async Task HandleSns_CallsUpdate(
-            string stackId,
-            string requestId,
-            string logicalResourceId,
-            string physicalResourceId,
-            string name,
-            Uri responseUrl,
-            ApplicationCredentials creds,
-            [Frozen] IApplicationService appService,
-            [Target] ApplicationController appController
-        )
+        public class GetTests
         {
-            using var httpContext = new HttpTest();
-            httpContext.RespondWith("OK", 200);
-            appService.Update(Any<Application>()).Returns(creds);
-
-            var oldApplication = new Application { Name = name, Serial = 1 };
-            var newApplication = new Application { Name = name, Serial = 2 };
-            var request = new CloudFormationRequest<Application>
+            [Test, Auto]
+            public async Task ShouldReturnEntityIfItExists(
+                Guid id,
+                Application application,
+                [Frozen, Substitute] IApplicationRepository repository,
+                [Target] ApplicationController controller
+            )
             {
-                ResponseURL = responseUrl,
-                StackId = stackId,
-                RequestId = requestId,
-                LogicalResourceId = logicalResourceId,
-                PhysicalResourceId = physicalResourceId,
-                RequestType = CloudFormationRequestType.Update,
-                ResourceProperties = newApplication,
-                OldResourceProperties = oldApplication,
-            };
+                repository.GetById(Any<Guid>()).Returns(application);
 
-            await appController.HandleSns(new SnsMessage<CloudFormationRequest<Application>>
+                var response = await controller.Get(id);
+                var result = response.Result;
+
+                result.As<OkObjectResult>().Value.Should().Be(application);
+                await repository.Received().GetById(Is(id));
+            }
+
+            [Test, Auto]
+            public async Task ShouldReturnNotFoundIfNotExists(
+                Guid id,
+                [Frozen, Substitute] IApplicationRepository repository,
+                [Target] ApplicationController controller
+            )
             {
-                Message = request,
-            });
+                repository.GetById(Any<Guid>()).Returns((Application)null!);
+                var response = await controller.Get(id);
+                var result = response.Result;
 
-            await appService.Received().Update(Is(newApplication));
-            await appService.DidNotReceive().Create(Any<Application>());
-            await appService.DidNotReceive().Delete(Any<Application>());
-
-            httpContext
-            .ShouldHaveCalled(responseUrl.ToString())
-            .WithVerb(HttpMethod.Put)
-            .WithRequestJson(new CloudFormationResponse(request, physicalResourceId)
-            {
-                Status = CloudFormationResponseStatus.SUCCESS,
-                Data = creds,
-            });
+                result.Should().BeOfType<NotFoundResult>();
+            }
         }
 
-
-        [Test, Auto]
-        public async Task HandleSns_CallsCreate_IfApplicationNameIsDifferent_AndRespondsWithNewNameAsPhysicalResourceId(
-            string stackId,
-            string requestId,
-            string logicalResourceId,
-            string physicalResourceId,
-            string oldName,
-            string newName,
-            Uri responseUrl,
-            ApplicationCredentials creds,
-            [Frozen] IApplicationService appService,
-            [Target] ApplicationController appController
-        )
+        public class UpdateTests
         {
-            using var httpContext = new HttpTest();
-            httpContext.RespondWith("OK", 200);
-            appService.Create(Any<Application>()).Returns(creds);
-
-            var oldApplication = new Application { Name = oldName };
-            var newApplication = new Application { Name = newName };
-            var request = new CloudFormationRequest<Application>
+            [Test, Auto]
+            public async Task ShouldUpdateAndReturnApplication(
+                Guid id,
+                Application application,
+                HttpContext httpContext,
+                [Frozen, Substitute] IApplicationService appService,
+                [Target] ApplicationController controller
+            )
             {
-                ResponseURL = responseUrl,
-                StackId = stackId,
-                RequestId = requestId,
-                LogicalResourceId = logicalResourceId,
-                PhysicalResourceId = physicalResourceId,
-                RequestType = CloudFormationRequestType.Update,
-                ResourceProperties = newApplication,
-                OldResourceProperties = oldApplication,
-            };
+                appService.Update(Any<Guid>(), Any<Application>()).Returns(application);
 
-            await appController.HandleSns(new SnsMessage<CloudFormationRequest<Application>>
+                var controllerContext = new ControllerContext { HttpContext = httpContext };
+                controller.ControllerContext = controllerContext;
+
+                var response = await controller.Update(id, application);
+                var result = response.Result;
+
+                result.As<OkObjectResult>().Value.Should().Be(application);
+                await appService.Received().Update(Is(id), Is(application));
+            }
+
+            [Test, Auto]
+            public async Task ShouldSetIdItemInHttpContext(
+                Guid id,
+                Application application,
+                HttpContext httpContext,
+                [Frozen, Substitute] IApplicationService appService,
+                [Target] ApplicationController controller
+            )
             {
-                Message = request,
-            });
+                appService.Update(Any<Guid>(), Any<Application>()).Returns(application);
 
-            await appService.Received().Create(Is(newApplication));
-            await appService.DidNotReceive().Update(Any<Application>());
-            await appService.DidNotReceive().Delete(Any<Application>());
+                var controllerContext = new ControllerContext { HttpContext = httpContext };
+                controller.ControllerContext = controllerContext;
 
-            httpContext
-            .ShouldHaveCalled(responseUrl.ToString())
-            .WithVerb(HttpMethod.Put)
-            .WithRequestJson(new CloudFormationResponse(request, newName)
+                await controller.Update(id, application);
+
+                httpContext.Items["identity:id"].Should().Be(id);
+            }
+
+            [Test, Auto]
+            public async Task ShouldSetModelItemInHttpContext(
+                Guid id,
+                Application application,
+                HttpContext httpContext,
+                [Frozen, Substitute] IApplicationService appService,
+                [Target] ApplicationController controller
+            )
             {
-                Status = CloudFormationResponseStatus.SUCCESS,
-                Data = creds,
-            });
+                application.Id = id;
+                appService.Update(Any<Guid>(), Any<Application>()).Returns(application);
+
+                var controllerContext = new ControllerContext { HttpContext = httpContext };
+                controller.ControllerContext = controllerContext;
+
+                await controller.Update(id, application);
+
+                httpContext.Items["identity:model"].Should().Be(application);
+            }
         }
 
-        [Test, Auto]
-        public async Task HandleSns_CallsDelete_AndResponds(
-            string stackId,
-            string requestId,
-            string logicalResourceId,
-            Uri responseUrl,
-            ApplicationCredentials creds,
-            Application application,
-            [Frozen] IApplicationService appService,
-            [Target] ApplicationController appController
-        )
+        public class DeleteTests
         {
-            using var httpContext = new HttpTest();
-            httpContext.RespondWith("OK", 200);
-            appService.Delete(Any<Application>()).Returns(creds);
-
-            var request = new CloudFormationRequest<Application>
+            [Test, Auto]
+            public async Task ShouldUpdateAndReturnApplication(
+                Guid id,
+                Application application,
+                HttpContext httpContext,
+                [Frozen, Substitute] IApplicationService appService,
+                [Target] ApplicationController controller
+            )
             {
-                StackId = stackId,
-                RequestId = requestId,
-                LogicalResourceId = logicalResourceId,
-                ResponseURL = responseUrl,
-                RequestType = CloudFormationRequestType.Delete,
-                ResourceProperties = application,
-            };
+                appService.Delete(Any<Guid>()).Returns(application);
 
-            await appController.HandleSns(new SnsMessage<CloudFormationRequest<Application>>
+                var controllerContext = new ControllerContext { HttpContext = httpContext };
+                controller.ControllerContext = controllerContext;
+
+                var response = await controller.Delete(id);
+                var result = response.Result;
+
+                result.As<OkObjectResult>().Value.Should().Be(application);
+                await appService.Received().Delete(Is(id));
+            }
+
+            [Test, Auto]
+            public async Task ShouldSetIdItemInHttpContext(
+                Guid id,
+                Application application,
+                HttpContext httpContext,
+                [Frozen, Substitute] IApplicationService appService,
+                [Target] ApplicationController controller
+            )
             {
-                Message = request,
-            });
+                appService.Delete(Any<Guid>()).Returns(application);
 
-            await appService.Received().Delete(Is(application));
-            await appService.DidNotReceive().Create(Any<Application>());
-            await appService.DidNotReceive().Update(Any<Application>());
+                var controllerContext = new ControllerContext { HttpContext = httpContext };
+                controller.ControllerContext = controllerContext;
 
-            httpContext
-            .ShouldHaveCalled(responseUrl.ToString())
-            .WithVerb(HttpMethod.Put)
-            .WithRequestJson(new CloudFormationResponse(request, application.Name)
+                await controller.Delete(id);
+
+                httpContext.Items["identity:id"].Should().Be(id);
+            }
+
+            [Test, Auto]
+            public async Task ShouldSetModelItemInHttpContext(
+                Guid id,
+                Application application,
+                HttpContext httpContext,
+                [Frozen, Substitute] IApplicationService appService,
+                [Target] ApplicationController controller
+            )
             {
-                Status = CloudFormationResponseStatus.SUCCESS,
-                Data = creds,
-            });
-        }
+                application.Id = id;
+                appService.Delete(Any<Guid>()).Returns(application);
 
-        [Test, Auto]
-        public async Task HandleSns_ReturnsOk(
-            Uri responseUrl,
-            [Target] ApplicationController appController
-        )
-        {
-            using var httpContext = new HttpTest();
-            httpContext.RespondWith("OK", 200);
+                var controllerContext = new ControllerContext { HttpContext = httpContext };
+                controller.ControllerContext = controllerContext;
 
-            var result = await appController.HandleSns(new SnsMessage<CloudFormationRequest<Application>>
-            {
-                Message = new CloudFormationRequest<Application>
-                {
-                    ResponseURL = responseUrl,
-                    RequestType = CloudFormationRequestType.Create,
-                }
-            });
+                await controller.Delete(id);
 
-            result.Should().BeOfType<OkResult>();
-        }
-
-        [Test, Auto]
-        public async Task HandleSns_ThrowsIfResourcePropertiesAreNull(
-            string stackId,
-            string requestId,
-            string logicalResourceId,
-            string physicalResourceId,
-            Uri responseUrl,
-            [Target] ApplicationController appController
-        )
-        {
-            using var httpContext = new HttpTest();
-            httpContext.RespondWith("OK", 200);
-
-            var request = new CloudFormationRequest<Application>
-            {
-                ResponseURL = responseUrl,
-                StackId = stackId,
-                RequestId = requestId,
-                LogicalResourceId = logicalResourceId,
-                PhysicalResourceId = physicalResourceId,
-                RequestType = CloudFormationRequestType.Create,
-            };
-
-            Func<Task> func = async () => await appController.HandleSns(new SnsMessage<CloudFormationRequest<Application>>
-            {
-                Message = request,
-            });
-
-            await func.Should().NotThrowAsync();
-            httpContext.ShouldHaveCalled(responseUrl.ToString())
-                .WithVerb(HttpMethod.Put)
-                .WithContentType("application/json")
-                .WithRequestJson(new CloudFormationResponse(request)
-                {
-                    Status = CloudFormationResponseStatus.FAILED,
-                    Reason = "Application properties must be specified.",
-                });
-        }
-
-        [Test, Auto]
-        public async Task HandleSns_CatchesExceptionsAndResponds(
-            string stackId,
-            string requestId,
-            string logicalResourceId,
-            string physicalResourceId,
-            string errorMessage,
-            Uri responseUrl,
-            Application application,
-            [Frozen] IApplicationService appService,
-            [Target] ApplicationController appController
-        )
-        {
-            using var httpContext = new HttpTest();
-            httpContext.RespondWith("OK", 200);
-
-            appService.Create(Any<Application>()).Returns<ApplicationCredentials>(x => throw new Exception(errorMessage));
-
-            var request = new CloudFormationRequest<Application>
-            {
-                ResponseURL = responseUrl,
-                StackId = stackId,
-                RequestId = requestId,
-                LogicalResourceId = logicalResourceId,
-                PhysicalResourceId = physicalResourceId,
-                RequestType = CloudFormationRequestType.Create,
-                ResourceProperties = application,
-            };
-
-            Func<Task> func = async () => await appController.HandleSns(new SnsMessage<CloudFormationRequest<Application>>
-            {
-                Message = request,
-            });
-
-            await func.Should().NotThrowAsync();
-            httpContext.ShouldHaveCalled(responseUrl.ToString())
-                .WithVerb(HttpMethod.Put)
-                .WithContentType("application/json")
-                .WithRequestJson(new CloudFormationResponse(request)
-                {
-                    Status = CloudFormationResponseStatus.FAILED,
-                    Reason = errorMessage,
-                });
+                httpContext.Items["identity:model"].Should().Be(application);
+            }
         }
     }
 }

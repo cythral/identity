@@ -1,62 +1,34 @@
 using System;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 using Brighid.Identity.Users;
 
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace Brighid.Identity.Roles
 {
     public class UserRole : IdentityUserRole<Guid>
     {
-
-        private User user = new User();
-
-        private Role role = new Role();
-
-        public UserRole(User user, string roleName)
+        public override Guid UserId
         {
-            User = user;
-            UserId = user.Id;
-            Role = new Role { Name = roleName };
+            get => base.UserId;
+            set => base.UserId = (User ??= new User()).Id = value;
         }
 
-        public UserRole()
+        public override Guid RoleId
         {
-        }
-
-        private new Guid UserId
-        {
-            get => user.Id;
-            set => user.Id = value;
-        }
-
-        private new Guid RoleId
-        {
-            get => role.Id;
-            set => role.Id = value;
+            get => base.RoleId;
+            set => base.RoleId = (Role ??= new Role()).Id = value;
         }
 
         [ForeignKey("UserId")]
-        public User User
-        {
-            get => user;
-            set
-            {
-                user = value;
-                UserId = value.Id;
-            }
-        }
+        public virtual User User { get; set; }
 
         [ForeignKey("RoleId")]
-        public Role Role
-        {
-            get => role;
-            set
-            {
-                role = value;
-                RoleId = value.Id;
-            }
-        }
+        public virtual Role Role { get; set; }
     }
 }
