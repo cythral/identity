@@ -2,7 +2,9 @@ using System;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace Brighid.Identity.Roles
+using Brighid.Identity.Roles;
+
+namespace Brighid.Identity.Users
 {
     public class UserRoleConverter : JsonConverter<UserRole>
     {

@@ -41,12 +41,14 @@ namespace Brighid.Identity
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        public Startup(IConfiguration configuration, IWebHostEnvironment environment)
         {
             Configuration = configuration;
+            Environment = environment;
             DatabaseConfig = Configuration.GetSection("Database").Get<DatabaseConfig>();
         }
 
+        public IWebHostEnvironment Environment { get; }
         public IConfiguration Configuration { get; }
         public DatabaseConfig DatabaseConfig { get; }
 
@@ -61,7 +63,6 @@ namespace Brighid.Identity
             .AddJsonOptions(options =>
             {
                 options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
-                options.JsonSerializerOptions.Converters.Add(new UserRoleConverter());
             });
 
             services.Configure<EncryptionOptions>(Configuration.GetSection("EncryptionOptions"));
@@ -144,8 +145,12 @@ namespace Brighid.Identity
             options.UseMySql(conn, new MySqlServerVersion(new Version(5, 7, 0)));
             options.UseOpenIddict();
             options.AddInterceptors(new NormalizingInterceptor());
-            // options.EnableSensitiveDataLogging();
-            // options.LogTo(Console.WriteLine);
+
+            if (Environment.IsDevelopment())
+            {
+                options.EnableSensitiveDataLogging();
+                options.LogTo(Console.WriteLine);
+            }
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

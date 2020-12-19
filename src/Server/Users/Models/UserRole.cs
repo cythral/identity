@@ -1,6 +1,7 @@
 using System;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
+using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -11,6 +12,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Brighid.Identity.Roles
 {
+    [JsonConverter(typeof(UserRoleConverter))]
     public class UserRole : IdentityUserRole<Guid>
     {
         public override Guid UserId

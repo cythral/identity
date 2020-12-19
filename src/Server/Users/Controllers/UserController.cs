@@ -13,19 +13,24 @@ using static AspNet.Security.OpenIdConnect.Primitives.OpenIdConnectConstants;
 namespace Brighid.Identity.Users
 {
     [Route("/api/users")]
-    public class UserController : EntityController<User, Guid, IUserRepository>
+    public class UserController : Controller
     {
-        protected override string[] Embeds => new[] { "Roles", "Roles.User", "Roles.Role" };
+        private readonly string[] Embeds = new[] { "Roles.Role" };
+
+        private readonly IUserRepository repository;
 
         public UserController(
             IUserRepository repository
-        ) : base(repository) { }
-
-        [HttpPut]
-        public ActionResult Notify([FromBody] object request)
+        )
         {
-            Console.WriteLine(JsonSerializer.Serialize(request));
-            return Ok();
+            this.repository = repository;
+        }
+
+        [HttpGet("{id}")]
+        public async Task<ActionResult<User>> Get(Guid id)
+        {
+            var result = await repository.GetById(id, Embeds);
+            return result == null ? NotFound() : Ok(result);
         }
     }
 }

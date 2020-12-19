@@ -32,13 +32,14 @@ namespace Brighid.Identity.Applications
             this.logger = logger;
         }
 
-        [HttpPost]
-        [HttpHeader("x-amz-sns-message-type", "SubscriptionConfirmation")]
-        public async Task<ActionResult> Subscribe([FromBody] SnsMessage<object> request)
-        {
-            await request.SubscribeUrl.GetAsync();
-            return Ok();
-        }
+        // TODO: Move this to the SNS Middleware
+        // [HttpPost]
+        // [HttpHeader("x-amz-sns-message-type", "SubscriptionConfirmation")]
+        // public async Task<ActionResult> Subscribe([FromBody] SnsMessage<object> request)
+        // {
+        //     await request.SubscribeUrl.GetAsync();
+        //     return Ok();
+        // }
 
         [HttpPost]
         public async Task<ActionResult<Application>> Create([FromBody] Application application)
