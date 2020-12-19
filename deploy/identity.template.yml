@@ -131,35 +131,35 @@ Resources:
               Value: alias/SecretsKey
 
 
-  # ApplicationTopic:
-  #   Type: AWS::SNS::Topic
+  ApplicationTopic:
+    Type: AWS::SNS::Topic
     
-  # ApplicationTopicSubscription:
-  #   Type: AWS::SNS::Subscription
-  #   DependsOn:
-  #     - Service
-  #   Properties:
-  #     Protocol: https
-  #     TopicArn: !Ref ApplicationTopic
-  #     Endpoint: !Sub https://${DomainName}/api/applications
+  ApplicationTopicSubscription:
+    Type: AWS::SNS::Subscription
+    DependsOn:
+      - Service
+    Properties:
+      Protocol: https
+      TopicArn: !Ref ApplicationTopic
+      Endpoint: !Sub https://${DomainName}/api/applications
   
-  # ApplicationTopicPolicy:
-  #   Type: AWS::SNS::TopicPolicy
-  #   Properties:
-  #     PolicyDocument:
-  #       Version: 2012-10-17
-  #       Statement:
-  #         - Effect: Allow
-  #           Action: sns:Publish
-  #           Resource: "*"
-  #           Principal:
-  #             AWS:
-  #               - !Sub arn:aws:iam::${AWS::AccountId}:root
-  #               - !Sub 
-  #                 - arn:aws:iam::${MasterAccountId}:root
-  #                 - MasterAccountId: !ImportValue cfn-utilities:MasterAccountId
-  #     Topics:
-  #       - !Ref ApplicationTopic
+  ApplicationTopicPolicy:
+    Type: AWS::SNS::TopicPolicy
+    Properties:
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Action: sns:Publish
+            Resource: "*"
+            Principal:
+              AWS:
+                - !Sub arn:aws:iam::${AWS::AccountId}:root
+                - !Sub 
+                  - arn:aws:iam::${MasterAccountId}:root
+                  - MasterAccountId: !ImportValue cfn-utilities:MasterAccountId
+      Topics:
+        - !Ref ApplicationTopic
 
   TaskRole:
     Type: AWS::IAM::Role
@@ -182,9 +182,9 @@ Resources:
     Properties:
       RetentionInDays: 14
 
-# Outputs:
-#   ApplicationTopicArn:
-#     Value: !Ref ApplicationTopic
-#     Description: ARN of the application topic used for creating/updating/deleting identity client applications.
-#     Export:
-#       Name: !Sub ${AWS::StackName}:ApplicationTopicArn
+Outputs:
+  ApplicationTopicArn:
+    Value: !Ref ApplicationTopic
+    Description: ARN of the application topic used for creating/updating/deleting identity client applications.
+    Export:
+      Name: !Sub ${AWS::StackName}:ApplicationTopicArn
