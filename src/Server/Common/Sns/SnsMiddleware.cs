@@ -34,6 +34,7 @@ namespace Brighid.Identity.Sns
                 return;
             }
 
+            context.Request.EnableBuffering();
             context.Items[Constants.RequestSource] = IdentityRequestSource.Sns;
             await (snsMessageType[0] switch
             {
@@ -90,8 +91,6 @@ namespace Brighid.Identity.Sns
 
         private async Task<CloudFormationRequest<object>> ReadBody(HttpContext context)
         {
-            context.Request.EnableBuffering();
-
             var bodyStream = context.Request.Body;
             var request = await JsonSerializer.DeserializeAsync<SnsMessage<CloudFormationRequest<object>>>(bodyStream, jsonOptions);
             var message = request?.Message;
