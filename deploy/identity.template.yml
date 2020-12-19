@@ -182,9 +182,9 @@ Resources:
     Properties:
       RetentionInDays: 14
 
-Outputs:
-  ApplicationTopicArn:
-    Value: !Ref ApplicationTopic
-    Description: ARN of the application topic used for creating/updating/deleting identity client applications.
-    Export:
-      Name: !Sub ${AWS::StackName}:ApplicationTopicArn
+# Outputs:
+#   ApplicationTopicArn:
+#     Value: !Ref ApplicationTopic
+#     Description: ARN of the application topic used for creating/updating/deleting identity client applications.
+#     Export:
+#       Name: !Sub ${AWS::StackName}:ApplicationTopicArn
