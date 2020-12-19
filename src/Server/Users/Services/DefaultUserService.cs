@@ -43,7 +43,7 @@ namespace Brighid.Identity.Users
 
             role ??= defaultRole;
             var user = new User { UserName = username, Email = username };
-            user.Roles = new List<UserRole> { new UserRole(user, "Basic") };
+            user.Roles = new List<UserRole> { new UserRole(user, role) };
 
             var createResult = await userManager.CreateAsync(user, password);
             EnsureSuccess(createResult);

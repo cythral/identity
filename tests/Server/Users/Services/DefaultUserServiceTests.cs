@@ -81,7 +81,9 @@ namespace Brighid.Identity.Users
 
                 await userService.Create(username, password);
 
-                await userManager.Received().AddToRoleAsync(Is<User>(user => user.UserName == username && user.Email == username), Is("Basic"));
+                await userManager.Received().CreateAsync(Is<User>(user =>
+                    user.Roles.Any(userRole => userRole.Role.Name == "Basic")
+                ), Is(password));
             }
 
             [Test, Auto]
@@ -99,27 +101,9 @@ namespace Brighid.Identity.Users
 
                 await userService.Create(username, password, role);
 
-                await userManager.Received().AddToRoleAsync(Is<User>(user => user.UserName == username && user.Email == username), Is(role));
-            }
-
-            [Test, Auto]
-            public async Task ThrowsExceptionIfAddingToRoleFails(
-                string username,
-                string password,
-                string role,
-                IdentityError error,
-                [Frozen, Substitute] UserManager<User> userManager,
-                [Target] DefaultUserService userService
-            )
-            {
-                var userResult = IdentityResult.Success;
-                var roleResult = IdentityResult.Failed(error);
-                userManager.CreateAsync(Any<User>(), Any<string>()).Returns(userResult);
-                userManager.AddToRoleAsync(Any<User>(), Any<string>()).Returns(roleResult);
-
-                Func<Task> func = async () => await userService.Create(username, password, role);
-
-                await func.Should().ThrowAsync<CreateUserException>();
+                await userManager.Received().CreateAsync(Is<User>(user =>
+                    user.Roles.Any(userRole => userRole.Role.Name == role)
+                ), Is(password));
             }
         }
     }
