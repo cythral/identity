@@ -54,7 +54,7 @@ namespace Brighid.Identity.Sns
                 throw new Exception("SNS Message unexpectedly deserialized to null.");
             }
 
-            await request.SubscribeUrl.GetAsync();
+            await request.SubscribeURL.GetAsync();
         }
 
         private async Task HandleNotification(HttpContext context)
