@@ -1,11 +1,11 @@
 using System;
-using System.Linq;
-using System.Globalization;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Globalization;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -54,9 +54,12 @@ namespace Brighid.Identity.Roles
                                 select role.Id;
 
                     var existingId = await query.FirstOrDefaultAsync(cancellationToken);
-                    entry.State = await query.AnyAsync(cancellationToken) && existingId != Id
-                        ? EntityState.Unchanged
-                        : EntityState.Added;
+                    entry.State = EntityState.Added;
+
+                    if (await query.AnyAsync(cancellationToken) && existingId != Id)
+                    {
+                        entry.State = EntityState.Unchanged;
+                    }
                     break;
             }
         }

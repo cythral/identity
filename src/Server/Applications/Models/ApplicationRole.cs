@@ -54,6 +54,16 @@ namespace Brighid.Identity.Applications
                     if (await query.AnyAsync(cancellationToken))
                     {
                         entry.State = EntityState.Unchanged;
+                        return;
+                    }
+
+                    var existingRoleQuery = from role in context.Roles.AsQueryable()
+                                            where role.Name == Role.Name
+                                            select role;
+
+                    if (await existingRoleQuery.AnyAsync(cancellationToken))
+                    {
+                        Role = await existingRoleQuery.FirstAsync(cancellationToken);
                     }
                     break;
             }
