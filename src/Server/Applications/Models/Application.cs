@@ -2,16 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using System.Text.Json.Serialization;
-using System.Runtime.CompilerServices;
-using System.Threading;
-using System.Threading.Tasks;
-
-using Brighid.Identity.Roles;
-
-using Microsoft.EntityFrameworkCore;
 
 namespace Brighid.Identity.Applications
 {
@@ -77,6 +67,6 @@ namespace Brighid.Identity.Applications
         /// </remarks>
         /// <value>The un-encrypted application/client secret.</value>
         [NotMapped]
-        public string Secret { get; set; } = "";
+        public string? Secret { get; set; } = null;
     }
 }

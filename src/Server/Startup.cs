@@ -2,11 +2,12 @@ using System;
 using System.Globalization;
 using System.IdentityModel.Tokens.Jwt;
 using System.IO;
-using System.Security.Claims;
 using System.Linq;
+using System.Security.Claims;
 using System.Security.Cryptography.X509Certificates;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Threading.Tasks;
 
 using Amazon.KeyManagementService;
 using Amazon.Runtime;
@@ -17,11 +18,9 @@ using AspNetCore.ServiceRegistration.Dynamic.Attributes;
 using AspNetCore.ServiceRegistration.Dynamic.Extensions;
 using AspNetCore.ServiceRegistration.Dynamic.Interfaces;
 
-using Brighid.Identity.Users;
 using Brighid.Identity.Roles;
 using Brighid.Identity.Sns;
-
-using System.Threading.Tasks;
+using Brighid.Identity.Users;
 
 using Flurl.Http;
 
@@ -164,6 +163,7 @@ namespace Brighid.Identity
 
             app.Use(async (context, next) =>
             {
+                context.Items[Constants.RequestSource] = IdentityRequestSource.Direct;
                 context.Request.Headers.TryGetValue("content-type", out var contentType);
 
                 if (!contentType.Any() || contentType.Any(type => type.StartsWith("text/plain", StringComparison.OrdinalIgnoreCase)))

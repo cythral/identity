@@ -2,13 +2,7 @@ using System;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-using Brighid.Identity.Users;
-
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-
-using static AspNet.Security.OpenIdConnect.Primitives.OpenIdConnectConstants;
 
 namespace Brighid.Identity.Users
 {
@@ -31,6 +25,14 @@ namespace Brighid.Identity.Users
         {
             var result = await repository.GetById(id, Embeds);
             return result == null ? NotFound() : Ok(result);
+        }
+
+        [HttpPut]
+        public async Task<ActionResult> Notify([FromBody] object request)
+        {
+            await Task.CompletedTask;
+            Console.WriteLine(JsonSerializer.Serialize(request));
+            return Ok();
         }
     }
 }

@@ -1,16 +1,9 @@
 using System;
-using System.Linq;
-using System.Globalization;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
 using OpenIddict.Abstractions;
 using OpenIddict.Core;
 using OpenIddict.EntityFrameworkCore.Models;
-
-using Microsoft.EntityFrameworkCore;
-
-using Brighid.Identity.Roles;
 
 namespace Brighid.Identity.Applications
 {

@@ -2,19 +2,12 @@ using System;
 using System.IO;
 using System.Net.Http;
 using System.Text.Json;
-using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 using Flurl.Http;
 
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.Features;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Abstractions;
-using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Primitives;
-
-using Morcatko.AspNetCore.JsonMergePatch;
 
 using static Brighid.Identity.Sns.CloudFormationRequestType;
 
@@ -41,6 +34,30 @@ namespace Brighid.Identity.Sns
                 return;
             }
 
+            context.Items[Constants.RequestSource] = IdentityRequestSource.Sns;
+            await (snsMessageType[0] switch
+            {
+                "SubscriptionConfirmation" => HandleSubscriptionConfirmation(context),
+                "Notification" => HandleNotification(context),
+                _ => throw new Exception("Message type not supported."),
+            });
+        }
+
+        private async Task HandleSubscriptionConfirmation(HttpContext context)
+        {
+            var bodyStream = context.Request.Body;
+            var request = await JsonSerializer.DeserializeAsync<SnsMessage<object>>(bodyStream, jsonOptions);
+
+            if (request == null)
+            {
+                throw new Exception("SNS Message unexpectedly deserialized to null.");
+            }
+
+            await request.SubscribeUrl.GetAsync();
+        }
+
+        private async Task HandleNotification(HttpContext context)
+        {
             var message = await ReadBody(context);
             var resourceProperties = message.ResourceProperties ?? new { };
             await WriteBody(context, resourceProperties);
@@ -50,8 +67,8 @@ namespace Brighid.Identity.Sns
             {
                 await next(context);
 
-                context.Items.TryGetValue("identity__id", out var physicalResourceId);
-                context.Items.TryGetValue("identity__model", out var model);
+                context.Items.TryGetValue(CloudFormationConstants.Id, out var physicalResourceId);
+                context.Items.TryGetValue(CloudFormationConstants.Data, out var model);
 
                 await message.ResponseURL.PutJsonAsync(new CloudFormationResponse(message, physicalResourceId?.ToString())
                 {

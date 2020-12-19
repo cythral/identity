@@ -1,16 +1,10 @@
 using System;
-using System.Text.Json;
-using System.IO;
 using System.Threading.Tasks;
 
 using Brighid.Identity.Sns;
 
-using Flurl.Http;
-
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-
-using static Brighid.Identity.Sns.CloudFormationRequestType;
 
 namespace Brighid.Identity.Applications
 {
@@ -32,23 +26,22 @@ namespace Brighid.Identity.Applications
             this.logger = logger;
         }
 
-        // TODO: Move this to the SNS Middleware
-        // [HttpPost]
-        // [HttpHeader("x-amz-sns-message-type", "SubscriptionConfirmation")]
-        // public async Task<ActionResult> Subscribe([FromBody] SnsMessage<object> request)
-        // {
-        //     await request.SubscribeUrl.GetAsync();
-        //     return Ok();
-        // }
+        private void SetSnsContextItems(Guid id, Application data)
+        {
+            if ((IdentityRequestSource?)HttpContext.Items[Constants.RequestSource] == IdentityRequestSource.Sns)
+            {
+                HttpContext.Items[CloudFormationConstants.Id] = id;
+                HttpContext.Items[CloudFormationConstants.Data] = data;
+                data.Secret = null;
+            }
+        }
 
         [HttpPost]
         public async Task<ActionResult<Application>> Create([FromBody] Application application)
         {
             var result = await appService.Create(application);
             var destination = new Uri($"/api/applications/{application.Id}", UriKind.Relative);
-
-            HttpContext.Items["identity:id"] = result.Id;
-            HttpContext.Items["identity:model"] = result;
+            SetSnsContextItems(result.Id, result);
 
             return Created(destination, result);
         }
@@ -64,9 +57,7 @@ namespace Brighid.Identity.Applications
         public async Task<ActionResult<Application>> Update(Guid id, [FromBody] Application application)
         {
             var result = await appService.Update(id, application);
-
-            HttpContext.Items["identity:id"] = id;
-            HttpContext.Items["identity:model"] = result;
+            SetSnsContextItems(id, result);
 
             return Ok(result);
         }
@@ -75,9 +66,7 @@ namespace Brighid.Identity.Applications
         public async Task<ActionResult<Application>> Delete(Guid id)
         {
             var result = await appService.Delete(id);
-
-            HttpContext.Items["identity:id"] = id;
-            HttpContext.Items["identity:model"] = result;
+            SetSnsContextItems(id, result);
 
             return Ok(result);
         }
