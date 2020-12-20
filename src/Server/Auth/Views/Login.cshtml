@@ -11,20 +11,23 @@
 }
 
 <!-- TODO: Remove Bootstrap -->
-<form method="post" class="container align-center">
+<form method="post" class="auth-form">
     <input type="hidden" asp-for="RedirectUri" />
 
     <div asp-validation-summary="All" class="text-danger"></div>
 
-    <div class="form-field w-100 my-2">
+    <div class="form-field">
         <input placeholder="Username" asp-for="Username" class="w-100" />
         <span asp-validation-for="Username" class="text-danger"></span>
     </div>
 
-    <div class="form-field w-100 my-2">
+    <div class="form-field">
         <input placeholder="Password" type="password" asp-for="Password" class="w-100" />
         <span asp-validation-for="Password" class="text-danger"></span>
     </div>
 
-    <input value="Login" type="submit" class="w-25" /> or <a href="/signup?redirect_uri=@redirectUri">Signup</a>
+    <div class="form-actions">
+        <input value="Login" type="submit" class="w-25" />
+        <div>or <a href="/signup?redirect_uri=@redirectUri">Signup</a></div>
+    </div>
 </form>

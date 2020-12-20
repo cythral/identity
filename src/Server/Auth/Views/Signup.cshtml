@@ -6,26 +6,32 @@
     Layout = "_Layout";
 }
 
-<!-- TODO: Remove Bootstrap -->
-<form method="post" class="container align-center">
+@{
+    var redirectUri = Uri.EscapeDataString(Model.RedirectUri.ToString());
+}
+
+<form method="post">
     <input type="hidden" asp-for="RedirectUri" />
 
     <div asp-validation-summary="All" class="text-danger"></div>
 
-    <div class="form-field w-100 my-2">
-        <input placeholder="Username" asp-for="Username" class="w-100" />
+    <div class="form-field">
+        <input placeholder="Username" asp-for="Username" />
         <span asp-validation-for="Username" class="text-danger"></span>
     </div>
 
     <div class="form-field w-100 my-2">
-        <input placeholder="Password" type="password" asp-for="Password" class="w-100" />
+        <input placeholder="Password" type="password" asp-for="Password" />
         <span asp-validation-for="Password" class="text-danger"></span>
     </div>
 
     <div class="form-field w-100 my-2">
-        <input placeholder="Confirm Password" type="password" asp-for="ConfirmPassword" class="w-100" />
+        <input placeholder="Confirm Password" type="password" asp-for="ConfirmPassword" />
         <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
     </div>
 
-    <input value="Signup" type="submit" class="w-25" />
+    <div class="form-actions">
+        <input value="Signup" type="submit" class="w-25" />
+        <div>or <a href="/login?redirect_uri=@redirectUri">Login</a></div>
+    </div>
 </form>
