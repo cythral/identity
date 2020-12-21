@@ -6,8 +6,6 @@ using Brighid.Identity.Users;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
-using static AspNet.Security.OpenIdConnect.Primitives.OpenIdConnectConstants;
-
 #pragma warning disable IDE0046 // if statements can be simplified to ternaries
 
 namespace Brighid.Identity.Auth

@@ -58,6 +58,14 @@ Resources:
             HostedZoneId: !ImportValue cfn-gateway:LoadBalancerCanonicalHostedZoneId
             DNSName: !ImportValue cfn-gateway:LoadBalancerDnsName
 
+  TestClient:
+    Type: Custom::IdentityApplication
+    Properties:
+      ServiceToken: arn:aws:sns:us-east-1:694042977401:identity-ApplicationTopic-ETVXNZ73HR8R
+      Name: test-application
+      Roles:
+        - test-role
+
   ArtifactStore:
     Type: AWS::S3::Bucket
 

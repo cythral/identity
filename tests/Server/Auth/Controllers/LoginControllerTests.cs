@@ -1,10 +1,6 @@
 using System;
 using System.Security.Claims;
-using System.Text.Json;
-using System.Threading;
 using System.Threading.Tasks;
-
-using AspNet.Security.OpenIdConnect.Primitives;
 
 using AutoFixture.AutoNSubstitute;
 using AutoFixture.NUnit3;
@@ -13,8 +9,6 @@ using Brighid.Identity.Users;
 
 using FluentAssertions;
 
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
