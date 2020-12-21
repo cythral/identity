@@ -16,10 +16,10 @@ services:
       - ~/.vsdbg:/remote_debugger:rw
     environment:
       CONFIGURATION: Debug
-      Database__Host: mutedac-cluster-v6msuwf7t7ti.cluster-ckrxsvj6enuw.us-east-1.rds.amazonaws.com
-      Database__Name: identity
-      Database__User: cythral
-      Database__Password: 0wf1FRJs&HTdGAiVhWUs
+      Database__Host: db
+      Database__Name: ${DB_NAME}
+      Database__User: ${DB_USER}
+      Database__Password: ${DB_PASSWORD}
       EncryptionOptions__KmsKeyId: ${ENCRYPTION_KEY_ID}
       AWS_REGION: us-east-1
 
