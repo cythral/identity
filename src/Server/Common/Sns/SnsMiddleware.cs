@@ -61,11 +61,12 @@ namespace Brighid.Identity.Sns
         {
             var message = await ReadBody(context);
             var resourceProperties = message.ResourceProperties ?? new { };
-            await WriteBody(context, resourceProperties);
-            UpdateRequestProperties(context, message);
 
             try
             {
+                await WriteBody(context, resourceProperties);
+                UpdateRequestProperties(context, message);
+
                 await next(context);
 
                 context.Items.TryGetValue(CloudFormationConstants.Id, out var physicalResourceId);
@@ -122,7 +123,7 @@ namespace Brighid.Identity.Sns
                 _ => throw new Exception("Not supported"),
             };
 
-            if (request.RequestType != Create && request.PhysicalResourceId != null)
+            if (request.RequestType != Create && !string.IsNullOrEmpty(request.PhysicalResourceId))
             {
                 context.Request.Path += "/" + request.PhysicalResourceId;
                 context.Request.RouteValues["id"] = new Guid(request.PhysicalResourceId);
