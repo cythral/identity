@@ -22,7 +22,6 @@ namespace Brighid.Identity.Sns
         {
             this.next = next;
             this.jsonOptions = new JsonSerializerOptions();
-            this.jsonOptions.Converters.Add(new CloudFormationRequestTypeConverter());
         }
 
         public async Task Invoke(HttpContext context)
@@ -65,7 +64,7 @@ namespace Brighid.Identity.Sns
             try
             {
                 Console.WriteLine("Received CloudFormation Request with Response URL: " + message.ResponseURL);
-                Console.WriteLine("Message: " + JsonSerializer.Serialize(message));
+                Console.WriteLine("Message: " + JsonSerializer.Serialize(message, jsonOptions));
                 await WriteBody(context, resourceProperties);
                 UpdateRequestProperties(context, message);
 

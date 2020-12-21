@@ -6,7 +6,7 @@ namespace Brighid.Identity.Sns
     public class CloudFormationRequest<T> : ICloudFormationRequest<T>
     {
         [JsonConverter(typeof(CloudFormationRequestTypeConverter))]
-        public CloudFormationRequestType RequestType { get; init; }
+        public CloudFormationRequestType RequestType { get; set; }
 
         public Uri ResponseURL { get; init; }
 

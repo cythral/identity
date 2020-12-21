@@ -21,7 +21,14 @@ namespace Brighid.Identity.Sns
 
         public override void Write(Utf8JsonWriter writer, CloudFormationRequestType value, JsonSerializerOptions options)
         {
-            var stringValue = JsonSerializer.Serialize(value, options);
+            var stringValue = value switch
+            {
+                CloudFormationRequestType.Create => "CREATE",
+                CloudFormationRequestType.Update => "UPDATE",
+                CloudFormationRequestType.Delete => "DELETE",
+                _ => throw new Exception("Invalid value given"),
+            };
+
             writer.WriteStringValue(stringValue);
         }
     }
