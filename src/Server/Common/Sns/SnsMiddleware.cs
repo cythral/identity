@@ -65,6 +65,7 @@ namespace Brighid.Identity.Sns
             try
             {
                 Console.WriteLine("Received CloudFormation Request with Response URL: " + message.ResponseURL);
+                Console.WriteLine("Message: " + JsonSerializer.Serialize(message));
                 await WriteBody(context, resourceProperties);
                 UpdateRequestProperties(context, message);
 
