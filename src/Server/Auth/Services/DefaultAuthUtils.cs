@@ -29,14 +29,16 @@ namespace Brighid.Identity.Auth
             this.roleRepository = roleRepository;
         }
 
-        public async Task<ClaimsIdentity> CreateClaimsIdentity(string applicationName, CancellationToken cancellationToken = default)
+        public async Task<ClaimsIdentity> CreateClaimsIdentity(Guid applicationId, CancellationToken cancellationToken = default)
         {
-            var roles = await roleRepository.FindRolesForApplication(applicationName, cancellationToken);
+            var roles = await roleRepository.FindRolesForApplication(applicationId, cancellationToken);
             var roleNames = roles.Select(role => $"\"{role.Name}\"");
 
             var result = new ClaimsIdentity(OpenIddictServerDefaults.AuthenticationScheme, Claims.Name, Claims.Role);
-            result.AddClaim(Claims.Name, applicationName, Destinations.AccessToken, Destinations.IdentityToken);
-            result.AddClaim(Claims.Subject, $"{applicationName}@identity.brigh.id", Destinations.AccessToken, Destinations.IdentityToken);
+
+            // TODO: Set Claims.Name to Application Name
+            result.AddClaim(Claims.Name, applicationId.ToString(), Destinations.AccessToken, Destinations.IdentityToken);
+            result.AddClaim(Claims.Subject, applicationId.ToString(), Destinations.AccessToken, Destinations.IdentityToken);
 
             var roleClaim = new Claim(Claims.Role, $"[{string.Join(',', roleNames)}]", JsonClaimValueTypes.JsonArray);
             roleClaim.SetDestinations(Destinations.AccessToken, Destinations.IdentityToken);

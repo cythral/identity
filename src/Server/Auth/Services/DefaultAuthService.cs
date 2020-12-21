@@ -29,8 +29,8 @@ namespace Brighid.Identity.Auth
                 throw new InvalidOperationException("Expected client credentials grant type.");
             }
 
-            var name = request.ClientId.Replace("@identity.brigh.id", "", StringComparison.OrdinalIgnoreCase);
-            var identity = await authUtils.CreateClaimsIdentity(name, cancellationToken);
+            var clientId = new Guid(request.ClientId);
+            var identity = await authUtils.CreateClaimsIdentity(clientId, cancellationToken);
 
             var existingScopes = request.Scope?.Split(' ') ?? Array.Empty<string>();
             var scopes = new HashSet<string>(existingScopes).Union(defaultScopes);

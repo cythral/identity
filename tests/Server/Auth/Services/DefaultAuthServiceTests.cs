@@ -39,25 +39,24 @@ namespace Brighid.Identity.Auth
 
             [Test, Auto]
             public async Task ShouldCreateClaimsIdentity(
-                string name,
+                Guid id,
                 OpenIdConnectRequest request,
                 [Frozen] IAuthUtils authUtils,
                 [Target] DefaultAuthService authService,
                 CancellationToken cancellationToken
             )
             {
-                var clientId = $"{name}@identity.brigh.id";
-                request.ClientId = clientId;
+                request.ClientId = id.ToString();
                 request.GrantType = OpenIdConnectConstants.GrantTypes.ClientCredentials;
 
                 await authService.ClientExchange(request, cancellationToken);
 
-                await authUtils.Received().CreateClaimsIdentity(Is(name), Is(cancellationToken));
+                await authUtils.Received().CreateClaimsIdentity(Is(id), Is(cancellationToken));
             }
 
             [Test, Auto]
             public async Task ShouldCreateAuthTicket(
-                string name,
+                Guid id,
                 OpenIdConnectRequest request,
                 ClaimsIdentity claimsIdentity,
                 AuthenticationTicket authenticationTicket,
@@ -66,11 +65,11 @@ namespace Brighid.Identity.Auth
                 CancellationToken cancellationToken
             )
             {
-                var clientId = $"{name}@identity.brigh.id";
+                var clientId = id.ToString();
                 request.ClientId = clientId;
                 request.GrantType = OpenIdConnectConstants.GrantTypes.ClientCredentials;
 
-                authUtils.CreateClaimsIdentity(Any<string>(), Any<CancellationToken>()).Returns(claimsIdentity);
+                authUtils.CreateClaimsIdentity(Any<Guid>(), Any<CancellationToken>()).Returns(claimsIdentity);
                 authUtils.CreateAuthTicket(Any<ClaimsIdentity>(), Any<IEnumerable<string>>()).Returns(authenticationTicket);
 
                 var result = await authService.ClientExchange(request, cancellationToken);
@@ -83,7 +82,7 @@ namespace Brighid.Identity.Auth
 
             [Test, Auto]
             public async Task ShouldCreateAuthTicket_WithScope(
-                string name,
+                Guid id,
                 string[] scopes,
                 OpenIdConnectRequest request,
                 AuthenticationTicket authenticationTicket,
@@ -93,12 +92,12 @@ namespace Brighid.Identity.Auth
                 CancellationToken cancellationToken
             )
             {
-                var clientId = $"{name}@identity.brigh.id";
+                var clientId = id.ToString();
                 request.ClientId = clientId;
                 request.GrantType = OpenIdConnectConstants.GrantTypes.ClientCredentials;
                 request.Scope = string.Join(' ', scopes);
 
-                authUtils.CreateClaimsIdentity(Any<string>(), Any<CancellationToken>()).Returns(claimsIdentity);
+                authUtils.CreateClaimsIdentity(Any<Guid>(), Any<CancellationToken>()).Returns(claimsIdentity);
                 authUtils.CreateAuthTicket(Any<ClaimsIdentity>(), Any<IEnumerable<string>>()).Returns(authenticationTicket);
 
                 var result = await authService.ClientExchange(request, cancellationToken);

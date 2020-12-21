@@ -12,6 +12,6 @@ namespace Brighid.Identity.Applications
     [ScopedService]
     public interface IApplicationRoleRepository : IRepository<ApplicationRole, Guid>
     {
-        Task<IEnumerable<Role>> FindRolesForApplication(string applicationName, CancellationToken cancellationToken = default);
+        Task<IEnumerable<Role>> FindRolesForApplication(Guid applicationId, CancellationToken cancellationToken = default);
     }
 }

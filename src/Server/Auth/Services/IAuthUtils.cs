@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading;
@@ -12,7 +13,7 @@ namespace Brighid.Identity.Auth
     [ScopedService]
     public interface IAuthUtils
     {
-        Task<ClaimsIdentity> CreateClaimsIdentity(string applicationName, CancellationToken cancellationToken = default);
+        Task<ClaimsIdentity> CreateClaimsIdentity(Guid applicationId, CancellationToken cancellationToken = default);
         AuthenticationTicket CreateAuthTicket(ClaimsIdentity claimsIdentity, IEnumerable<string>? scopes = null);
     }
 }

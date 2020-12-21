@@ -1,3 +1,4 @@
+using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
@@ -29,23 +30,23 @@ namespace Brighid.Identity.Auth
         {
             [Test, Auto]
             public async Task ShouldSetNameClaim(
-                string name,
+                Guid id,
                 [Target] DefaultAuthUtils authUtils
             )
             {
-                var result = await authUtils.CreateClaimsIdentity(name);
+                var result = await authUtils.CreateClaimsIdentity(id);
 
                 var nameClaim = result.GetClaim(OpenIdConnectConstants.Claims.Name);
-                nameClaim.Should().Be(name);
+                nameClaim.Should().Be(id.ToString());
             }
 
             [Test, Auto]
             public async Task Name_ShouldHaveAccessTokenDestination(
-                string name,
+                Guid id,
                 [Target] DefaultAuthUtils authUtils
             )
             {
-                var result = await authUtils.CreateClaimsIdentity(name);
+                var result = await authUtils.CreateClaimsIdentity(id);
                 var nameClaim = result.Claims.Where(claim => claim.Type == OpenIdConnectConstants.Claims.Name).First();
                 var destinations = nameClaim.GetDestinations();
 
@@ -54,11 +55,11 @@ namespace Brighid.Identity.Auth
 
             [Test, Auto]
             public async Task Name_ShouldHaveIdentityTokenDestination(
-                string name,
+                Guid id,
                 [Target] DefaultAuthUtils authUtils
             )
             {
-                var result = await authUtils.CreateClaimsIdentity(name);
+                var result = await authUtils.CreateClaimsIdentity(id);
                 var nameClaim = result.Claims.Where(claim => claim.Type == OpenIdConnectConstants.Claims.Name).First();
                 var destinations = nameClaim.GetDestinations();
 
@@ -67,23 +68,23 @@ namespace Brighid.Identity.Auth
 
             [Test, Auto]
             public async Task ShouldSetSubjectClaim(
-                string name,
+                Guid id,
                 [Target] DefaultAuthUtils authUtils
             )
             {
-                var result = await authUtils.CreateClaimsIdentity(name);
+                var result = await authUtils.CreateClaimsIdentity(id);
 
                 var subjectClaim = result.GetClaim(OpenIdConnectConstants.Claims.Subject);
-                subjectClaim.Should().Be($"{name}@identity.brigh.id");
+                subjectClaim.Should().Be(id.ToString());
             }
 
             [Test, Auto]
             public async Task Subject_ShouldHaveAccessTokenDestination(
-                string name,
+                Guid id,
                 [Target] DefaultAuthUtils authUtils
             )
             {
-                var result = await authUtils.CreateClaimsIdentity(name);
+                var result = await authUtils.CreateClaimsIdentity(id);
                 var subjectClaim = result.Claims.Where(claim => claim.Type == OpenIdConnectConstants.Claims.Subject).First();
                 var destinations = subjectClaim.GetDestinations();
 
@@ -92,11 +93,11 @@ namespace Brighid.Identity.Auth
 
             [Test, Auto]
             public async Task Subject_ShouldHaveIdentityTokenDestination(
-                string name,
+                Guid id,
                 [Target] DefaultAuthUtils authUtils
             )
             {
-                var result = await authUtils.CreateClaimsIdentity(name);
+                var result = await authUtils.CreateClaimsIdentity(id);
                 var subjectClaim = result.Claims.Where(claim => claim.Type == OpenIdConnectConstants.Claims.Subject).First();
                 var destinations = subjectClaim.GetDestinations();
 
@@ -105,29 +106,29 @@ namespace Brighid.Identity.Auth
 
             [Test, Auto]
             public async Task Should_SetRoleClaim(
-                string name,
+                Guid id,
                 Role role1,
                 Role role2,
                 [Frozen] IApplicationRoleRepository roleRepository,
                 [Target] DefaultAuthUtils authUtils
             )
             {
-                roleRepository.FindRolesForApplication(Any<string>()).Returns(new Role[] { role1, role2 });
+                roleRepository.FindRolesForApplication(Any<Guid>()).Returns(new Role[] { role1, role2 });
 
-                var result = await authUtils.CreateClaimsIdentity(name);
+                var result = await authUtils.CreateClaimsIdentity(id);
                 var roleClaim = result.GetClaim(OpenIdConnectConstants.Claims.Role);
 
                 roleClaim.Should().Be($"[\"{role1.Name}\",\"{role2.Name}\"]");
-                await roleRepository.Received().FindRolesForApplication(Is(name));
+                await roleRepository.Received().FindRolesForApplication(Is(id));
             }
 
             [Test, Auto]
             public async Task Role_ShouldBeJsonArray(
-                string name,
+                Guid id,
                 [Target] DefaultAuthUtils authUtils
             )
             {
-                var result = await authUtils.CreateClaimsIdentity(name);
+                var result = await authUtils.CreateClaimsIdentity(id);
                 var roleClaim = result.Claims.Where(claim => claim.Type == OpenIdConnectConstants.Claims.Role).First();
 
                 roleClaim.ValueType.Should().Be(JsonClaimValueTypes.JsonArray);
@@ -135,11 +136,11 @@ namespace Brighid.Identity.Auth
 
             [Test, Auto]
             public async Task Role_ShouldHaveAccessTokenDestination(
-                string name,
+                Guid id,
                 [Target] DefaultAuthUtils authUtils
             )
             {
-                var result = await authUtils.CreateClaimsIdentity(name);
+                var result = await authUtils.CreateClaimsIdentity(id);
                 var roleClaim = result.Claims.Where(claim => claim.Type == OpenIdConnectConstants.Claims.Role).First();
                 var destinations = roleClaim.GetDestinations();
 
@@ -148,11 +149,11 @@ namespace Brighid.Identity.Auth
 
             [Test, Auto]
             public async Task Role_ShouldHaveIdentityTokenDestination(
-                string name,
+                Guid id,
                 [Target] DefaultAuthUtils authUtils
             )
             {
-                var result = await authUtils.CreateClaimsIdentity(name);
+                var result = await authUtils.CreateClaimsIdentity(id);
                 var roleClaim = result.Claims.Where(claim => claim.Type == OpenIdConnectConstants.Claims.Role).First();
                 var destinations = roleClaim.GetDestinations();
 
@@ -161,11 +162,11 @@ namespace Brighid.Identity.Auth
 
             [Test, Auto]
             public async Task AuthenticationScheme_ShouldBeSetToDefault(
-                string name,
+                Guid id,
                 [Target] DefaultAuthUtils authUtils
             )
             {
-                var result = await authUtils.CreateClaimsIdentity(name);
+                var result = await authUtils.CreateClaimsIdentity(id);
                 var scheme = result.AuthenticationType;
 
                 scheme.Should().Be(OpenIddictServerDefaults.AuthenticationScheme);
@@ -173,11 +174,11 @@ namespace Brighid.Identity.Auth
 
             [Test, Auto]
             public async Task NameClaimType_ShouldBeSet(
-                string name,
+                Guid id,
                 [Target] DefaultAuthUtils authUtils
             )
             {
-                var result = await authUtils.CreateClaimsIdentity(name);
+                var result = await authUtils.CreateClaimsIdentity(id);
                 var nameClaimType = result.NameClaimType;
 
                 nameClaimType.Should().Be(OpenIdConnectConstants.Claims.Name);
@@ -185,11 +186,11 @@ namespace Brighid.Identity.Auth
 
             [Test, Auto]
             public async Task RoleType_ShouldBeSet(
-                string name,
+                Guid id,
                 [Target] DefaultAuthUtils authUtils
             )
             {
-                var result = await authUtils.CreateClaimsIdentity(name);
+                var result = await authUtils.CreateClaimsIdentity(id);
                 var roleClaimType = result.RoleClaimType;
 
                 roleClaimType.Should().Be(OpenIdConnectConstants.Claims.Role);
