@@ -23,4 +23,5 @@ phases:
         set -eo pipefail
         dotnet nuget push ${CODEBUILD_SRC_DIR_PACKAGES}/*.nupkg \
           -k ${NUGET_TOKEN} \
-          -s https://api.nuget.org/v3/index.json
+          -s https://api.nuget.org/v3/index.json \
+          --skip-duplicate
