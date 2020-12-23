@@ -123,7 +123,7 @@ namespace Brighid.Identity.Auth
 
                 var result = await loginController.Login(request) as ViewResult;
 
-                await signInManager.Received().PasswordSignInAsync(Is(request.Username), Is(request.Password), Is(false), Is(false));
+                await signInManager.Received().PasswordSignInAsync(Is(request.Email), Is(request.Password), Is(false), Is(false));
                 var errors = loginController.ModelState["loginErrors"].Errors;
 
                 result!.Should().NotBeNull();

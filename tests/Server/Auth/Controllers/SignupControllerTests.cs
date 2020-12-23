@@ -11,7 +11,6 @@ using FluentAssertions;
 
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
 
 using NSubstitute;
 
@@ -135,7 +134,7 @@ namespace Brighid.Identity.Auth
                 var result = await signupController.Signup(request) as ViewResult;
                 var errors = signupController.ModelState["signupError"].Errors;
 
-                await userService.Received().Create(Is(request.Username), Is(request.Password));
+                await userService.Received().Create(Is(request.Email), Is(request.Password));
                 result!.Should().NotBeNull();
                 errors.Should().Contain(error => error.ErrorMessage == message1);
                 errors.Should().Contain(error => error.ErrorMessage == message2);
