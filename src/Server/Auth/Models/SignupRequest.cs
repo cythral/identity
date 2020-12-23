@@ -8,7 +8,7 @@ namespace Brighid.Identity.Auth
     public class SignupRequest
     {
         [BindProperty]
-        public string Username { get; set; }
+        public string Email { get; set; }
 
         [BindProperty]
         [DataType(DataType.Password)]

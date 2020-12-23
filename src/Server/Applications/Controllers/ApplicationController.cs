@@ -1,29 +1,31 @@
 using System;
 using System.Threading.Tasks;
 
+using Brighid.Identity.Roles;
 using Brighid.Identity.Sns;
 
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 
 namespace Brighid.Identity.Applications
 {
     [Route("/api/applications")]
+    [Roles(new[]
+    {
+        nameof(BuiltInRole.ApplicationManager),
+        nameof(BuiltInRole.Administrator)
+    })]
     public class ApplicationController : Controller
     {
         private readonly IApplicationService appService;
         private readonly IApplicationRepository appRepository;
-        private readonly ILogger<ApplicationController> logger;
 
         public ApplicationController(
             IApplicationService appService,
-            IApplicationRepository appRepository,
-            ILogger<ApplicationController> logger
+            IApplicationRepository appRepository
         )
         {
             this.appService = appService;
             this.appRepository = appRepository;
-            this.logger = logger;
         }
 
         private void SetSnsContextItems(Guid id, Application data)

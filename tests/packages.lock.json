@@ -393,15 +393,6 @@
           "Microsoft.Extensions.Identity.Stores": "5.0.0"
         }
       },
-      "Microsoft.AspNetCore.JsonPatch": {
-        "type": "Transitive",
-        "resolved": "3.0.0",
-        "contentHash": "LQVXEPxV4jIUiVHHUgBzZxOePSdD7wxV1ndtjg1a76JMqoK3siFka2pVfJXwRq0G4hxbYVWxvamqO733wUhQiA==",
-        "dependencies": {
-          "Microsoft.CSharp": "4.6.0",
-          "Newtonsoft.Json": "12.0.2"
-        }
-      },
       "Microsoft.AspNetCore.Mvc.Abstractions": {
         "type": "Transitive",
         "resolved": "2.0.0",
@@ -876,22 +867,6 @@
           "Microsoft.NETCore.Platforms": "2.0.0",
           "System.Security.AccessControl": "4.4.0",
           "System.Security.Principal.Windows": "4.4.0"
-        }
-      },
-      "Morcatko.AspNetCore.JsonMergePatch.Document": {
-        "type": "Transitive",
-        "resolved": "3.0.6",
-        "contentHash": "pJQF9C7n/ZLHhtMhKJZ4gahKBNzbZG3BPrhyApmhIxvC1aDg6+kXpNhaEHPT9P17K2RX1KTrK2Z1Az3Yuo2g7Q==",
-        "dependencies": {
-          "Microsoft.AspNetCore.JsonPatch": "3.0.0"
-        }
-      },
-      "Morcatko.AspNetCore.JsonMergePatch.SystemText": {
-        "type": "Transitive",
-        "resolved": "3.0.6",
-        "contentHash": "Z0E7/rJvyWT8X85qTCM/lihS+G6QWmt7xZRgP6KYPoNLxVao+xzKTxFgGLWZ6ZstVq7ZD7c2t/aKsnofX+pL5g==",
-        "dependencies": {
-          "Morcatko.AspNetCore.JsonMergePatch.Document": "3.0.6"
         }
       },
       "MySqlConnector": {
@@ -1899,7 +1874,6 @@
           "Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation": "5.0.0",
           "Microsoft.EntityFrameworkCore.Design": "5.0.0",
           "Microsoft.IdentityModel.Tokens": "6.7.1",
-          "Morcatko.AspNetCore.JsonMergePatch.SystemText": "3.0.6",
           "OpenIddict": "2.0.1",
           "OpenIddict.EntityFrameworkCore": "2.0.1",
           "Pomelo.EntityFrameworkCore.MySql": "5.0.0-alpha.2",

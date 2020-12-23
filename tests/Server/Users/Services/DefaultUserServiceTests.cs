@@ -1,27 +1,21 @@
 using System;
-using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
-using System.Security.Claims;
+using System.Reflection;
 using System.Threading.Tasks;
-
-using AspNet.Security.OpenIdConnect.Extensions;
-using AspNet.Security.OpenIdConnect.Primitives;
 
 using AutoFixture.AutoNSubstitute;
 using AutoFixture.NUnit3;
 
-using Brighid.Identity.Applications;
-using Brighid.Identity.Roles;
-
 using FluentAssertions;
 
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+
+using MySqlConnector;
 
 using NSubstitute;
 
 using NUnit.Framework;
-
-using OpenIddict.Server;
 
 using static NSubstitute.Arg;
 
@@ -104,6 +98,83 @@ namespace Brighid.Identity.Users
                 await userManager.Received().CreateAsync(Is<User>(user =>
                     user.Roles.Any(userRole => userRole.Role.Name == role)
                 ), Is(password));
+            }
+        }
+
+        public class CreateLogin
+        {
+            [Test, Auto]
+            public async Task ShouldThrowIfUserDoesntExist(
+                Guid userId,
+                UserLogin loginInfo,
+                [Frozen, Substitute] UserManager<User> userManager,
+                [Target] DefaultUserService service
+            )
+            {
+                userManager.FindByIdAsync(Any<string>()).Returns((User)null!);
+
+                Func<Task> func = async () => await service.CreateLogin(userId, loginInfo);
+
+                await func.Should().ThrowAsync<UserNotFoundException>();
+                await userManager.Received().FindByIdAsync(Is(userId.ToString()));
+            }
+
+            [Test, Auto]
+            public async Task ShouldThrowIfUserAlreadyHasLoginProviderRegistered(
+                Guid userId,
+                User user,
+                UserLogin loginInfo,
+                [Frozen, Substitute] IUserLoginRepository loginRepository,
+                [Frozen, Substitute] UserManager<User> userManager,
+                [Target] DefaultUserService service
+            )
+            {
+                var errorCode = MySqlErrorCode.DuplicateKeyEntry;
+                var exception = (MySqlException)Activator.CreateInstance(typeof(MySqlException), BindingFlags.Instance | BindingFlags.NonPublic, null, new object[] { errorCode, "" }, null, null)!;
+                userManager.FindByIdAsync(Any<string>()).Returns(user);
+                loginRepository.Add(Any<UserLogin>()).Returns<UserLogin>(x =>
+                    throw new DbUpdateException("", exception)
+                );
+
+                Func<Task> func = async () => await service.CreateLogin(userId, loginInfo);
+
+                await func.Should().ThrowAsync<UserLoginAlreadyExistsException>();
+            }
+
+            [Test, Auto]
+            public async Task ShouldSaveLoginInfo(
+                Guid userId,
+                User user,
+                UserLogin loginInfo,
+                [Frozen, Substitute] IUserLoginRepository loginRepository,
+                [Frozen, Substitute] UserManager<User> userManager,
+                [Target] DefaultUserService service
+            )
+            {
+                userManager.FindByIdAsync(Any<string>()).Returns(user);
+
+                await service.CreateLogin(userId, loginInfo);
+
+                await loginRepository.Received().Add(Is<UserLogin>(login =>
+                    login.Id == loginInfo.Id &&
+                    login.User == user
+                ));
+            }
+
+            [Test, Auto]
+            public async Task ShouldReturnTheSavedLogin(
+                Guid userId,
+                User user,
+                UserLogin loginInfo,
+                [Frozen, Substitute] UserManager<User> userManager,
+                [Target] DefaultUserService service
+            )
+            {
+                userManager.FindByIdAsync(Any<string>()).Returns(user);
+
+                var result = await service.CreateLogin(userId, loginInfo);
+
+                result.Should().Be(loginInfo);
             }
         }
     }

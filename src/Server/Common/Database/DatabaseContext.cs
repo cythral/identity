@@ -1,8 +1,8 @@
 using System;
 
 using Brighid.Identity.Applications;
-using Brighid.Identity.Users;
 using Brighid.Identity.Roles;
+using Brighid.Identity.Users;
 
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -37,6 +37,14 @@ namespace Brighid.Identity
             .Entity<Role>()
             .HasIndex(role => role.Name)
             .IsUnique();
+
+            builder
+            .Entity<UserLogin>()
+            .HasAlternateKey(login => new { login.UserId, login.LoginProvider });
+
+            builder
+            .Entity<UserLogin>()
+            .HasAlternateKey(login => new { login.LoginProvider, login.ProviderKey });
 
             builder
             .Entity<UserLoginAttribute>()

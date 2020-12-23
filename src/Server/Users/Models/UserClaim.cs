@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -9,23 +8,12 @@ namespace Brighid.Identity.Users
 {
     public class UserClaim : IdentityUserClaim<Guid>
     {
-        private User user = new User();
+        [Key]
+        public new Guid Id { get; set; } = Guid.NewGuid();
 
-        private new Guid UserId
-        {
-            get => user.Id;
-            set => user.Id = value;
-        }
+        public override Guid UserId { get; set; }
 
         [ForeignKey("UserId")]
-        public User User
-        {
-            get => user;
-            set
-            {
-                user = value;
-                UserId = value.Id;
-            }
-        }
+        public virtual User User { get; set; }
     }
 }

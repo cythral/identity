@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading;
@@ -13,5 +14,6 @@ namespace Brighid.Identity.Users
     public interface IUserService
     {
         Task<User> Create(string username, string password, string? role = null);
+        Task<UserLogin> CreateLogin(Guid id, UserLogin loginInfo);
     }
 }

@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Reflection;
 using System.Runtime.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
@@ -25,8 +26,8 @@ namespace Brighid.Identity
             {
                 PrimaryKeyName = Context.Model.FindEntityType(typeof(TEntity)).FindPrimaryKey().Properties[0].Name;
 
-                var prop = typeof(TEntity).GetProperties().Where(prop => prop.Name == PrimaryKeyName).First();
-                var setterMethod = prop.GetSetMethod();
+                var prop = typeof(TEntity).GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance).Where(prop => prop.Name == PrimaryKeyName).First();
+                var setterMethod = prop.GetSetMethod(true);
 
                 if (prop != null && setterMethod != null)
                 {
@@ -50,7 +51,7 @@ namespace Brighid.Identity
             catch (DbUpdateException e)
             {
                 result.State = EntityState.Detached;
-                throw new DbUpdateException(e.Message);
+                throw new DbUpdateException(e.Message, e.InnerException);
             }
         }
 

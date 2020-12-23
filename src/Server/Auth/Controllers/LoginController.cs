@@ -47,8 +47,7 @@ namespace Brighid.Identity.Auth
                     throw new LoginException();
                 }
 
-                var result = await signinManager.PasswordSignInAsync(request.Username, request.Password, false, false);
-
+                var result = await signinManager.PasswordSignInAsync(request.Email, request.Password, false, false);
                 if (!result.Succeeded)
                 {
                     throw new LoginException("Username and/or password were incorrect.");

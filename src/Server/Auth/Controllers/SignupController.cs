@@ -6,8 +6,6 @@ using Brighid.Identity.Users;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
-using static AspNet.Security.OpenIdConnect.Primitives.OpenIdConnectConstants;
-
 namespace Brighid.Identity.Auth
 {
     [Route("/signup")]
@@ -59,7 +57,7 @@ namespace Brighid.Identity.Auth
                     throw new SignupException("Passwords do not match.");
                 }
 
-                var user = await userService.Create(request.Username, request.Password);
+                var user = await userService.Create(request.Email, request.Password);
                 var signinResult = await signinManager.PasswordSignInAsync(user, request.Password, false, false);
 
                 if (!signinResult.Succeeded)

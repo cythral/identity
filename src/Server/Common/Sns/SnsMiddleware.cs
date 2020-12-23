@@ -1,8 +1,13 @@
 using System;
 using System.IO;
 using System.Net.Http;
+using System.Security.Claims;
 using System.Text.Json;
 using System.Threading.Tasks;
+
+using AspNet.Security.OpenIdConnect.Primitives;
+
+using Brighid.Identity.Roles;
 
 using Flurl.Http;
 
@@ -34,6 +39,14 @@ namespace Brighid.Identity.Sns
             }
 
             context.Request.EnableBuffering();
+
+            var roleClaim = new Claim(OpenIdConnectConstants.Claims.Role, nameof(BuiltInRole.ApplicationManager));
+            var claimsIdentity = new ClaimsIdentity(null, null, OpenIdConnectConstants.Claims.Role);
+            var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
+            claimsIdentity.AddClaim(roleClaim);
+            Console.WriteLine("IsInRole: " + claimsPrincipal.IsInRole(nameof(BuiltInRole.ApplicationManager)));
+
+            context.User = claimsPrincipal;
             context.Items[Constants.RequestSource] = IdentityRequestSource.Sns;
             await (snsMessageType[0] switch
             {

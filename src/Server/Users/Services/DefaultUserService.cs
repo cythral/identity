@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -13,6 +15,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
+using MySqlConnector;
+
 namespace Brighid.Identity.Users
 {
 #pragma warning disable IDE0059
@@ -20,17 +24,20 @@ namespace Brighid.Identity.Users
     {
         private const string defaultRole = "Basic";
         private readonly UserManager<User> userManager;
+        private readonly IUserLoginRepository loginRepository;
 
         public DefaultUserService(
-            UserManager<User> userManager
+            UserManager<User> userManager,
+            IUserLoginRepository loginRepository
         )
         {
             this.userManager = userManager;
+            this.loginRepository = loginRepository;
         }
 
         public async Task<User> Create(string username, string password, string? role = null)
         {
-            static void EnsureSuccess(IdentityResult result)
+            static void EnsureSucceeded(IdentityResult result)
             {
                 if (!result.Succeeded)
                 {
@@ -40,15 +47,37 @@ namespace Brighid.Identity.Users
                     throw new CreateUserException(innerExceptions);
                 }
             }
-
             role ??= defaultRole;
             var user = new User { UserName = username, Email = username };
             user.Roles = new List<UserRole> { new UserRole(user, role) };
 
             var createResult = await userManager.CreateAsync(user, password);
-            EnsureSuccess(createResult);
+            EnsureSucceeded(createResult);
 
             return user;
+        }
+
+        public async Task<UserLogin> CreateLogin(Guid userId, UserLogin loginInfo)
+        {
+            var user = await userManager.FindByIdAsync(userId.ToString());
+            if (user == null)
+            {
+                throw new UserNotFoundException(userId);
+            }
+
+            loginInfo.User = user;
+
+            try
+            {
+                await loginRepository.Add(loginInfo);
+            }
+            catch (DbUpdateException e)
+                when ((e.InnerException as MySqlException)?.ErrorCode == MySqlErrorCode.DuplicateKeyEntry)
+            {
+                throw new UserLoginAlreadyExistsException(loginInfo);
+            }
+
+            return loginInfo;
         }
     }
 }

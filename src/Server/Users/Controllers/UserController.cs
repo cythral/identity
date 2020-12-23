@@ -1,38 +1,73 @@
 using System;
-using System.Text.Json;
 using System.Threading.Tasks;
 
+using Brighid.Identity.Roles;
+
 using Microsoft.AspNetCore.Mvc;
+
+#pragma warning disable IDE0050
 
 namespace Brighid.Identity.Users
 {
     [Route("/api/users")]
+    [Roles(new[]
+    {
+        nameof(BuiltInRole.Basic),
+        nameof(BuiltInRole.Administrator),
+    })]
     public class UserController : Controller
     {
-        private readonly string[] Embeds = new[] { "Roles.Role" };
+        private readonly string[] Embeds = new[] { "Roles.Role", "Logins" };
 
         private readonly IUserRepository repository;
+        private readonly IUserService service;
 
         public UserController(
-            IUserRepository repository
+            IUserRepository repository,
+            IUserService service
         )
         {
             this.repository = repository;
+            this.service = service;
         }
 
-        [HttpGet("{id}")]
-        public async Task<ActionResult<User>> Get(Guid id)
+        private void ThrowIfModelStateIsInvalid()
         {
-            var result = await repository.GetById(id, Embeds);
+            if (!ModelState.IsValid)
+            {
+                throw new ModelStateException(ModelState);
+            }
+        }
+
+        [HttpGet("{userId}")]
+        public async Task<ActionResult<User>> Get(Guid userId)
+        {
+            var result = await repository.GetById(userId, Embeds);
             return result == null ? NotFound() : Ok(result);
         }
 
-        [HttpPut]
-        public async Task<ActionResult> Notify([FromBody] object request)
+        [HttpGet("login-provider/{loginProvider}/{providerKey}")]
+        public async Task<ActionResult<User>> GetByLoginProvider(string loginProvider, string providerKey)
         {
-            await Task.CompletedTask;
-            Console.WriteLine(JsonSerializer.Serialize(request));
-            return Ok();
+            var result = await repository.FindByLogin(loginProvider, providerKey, Embeds);
+            return result == null ? NotFound() : Ok(result);
+        }
+
+        [HttpPost("{userId}/logins")]
+        [Policies(new[] { nameof(IdentityPolicy.RestrictedToSelfByUserId) })]
+        public async Task<ActionResult<UserLogin>> CreateLogin(Guid userId, [FromBody] UserLogin loginInfo)
+        {
+            try
+            {
+                ModelState.Remove(nameof(UserLogin.User));
+                ThrowIfModelStateIsInvalid();
+
+                var result = await service.CreateLogin(userId, loginInfo);
+                return Ok(result);
+            }
+            catch (UserNotFoundException e) { return NotFound(new { e.Message }); }
+            catch (UserLoginAlreadyExistsException e) { return Conflict(new { e.Message }); }
+            catch (ModelStateException e) { return BadRequest(new { e.Message, e.Errors }); }
         }
     }
 }

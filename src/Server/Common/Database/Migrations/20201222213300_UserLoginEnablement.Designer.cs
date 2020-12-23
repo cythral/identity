@@ -3,14 +3,16 @@ using System;
 using Brighid.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Brighid.Identity.Common.Database.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    partial class DatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20201222213300_UserLoginEnablement")]
+    partial class UserLoginEnablement
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -226,15 +228,12 @@ namespace Brighid.Identity.Common.Database.Migrations
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.Property<string>("ProviderKey")
-                        .IsRequired()
-                        .HasColumnType("varchar(95) CHARACTER SET utf8mb4");
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.Property<Guid>("UserId")
                         .HasColumnType("binary(16)");
 
                     b.HasKey("Id");
-
-                    b.HasAlternateKey("LoginProvider", "ProviderKey");
 
                     b.HasAlternateKey("UserId", "LoginProvider");
 

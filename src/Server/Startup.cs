@@ -1,16 +1,14 @@
 using System;
-using System.Globalization;
 using System.IdentityModel.Tokens.Jwt;
 using System.IO;
 using System.Linq;
-using System.Security.Claims;
 using System.Security.Cryptography.X509Certificates;
+using System.Security.Principal;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 using Amazon.KeyManagementService;
-using Amazon.Runtime;
 
 using AspNet.Security.OpenIdConnect.Primitives;
 
@@ -18,23 +16,24 @@ using AspNetCore.ServiceRegistration.Dynamic.Attributes;
 using AspNetCore.ServiceRegistration.Dynamic.Extensions;
 using AspNetCore.ServiceRegistration.Dynamic.Interfaces;
 
+using Brighid.Identity.Auth;
 using Brighid.Identity.Roles;
 using Brighid.Identity.Sns;
 using Brighid.Identity.Users;
 
 using Flurl.Http;
 
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-using Morcatko.AspNetCore.JsonMergePatch;
+#pragma warning disable IDE0061
 
 namespace Brighid.Identity
 {
@@ -54,13 +53,10 @@ namespace Brighid.Identity
         public void ConfigureServices(IServiceCollection services)
         {
             services
-            .AddMvc()
-            .AddSystemTextJsonMergePatch();
-
-            services
             .AddControllers()
             .AddJsonOptions(options =>
             {
+                options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
                 options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
             });
 
@@ -74,7 +70,6 @@ namespace Brighid.Identity
             services
             .AddRazorPages()
             .WithRazorPagesRoot("/Common/Pages");
-
             services.AddServerSideBlazor();
 
             services.AddSingleton<GenerateRandomString>(Utils.GenerateRandomString);
@@ -87,9 +82,19 @@ namespace Brighid.Identity
             .AddDefaultTokenProviders();
 
             // Replace Default User Manager with an overridden one
-            var serviceDescriptor = services.First(descriptor => descriptor.ServiceType == typeof(UserManager<User>));
-            services.Remove(serviceDescriptor);
+            var oldUserManagerDescriptor = services.First(descriptor => descriptor.ServiceType == typeof(UserManager<User>));
+            services.Remove(oldUserManagerDescriptor);
             services.AddScoped<UserManager<User>, DefaultUserManager>();
+
+            var oldSignInManagerDescriptor = services.First(descriptor => descriptor.ServiceType == typeof(SignInManager<User>));
+            services.Remove(oldSignInManagerDescriptor);
+            services.AddScoped<SignInManager<User>, DefaultSignInManager>();
+
+            services.AddTransient(provider =>
+            {
+                var user = provider.GetService<IHttpContextAccessor>()?.HttpContext?.User;
+                return user ?? new GenericPrincipal(new GenericIdentity("Anonymous"), null);
+            });
 
             services.Configure<IdentityOptions>(options =>
             {
@@ -109,7 +114,10 @@ namespace Brighid.Identity
                 options.UseJsonWebTokens();
                 options.DisableHttpsRequirement();
                 options.AllowClientCredentialsFlow();
-                options.RegisterClaims("role");
+                options.RegisterClaims(
+                    OpenIdConnectConstants.Claims.Role,
+                    OpenIdConnectConstants.Claims.Subject
+                );
 
                 if (!Directory.Exists("/certs"))
                 {
@@ -127,9 +135,20 @@ namespace Brighid.Identity
             JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
             JwtSecurityTokenHandler.DefaultOutboundClaimTypeMap.Clear();
 
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy(nameof(IdentityPolicy.RestrictedToSelfByUserId), policy =>
+                {
+                    static object? parse(string? input) =>
+                        input != null ? new Guid(input).ToString() : null;
+
+                    policy.AddRequirements(new RestrictedToSelfPolicyRequirement("userId", OpenIdConnectConstants.Claims.Subject, parse));
+                });
+            });
+            services.AddSingleton<IAuthorizationHandler, RestrictedToSelfPolicyHandler>();
+
             var jsonOptions = new JsonSerializerOptions { DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull };
             jsonOptions.Converters.Add(new JsonStringEnumConverter());
-
             FlurlHttp.GlobalSettings.JsonSerializer = new Serializer(jsonOptions);
         }
 
@@ -153,8 +172,14 @@ namespace Brighid.Identity
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, DatabaseContext context)
         {
+            if (env.IsDevelopment())
+            {
+                context.Database.EnsureCreated();
+                context.Database.Migrate();
+            }
+
             app.Use(async (context, next) =>
             {
                 context.Items[Constants.RequestSource] = IdentityRequestSource.Direct;
@@ -174,9 +199,9 @@ namespace Brighid.Identity
             });
 
             app.UseStaticFiles();
+            app.UseAuthentication();
             app.UseMiddleware<SnsMiddleware>();
             app.UseRouting();
-            app.UseAuthentication();
             app.UseAuthorization();
             app.UseEndpoints(endpoints =>
             {
@@ -226,6 +251,11 @@ namespace Brighid.Identity
             var id = new Guid("D4759009EB67427ABF21272509A27F1A");
             var concurrencyStamp = Guid.NewGuid().ToString();
             var user = new User { Id = id, UserName = username, Email = username, ConcurrencyStamp = concurrencyStamp };
+
+            if (await userManager.FindByIdAsync(id.ToString()) != null)
+            {
+                return;
+            }
 
             var createResult = await userManager.CreateAsync(user, password);
             if (!createResult.Succeeded)
