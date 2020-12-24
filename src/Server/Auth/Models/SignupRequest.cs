@@ -16,6 +16,7 @@ namespace Brighid.Identity.Auth
 
         [BindProperty]
         [DataType(DataType.Password)]
+        [Display(Name = "Confirm Password")]
         public string ConfirmPassword { get; set; }
 
         [BindProperty]
