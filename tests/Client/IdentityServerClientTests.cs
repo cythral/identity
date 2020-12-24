@@ -1,8 +1,8 @@
+using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Net.Http;
-using System;
 using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
@@ -21,11 +21,12 @@ using NSubstitute;
 using NUnit.Framework;
 
 using OpenIddict.Server;
+
 using RichardSzalay.MockHttp;
 using RichardSzalay.MockHttp.Matchers;
 
-using static NSubstitute.Arg;
 using static System.Text.Json.JsonSerializer;
+using static NSubstitute.Arg;
 
 namespace Brighid.Identity.Client
 {

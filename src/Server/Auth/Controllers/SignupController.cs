@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 using Brighid.Identity.Users;
@@ -41,35 +43,29 @@ namespace Brighid.Identity.Auth
 
 #pragma warning disable IDE0046
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Signup([FromForm] SignupRequest request)
         {
             var redirectUri = request.RedirectUri.ToString();
+            var describer = new IdentityErrorDescriber();
+            var blacklistedErrors = new HashSet<string> { describer.DuplicateUserName(request.Email).Description };
 
             try
             {
-                if (!ModelState.IsValid)
-                {
-                    throw new SignupException();
-                }
+                if (!ModelState.IsValid) { throw new SignupException(); }
 
-                if (request.Password != request.ConfirmPassword)
-                {
-                    throw new SignupException("Passwords do not match.");
-                }
+                if (request.Password != request.ConfirmPassword) { throw new SignupException("Passwords do not match."); }
 
                 var user = await userService.Create(request.Email, request.Password);
                 var signinResult = await signinManager.PasswordSignInAsync(user, request.Password, false, false);
 
-                if (!signinResult.Succeeded)
-                {
-                    throw new SignupException("Unable to sign in.");
-                }
+                if (!signinResult.Succeeded) { throw new SignupException("Unable to sign in."); }
 
                 return LocalRedirect(redirectUri);
             }
             catch (SignupException e)
             {
-                if (e.Message != null)
+                if (e.Message != null && !blacklistedErrors.Contains(e.Message))
                 {
                     ModelState.AddModelError("signupError", e.Message);
                 }
@@ -78,7 +74,10 @@ namespace Brighid.Identity.Auth
             {
                 foreach (var innerException in e.InnerExceptions)
                 {
-                    ModelState.AddModelError("signupError", innerException.Message);
+                    if (!blacklistedErrors.Contains(innerException.Message))
+                    {
+                        ModelState.AddModelError("signupError", innerException.Message);
+                    }
                 }
             }
 

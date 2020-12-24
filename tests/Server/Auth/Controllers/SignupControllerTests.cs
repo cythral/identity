@@ -141,6 +141,47 @@ namespace Brighid.Identity.Auth
             }
 
             [Test, Auto]
+            public async Task ShouldNotIncludeDuplicateUserNameModelError(
+                string email,
+                string password,
+                string destination,
+                Exception randomErrorException,
+                SignupRequest request,
+                [Frozen, Substitute] SignInManager<User> signInManager,
+                [Frozen, Substitute] IUserService userService,
+                [Target] SignupController signupController
+            )
+            {
+                request.Email = email;
+                request.Password = password;
+                request.ConfirmPassword = password;
+                request.RedirectUri = new Uri(destination, UriKind.Relative);
+
+                var duplicateUserNameMessage = new IdentityErrorDescriber().DuplicateUserName(email).Description;
+                var duplicateUserNameException = new Exception(duplicateUserNameMessage);
+
+                userService
+                .When(svc => svc.Create(Any<string>(), Any<string>()))
+                .Do(svc =>
+                {
+                    var exceptions = new[] { randomErrorException, duplicateUserNameException };
+                    throw new AggregateException(exceptions);
+                });
+
+                signInManager.IsSignedIn(Any<ClaimsPrincipal>()).Returns(false);
+
+                _ = await signupController.Signup(request) as ViewResult;
+
+                signupController.ModelState["signupError"].Errors.Should().Contain(err =>
+                    err.ErrorMessage == randomErrorException.Message
+                );
+
+                signupController.ModelState["signupError"].Errors.Should().NotContain(err =>
+                    err.ErrorMessage == duplicateUserNameMessage
+                );
+            }
+
+            [Test, Auto]
             public async Task ShouldAddModelError_IfPasswordsDontMatch(
                 string password1,
                 string password2,
