@@ -53,14 +53,14 @@ namespace Brighid.Identity.Auth
             try
             {
                 if (!ModelState.IsValid) { throw new SignupException(); }
-                
+
                 if (request.Password != request.ConfirmPassword) { throw new SignupException("Passwords do not match."); }
 
                 var user = await userService.Create(request.Email, request.Password);
                 var signinResult = await signinManager.PasswordSignInAsync(user, request.Password, false, false);
 
                 if (!signinResult.Succeeded) { throw new SignupException("Unable to sign in."); }
-                
+
                 return LocalRedirect(redirectUri);
             }
             catch (SignupException e)
