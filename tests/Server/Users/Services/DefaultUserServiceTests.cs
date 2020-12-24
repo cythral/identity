@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using AutoFixture.AutoNSubstitute;
 using AutoFixture.NUnit3;
 
+using Brighid.Identity.Roles;
+
 using FluentAssertions;
 
 using Microsoft.AspNetCore.Identity;
@@ -65,19 +67,17 @@ namespace Brighid.Identity.Users
             public async Task AddsUserToDefaultRole(
                 string username,
                 string password,
+                [Frozen, Substitute] IUserRoleService roleService,
                 [Frozen, Substitute] UserManager<User> userManager,
                 [Target] DefaultUserService userService
             )
             {
                 var result = IdentityResult.Success;
                 userManager.CreateAsync(Any<User>(), Any<string>()).Returns(result);
-                userManager.AddToRoleAsync(Any<User>(), Any<string>()).Returns(result);
 
                 await userService.Create(username, password);
 
-                await userManager.Received().CreateAsync(Is<User>(user =>
-                    user.Roles.Any(userRole => userRole.Role.Name == "Basic")
-                ), Is(password));
+                await roleService.Received().AddRoleToPrincipal(Is<User>(user => user.Email == username && user.Roles != null), Is(nameof(BuiltInRole.Basic)));
             }
 
             [Test, Auto]
@@ -85,6 +85,7 @@ namespace Brighid.Identity.Users
                 string username,
                 string password,
                 string role,
+                [Frozen, Substitute] IUserRoleService roleService,
                 [Frozen, Substitute] UserManager<User> userManager,
                 [Target] DefaultUserService userService
             )
@@ -95,9 +96,7 @@ namespace Brighid.Identity.Users
 
                 await userService.Create(username, password, role);
 
-                await userManager.Received().CreateAsync(Is<User>(user =>
-                    user.Roles.Any(userRole => userRole.Role.Name == role)
-                ), Is(password));
+                await roleService.Received().AddRoleToPrincipal(Is<User>(user => user.Email == username && user.Roles != null), Is(role));
             }
         }
 

@@ -4,10 +4,8 @@ using Brighid.Identity.Applications;
 using Brighid.Identity.Roles;
 using Brighid.Identity.Users;
 
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace Brighid.Identity
 {

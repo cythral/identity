@@ -24,5 +24,7 @@ namespace Brighid.Identity
         Task<TEntity> Remove(TEntity entity);
 
         void TrackAsDeleted(TEntity entity);
+
+        EntityState GetState(TEntity? entity);
     }
 }

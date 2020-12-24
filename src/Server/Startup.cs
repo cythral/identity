@@ -162,7 +162,6 @@ namespace Brighid.Identity
 
             options.UseMySql(conn, new MySqlServerVersion(new Version(5, 7, 0)));
             options.UseOpenIddict();
-            options.AddInterceptors(new NormalizingInterceptor());
 
             if (Environment.IsDevelopment())
             {

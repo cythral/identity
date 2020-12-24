@@ -1,5 +1,8 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
+
+using Brighid.Identity.Roles;
 
 using OpenIddict.Abstractions;
 using OpenIddict.Core;
@@ -36,6 +39,7 @@ namespace Brighid.Identity.Applications
         public async Task<Application> Create(Application application)
         {
             var secret = generateRandomString(128);
+            var roles = application.Roles;
             var descriptor = new OpenIddictApplicationDescriptor
             {
                 ClientId = application.Id.ToString(),
@@ -50,7 +54,9 @@ namespace Brighid.Identity.Applications
 
             application.EncryptedSecret = await encryptionService.Encrypt(secret).ConfigureAwait(false);
             application.Secret = secret;
+            application.Roles = new List<ApplicationRole>();
 
+            await appRoleService.UpdatePrincipalRoles(application, roles);
             await appRepository.Add(application).ConfigureAwait(false);
             await appManager.CreateAsync(descriptor).ConfigureAwait(false);
 
@@ -83,8 +89,7 @@ namespace Brighid.Identity.Applications
                 await appManager.UpdateAsync(client).ConfigureAwait(false);
             }
 
-            appRoleService.UpdateApplicationRoles(existingApp, application.Roles);
-
+            await appRoleService.UpdatePrincipalRoles(existingApp, application.Roles);
             await appRepository.Save(existingApp).ConfigureAwait(false);
 
             return existingApp;
