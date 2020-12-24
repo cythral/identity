@@ -7,15 +7,18 @@ using System.Threading.Tasks;
 
 using Brighid.Identity.Roles;
 
-using Microsoft.EntityFrameworkCore;
-
 namespace Brighid.Identity.Applications
 {
     [JsonConverter(typeof(ApplicationRoleConverter))]
-    public class ApplicationRole : INormalizeable
+    public class ApplicationRole : IPrincipalRoleJoin<Application>
     {
-        public ApplicationRole()
+        public ApplicationRole() { }
+
+        public ApplicationRole(Application application, string roleName)
         {
+            Application = application;
+            ApplicationId = application.Id;
+            Role = new Role { Name = roleName };
         }
 
         public Guid ApplicationId { get; set; }
@@ -29,44 +32,10 @@ namespace Brighid.Identity.Applications
         public Role Role { get; set; }
 
         [NotMapped]
-        public bool IsNormalized { get; private set; }
-
-        public async Task Normalize(DatabaseContext context, CancellationToken cancellationToken = default)
+        Application IPrincipalRoleJoin<Application>.Principal
         {
-            IsNormalized = true;
-            var entry = context.Entry(this);
-
-            switch (entry.State)
-            {
-                case EntityState.Unchanged:
-                case EntityState.Deleted:
-                    break;
-
-                case EntityState.Added:
-                case EntityState.Modified:
-                case EntityState.Detached:
-                default:
-                    var query = from appRole in context.ApplicationRoles.AsQueryable()
-                                where appRole.ApplicationId == ApplicationId
-                                where appRole.Role.Name == Role.Name
-                                select appRole;
-
-                    if (await query.AnyAsync(cancellationToken))
-                    {
-                        entry.State = EntityState.Unchanged;
-                        return;
-                    }
-
-                    var existingRoleQuery = from role in context.Roles.AsQueryable()
-                                            where role.Name == Role.Name
-                                            select role;
-
-                    if (await existingRoleQuery.AnyAsync(cancellationToken))
-                    {
-                        Role = await existingRoleQuery.FirstAsync(cancellationToken);
-                    }
-                    break;
-            }
+            get => Application;
+            set => Application = value;
         }
     }
 }

@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Globalization;
+using System.Linq;
 using System.Text.Json.Serialization;
 
 using Brighid.Identity.Roles;
@@ -10,11 +12,15 @@ using Microsoft.AspNetCore.Identity;
 
 namespace Brighid.Identity.Users
 {
-    public class User : IdentityUser<Guid>
+    public class User : IdentityUser<Guid>, IPrincipalWithRoles<User, UserRole>
     {
 
         [Key]
         public override Guid Id { get; set; } = Guid.NewGuid();
+
+        [NotMapped]
+        [JsonIgnore]
+        public string Name => UserName;
 
         [JsonIgnore]
         public override string NormalizedUserName { get; set; } = "";

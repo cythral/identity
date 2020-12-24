@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -28,7 +29,6 @@ namespace Brighid.Identity.Applications
             [Test, Auto]
             public async Task ShouldCreateANewApplication(
                 Application application,
-                [Frozen, Substitute] DatabaseContext _,
                 [Frozen, Substitute] IApplicationRepository applicationRepository,
                 [Frozen, Substitute] OpenIddictApplicationManager<OpenIddictApplication> _appManager,
                 [Target] DefaultApplicationService applicationService
@@ -39,10 +39,31 @@ namespace Brighid.Identity.Applications
             }
 
             [Test, Auto]
+            public async Task ShouldAddRolesToTheApplication(
+                List<ApplicationRole> roles,
+                List<ApplicationRole> newRoles,
+                Application application,
+                [Frozen, Substitute] IApplicationRepository applicationRepository,
+                [Frozen, Substitute] IApplicationRoleService roleService,
+                [Frozen, Substitute] OpenIddictApplicationManager<OpenIddictApplication> _appManager,
+                [Target] DefaultApplicationService applicationService
+            )
+            {
+                roleService
+                .When(svc => svc.UpdatePrincipalRoles(Any<Application>(), Any<ICollection<ApplicationRole>>()))
+                .Do(x => application.Roles = newRoles);
+
+                application.Roles = roles;
+                await applicationService.Create(application);
+
+                application.Roles.Should().BeSameAs(newRoles);
+                await roleService.Received().UpdatePrincipalRoles(Is(application), Is(roles));
+            }
+
+            [Test, Auto]
             public async Task ShouldSaveApplicationDetailsToTheDatabaseAndReturnWithSecret(
                 string clientSecret,
                 Application application,
-                [Frozen, Substitute] DatabaseContext _,
                 [Frozen, Substitute] GenerateRandomString generateRandomString,
                 [Frozen, Substitute] IEncryptionService encryptionService,
                 [Frozen, Substitute] IApplicationRepository appRepository,
@@ -72,7 +93,6 @@ namespace Brighid.Identity.Applications
             public async Task ShouldCreateAnOpenIdDictApplication(
                 string clientSecret,
                 Application application,
-                [Frozen, Substitute] DatabaseContext _,
                 [Frozen, Substitute] GenerateRandomString generateRandomString,
                 [Frozen, Substitute] IEncryptionService encryptionService,
                 [Frozen, Substitute] OpenIddictApplicationManager<OpenIddictApplication> appManager,
@@ -145,7 +165,7 @@ namespace Brighid.Identity.Applications
                 repository.GetById(Any<Guid>(), Any<string>()).Returns(existingApp);
                 await service.Update(id, application);
 
-                roleService.Received().UpdateApplicationRoles(Is(existingApp), Is(application.Roles));
+                await roleService.Received().UpdatePrincipalRoles(Is(existingApp), Is(application.Roles));
             }
 
             [Test, Auto]

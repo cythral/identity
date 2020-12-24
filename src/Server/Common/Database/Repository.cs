@@ -8,6 +8,8 @@ using System.Threading.Tasks;
 
 using Microsoft.EntityFrameworkCore;
 
+using EFEntityState = Microsoft.EntityFrameworkCore.EntityState;
+
 namespace Brighid.Identity
 {
     public abstract class Repository<TEntity, TPrimaryKeyType> : IRepository<TEntity, TPrimaryKeyType> where TEntity : class where TPrimaryKeyType : notnull
@@ -50,7 +52,7 @@ namespace Brighid.Identity
             }
             catch (DbUpdateException e)
             {
-                result.State = EntityState.Detached;
+                result.State = EFEntityState.Detached;
                 throw new DbUpdateException(e.Message, e.InnerException);
             }
         }
@@ -116,7 +118,26 @@ namespace Brighid.Identity
 
         public void TrackAsDeleted(TEntity entity)
         {
-            Context.Entry(entity).State = EntityState.Deleted;
+            Context.Entry(entity).State = EFEntityState.Deleted;
+        }
+
+        public EntityState GetState(TEntity? entity)
+        {
+            if (entity == null)
+            {
+                return EntityState.Invalid;
+            }
+
+            var state = Context.Entry(entity).State;
+            return state switch
+            {
+                EFEntityState.Added => EntityState.Added,
+                EFEntityState.Deleted => EntityState.Deleted,
+                EFEntityState.Detached => EntityState.Detached,
+                EFEntityState.Unchanged => EntityState.Unchanged,
+                EFEntityState.Modified => EntityState.Modified,
+                _ => EntityState.Invalid,
+            };
         }
     }
 }

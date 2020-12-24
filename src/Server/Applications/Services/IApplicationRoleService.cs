@@ -1,12 +1,13 @@
-using System.Collections.Generic;
+using System;
 
 using AspNetCore.ServiceRegistration.Dynamic.Attributes;
+
+using Brighid.Identity.Roles;
 
 namespace Brighid.Identity.Applications
 {
     [ScopedService]
-    public interface IApplicationRoleService
+    public interface IApplicationRoleService : IPrincipalRoleService<Application, Guid, ApplicationRole, IApplicationRoleRepository>
     {
-        void UpdateApplicationRoles(Application application, ICollection<ApplicationRole> roles);
     }
 }

@@ -22,17 +22,20 @@ namespace Brighid.Identity.Users
 #pragma warning disable IDE0059
     public class DefaultUserService : IUserService
     {
-        private const string defaultRole = "Basic";
+        private const string defaultRole = nameof(BuiltInRole.Basic);
         private readonly UserManager<User> userManager;
         private readonly IUserLoginRepository loginRepository;
+        private readonly IUserRoleService roleService;
 
         public DefaultUserService(
             UserManager<User> userManager,
-            IUserLoginRepository loginRepository
+            IUserLoginRepository loginRepository,
+            IUserRoleService roleService
         )
         {
             this.userManager = userManager;
             this.loginRepository = loginRepository;
+            this.roleService = roleService;
         }
 
         public async Task<User> Create(string username, string password, string? role = null)
@@ -48,8 +51,9 @@ namespace Brighid.Identity.Users
                 }
             }
             role ??= defaultRole;
-            var user = new User { UserName = username, Email = username };
-            user.Roles = new List<UserRole> { new UserRole(user, role) };
+
+            var user = new User { UserName = username, Email = username, Roles = new List<UserRole>() };
+            await roleService.AddRoleToPrincipal(user, role);
 
             var createResult = await userManager.CreateAsync(user, password);
             EnsureSucceeded(createResult);
