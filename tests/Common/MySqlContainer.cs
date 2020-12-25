@@ -72,6 +72,7 @@ public class MySqlContainer
             Env = new List<string>
             {
                 "MARIADB_RANDOM_ROOT_PASSWORD=1",
+                "ALLOW_EMPTY_PASSWORD=yes",
                 $"MARIADB_DATABASE={DbName}",
                 $"MARIADB_USER={DbUser}",
                 $"MARIADB_PASSWORD={DbPassword}",
