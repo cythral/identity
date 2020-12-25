@@ -20,6 +20,7 @@ using static NSubstitute.Arg;
 
 namespace Brighid.Identity.Applications
 {
+    [Category("Unit")]
     public class ApplicationControllerTests
     {
 
@@ -34,6 +35,7 @@ namespace Brighid.Identity.Applications
             return httpContext;
         }
 
+        [Category("Unit")]
         public class CreateTests
         {
             [Test, Auto]
@@ -187,6 +189,7 @@ namespace Brighid.Identity.Applications
             }
         }
 
+        [Category("Unit")]
         public class GetTests
         {
             [Test, Auto]
@@ -224,6 +227,7 @@ namespace Brighid.Identity.Applications
             }
         }
 
+        [Category("Unit")]
         public class UpdateTests
         {
             [Test, Auto]
@@ -357,6 +361,7 @@ namespace Brighid.Identity.Applications
             }
         }
 
+        [Category("Unit")]
         public class DeleteTests
         {
             [Test, Auto]

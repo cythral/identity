@@ -18,8 +18,10 @@ using static NSubstitute.Arg;
 
 namespace Brighid.Identity.Users
 {
+    [Category("Unit")]
     public class UserControllerTests
     {
+        [Category("Unit")]
         public class GetTests
         {
             [Test, Auto]
@@ -57,6 +59,7 @@ namespace Brighid.Identity.Users
             }
         }
 
+        [Category("Unit")]
         public class GetByLoginProviderTests
         {
             [Test, Auto]
@@ -96,6 +99,7 @@ namespace Brighid.Identity.Users
             }
         }
 
+        [Category("Unit")]
         public class CreateLoginTests
         {
             [Test]

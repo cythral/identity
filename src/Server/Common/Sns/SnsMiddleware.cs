@@ -26,7 +26,7 @@ namespace Brighid.Identity.Sns
         public SnsMiddleware(RequestDelegate next)
         {
             this.next = next;
-            this.jsonOptions = new JsonSerializerOptions();
+            jsonOptions = new JsonSerializerOptions();
         }
 
         public async Task Invoke(HttpContext context)

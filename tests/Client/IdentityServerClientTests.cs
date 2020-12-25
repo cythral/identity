@@ -1,35 +1,18 @@
 using System;
-using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
 using System.Net.Http;
-using System.Security.Claims;
-using System.Threading;
 using System.Threading.Tasks;
-
-using AspNet.Security.OpenIdConnect.Extensions;
-using AspNet.Security.OpenIdConnect.Primitives;
-
-using AutoFixture.NUnit3;
-
-using Brighid.Identity.Applications;
 
 using FluentAssertions;
 
-using NSubstitute;
-
 using NUnit.Framework;
 
-using OpenIddict.Server;
-
 using RichardSzalay.MockHttp;
-using RichardSzalay.MockHttp.Matchers;
 
 using static System.Text.Json.JsonSerializer;
-using static NSubstitute.Arg;
 
 namespace Brighid.Identity.Client
 {
+    [Category("Unit")]
     public class IdentityServerClientTests
     {
         [Test, Auto]

@@ -22,8 +22,10 @@ using SignInResult = Microsoft.AspNetCore.Identity.SignInResult;
 
 namespace Brighid.Identity.Auth
 {
+    [Category("Unit")]
     public class LoginControllerTests
     {
+        [Category("Unit")]
         public class Render
         {
             [Test, Auto]
@@ -87,6 +89,7 @@ namespace Brighid.Identity.Auth
             }
         }
 
+        [Category("Unit")]
         public class Login
         {
             [Test, Auto]

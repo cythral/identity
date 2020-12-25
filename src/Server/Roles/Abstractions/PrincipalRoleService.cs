@@ -4,8 +4,6 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Brighid.Identity.Roles;
-
 namespace Brighid.Identity.Roles
 {
     public abstract class PrincipalRoleService<TPrincipal, TPrimaryKey, TPrincipalRoleJoin, TPrincipalRoleJoinRepository> : IPrincipalRoleService<TPrincipal, TPrimaryKey, TPrincipalRoleJoin, TPrincipalRoleJoinRepository>

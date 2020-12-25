@@ -18,7 +18,7 @@ namespace Brighid.Identity.Client
         {
             this.tokenCache = tokenCache;
             this.identityServerClient = identityServerClient;
-            this.credentials = options.Value;
+            credentials = options.Value;
         }
 
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage requestMessage, CancellationToken cancellationToken = default)

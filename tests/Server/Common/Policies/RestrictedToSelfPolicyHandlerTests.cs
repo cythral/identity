@@ -1,26 +1,15 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using System.Security.Claims;
-using System.Security.Principal;
 using System.Threading.Tasks;
-
-using AspNet.Security.OpenIdConnect.Primitives;
 
 using AutoFixture.AutoNSubstitute;
 using AutoFixture.NUnit3;
 
 using Brighid.Identity.Roles;
 
-
-using FluentAssertions;
-
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Routing;
 
 using NSubstitute;
@@ -42,6 +31,7 @@ namespace Brighid.Identity
         }
     }
 
+    [Category("Unit")]
     public class RestrictedToSelfPolicyHandlerTests
     {
 

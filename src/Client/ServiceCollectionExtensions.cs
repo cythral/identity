@@ -1,9 +1,6 @@
 using System;
-using System.Linq;
 
 using Brighid.Identity.Client;
-
-using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace Microsoft.Extensions.DependencyInjection
 {

@@ -1,8 +1,5 @@
 using System;
-using System.IdentityModel.Tokens.Jwt;
-using System.IO;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
 using System.Security.Principal;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -43,12 +40,14 @@ namespace Brighid.Identity
         {
             Configuration = configuration;
             Environment = environment;
-            DatabaseConfig = Configuration.GetSection("Database").Get<DatabaseConfig>();
+            DatabaseConfig = Configuration.GetSection("Database").Get<DatabaseConfig>() ?? new DatabaseConfig();
+            OpenIdConfig = Configuration.GetSection("OpenId").Get<OpenIdConfig>() ?? new OpenIdConfig();
         }
 
         public IWebHostEnvironment Environment { get; }
         public IConfiguration Configuration { get; }
         public DatabaseConfig DatabaseConfig { get; }
+        public OpenIdConfig OpenIdConfig { get; }
 
         public void ConfigureServices(IServiceCollection services)
         {
@@ -103,38 +102,8 @@ namespace Brighid.Identity
                 options.ClaimsIdentity.RoleClaimType = OpenIdConnectConstants.Claims.Role;
             });
 
-            services.AddOpenIddict()
-            .AddCore(options => options.UseEntityFrameworkCore().UseDbContext<DatabaseContext>())
-            .AddServer(options =>
-            {
-                options.EnableAuthorizationEndpoint("/oauth2/authorize");
-                options.EnableLogoutEndpoint("/oauth2/logout");
-                options.EnableUserinfoEndpoint("/oauth2/userinfo");
-                options.EnableTokenEndpoint("/oauth2/token");
-                options.UseJsonWebTokens();
-                options.DisableHttpsRequirement();
-                options.AllowClientCredentialsFlow();
-                options.RegisterClaims(
-                    OpenIdConnectConstants.Claims.Role,
-                    OpenIdConnectConstants.Claims.Subject
-                );
 
-                if (!Directory.Exists("/certs"))
-                {
-                    return;
-                }
-
-                foreach (var file in Directory.GetFiles("/certs"))
-                {
-                    var certificate = new X509Certificate2(file);
-                    options.AddSigningCertificate(certificate);
-                }
-            })
-            .AddValidation();
-
-            JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
-            JwtSecurityTokenHandler.DefaultOutboundClaimTypeMap.Clear();
-
+            services.AddOpenId(OpenIdConfig);
             services.AddAuthorization(options =>
             {
                 options.AddPolicy(nameof(IdentityPolicy.RestrictedToSelfByUserId), policy =>
@@ -160,14 +129,14 @@ namespace Brighid.Identity
             conn += $"Password=\"{DatabaseConfig.Password}\";";
             conn += "GuidFormat=Binary16";
 
-            options.UseMySql(conn, new MySqlServerVersion(new Version(5, 7, 0)));
-            options.UseOpenIddict();
+            options
+            .UseMySql(
+                conn,
+                new MySqlServerVersion(new Version(5, 7, 0)),
+                options => options.EnableRetryOnFailure()
+            );
 
-            if (Environment.IsDevelopment())
-            {
-                options.EnableSensitiveDataLogging();
-                options.LogTo(Console.WriteLine);
-            }
+            options.UseOpenIddict();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -175,7 +144,6 @@ namespace Brighid.Identity
         {
             if (env.IsDevelopment())
             {
-                context.Database.EnsureCreated();
                 context.Database.Migrate();
             }
 

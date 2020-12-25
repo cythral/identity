@@ -5,9 +5,6 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
-
-using Microsoft.EntityFrameworkCore;
 
 #pragma warning disable IDE0025
 
