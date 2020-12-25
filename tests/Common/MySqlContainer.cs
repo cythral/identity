@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using Docker.DotNet;
 using Docker.DotNet.Models;
 
+using MySqlConnector;
+
 using NUnit.Framework;
 
 [assembly: Parallelizable(ParallelScope.Fixtures)]
@@ -91,36 +93,30 @@ public class MySqlContainer
         });
 
         await client.Containers.StartContainerAsync(createContainerResponse.ID, null);
-        await WaitUntilMysqlIsUp(client, createContainerResponse.ID);
+        await WaitUntilMysqlIsUp();
         return (createContainerResponse.ID, "localhost");
     }
 
-    private static async Task WaitUntilMysqlIsUp(DockerClient client, string containerId)
+    private static async Task WaitUntilMysqlIsUp()
     {
+        var connString = "Server=localhost;";
+        connString += $"Database={DbName};";
+        connString += $"User={DbUser};";
+        connString += $"Password=\"{DbPassword}\";";
+        connString += "GuidFormat=Binary16";
+
         var up = false;
 
         while (!up)
         {
-            var cmd = new List<string> { "mysqladmin", "ping", "-u", DbUser, $"-p{DbPassword}" };
-            var execResponse = await client.Containers.ExecCreateContainerAsync(containerId, new ContainerExecCreateParameters
+            try
             {
-                AttachStdout = true,
-                AttachStderr = true,
-                Cmd = cmd
-            });
-
-            var config = new ContainerExecStartParameters
-            {
-                AttachStdout = true,
-                AttachStderr = true,
-                Cmd = cmd
-            };
-
-            using var multiplexedStream = await client.Containers.StartWithConfigContainerExecAsync(execResponse.ID, config);
-            var (stdout, stderr) = await multiplexedStream.ReadOutputToEndAsync(default);
-            up = stdout.Split('\n')[0].Trim() == "mysqld is alive";
+                using var connection = new MySqlConnection(connString);
+                await connection.OpenAsync();
+                await Task.Delay(100);
+                up = true;
+            }
+            catch (MySqlException) { }
         }
-
-        await Task.Delay(2000);
     }
 }
