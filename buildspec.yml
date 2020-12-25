@@ -13,6 +13,7 @@ phases:
       - ./scripts/codebuild-extras.sh
       - dotnet-install.sh --jsonfile global.json
       - pip install cfn-lint
+      - docker pull mariadb/server:10.4
       
   pre_build:
     commands:
