@@ -53,9 +53,9 @@ internal class AutoAttribute : AutoDataAttribute
 
             return BrowserSetup.Browser;
         });
-        fixture.Register(() => AppFactory.Create().GetAwaiter().GetResult());
         fixture.Customize(new AutoNSubstituteCustomization { ConfigureMembers = true });
         fixture.Customizations.Insert(-1, new TargetRelay());
+        fixture.Customizations.Insert(-1, new AppFactoryRelay());
         fixture.Behaviors
         .OfType<ThrowingRecursionBehavior>()
         .ToList()

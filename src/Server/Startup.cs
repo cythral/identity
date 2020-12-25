@@ -11,7 +11,6 @@ using AspNet.Security.OpenIdConnect.Primitives;
 
 using AspNetCore.ServiceRegistration.Dynamic.Attributes;
 using AspNetCore.ServiceRegistration.Dynamic.Extensions;
-using AspNetCore.ServiceRegistration.Dynamic.Interfaces;
 
 using Brighid.Identity.Auth;
 using Brighid.Identity.Roles;
@@ -61,9 +60,9 @@ namespace Brighid.Identity
 
             services.Configure<EncryptionOptions>(Configuration.GetSection("EncryptionOptions"));
             services.AddHealthChecks();
-            services.AddScoped<IAmazonKeyManagementService, AmazonKeyManagementServiceClient>();
-            services.AddServicesOfType<IScopedService>();
+            services.AddSingleton<IAmazonKeyManagementService, AmazonKeyManagementServiceClient>();
             services.AddServicesWithAttributeOfType<ScopedServiceAttribute>();
+            services.AddServicesWithAttributeOfType<SingletonServiceAttribute>();
             services.AddDbContextPool<DatabaseContext>(ConfigureDatabaseOptions);
 
             services
@@ -132,8 +131,7 @@ namespace Brighid.Identity
             options
             .UseMySql(
                 conn,
-                new MySqlServerVersion(new Version(5, 7, 0)),
-                options => options.EnableRetryOnFailure()
+                new MySqlServerVersion(new Version(5, 7, 0))
             );
 
             options.UseOpenIddict();
