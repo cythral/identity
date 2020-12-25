@@ -8,7 +8,7 @@ namespace Brighid.Identity
     /// <summary>
     /// Describes a service to encrypt values.
     /// </summary>
-    [ScopedService]
+    [SingletonService]
     public interface IEncryptionService
     {
         /// <summary>

@@ -91,7 +91,6 @@ public class MySqlContainer
         });
 
         await client.Containers.StartContainerAsync(createContainerResponse.ID, null);
-        await Task.Delay(2000);
         await WaitUntilMysqlIsUp(client, createContainerResponse.ID);
         return (createContainerResponse.ID, "localhost");
     }
@@ -121,5 +120,7 @@ public class MySqlContainer
             var (stdout, stderr) = await multiplexedStream.ReadOutputToEndAsync(default);
             up = stdout.Split('\n')[0].Trim() == "mysqld is alive";
         }
+
+        await Task.Delay(2000);
     }
 }

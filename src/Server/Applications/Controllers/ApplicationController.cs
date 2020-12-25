@@ -1,10 +1,13 @@
 using System;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 using Brighid.Identity.Roles;
 using Brighid.Identity.Sns;
 
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace Brighid.Identity.Applications
 {
@@ -18,14 +21,17 @@ namespace Brighid.Identity.Applications
     {
         private readonly IApplicationService appService;
         private readonly IApplicationRepository appRepository;
+        private readonly ILogger<ApplicationController> logger;
 
         public ApplicationController(
             IApplicationService appService,
-            IApplicationRepository appRepository
+            IApplicationRepository appRepository,
+            ILogger<ApplicationController> logger
         )
         {
             this.appService = appService;
             this.appRepository = appRepository;
+            this.logger = logger;
         }
 
         private void SetSnsContextItems(Guid id, Application data)
@@ -36,6 +42,15 @@ namespace Brighid.Identity.Applications
                 HttpContext.Items[CloudFormationConstants.Data] = data;
                 data.Secret = null;
             }
+        }
+
+        [HttpPut("cloudformation-reply")]
+        [AllowAnonymous]
+        public async Task<ActionResult> CloudFormationReply([FromBody] object request)
+        {
+            logger.LogInformation(JsonSerializer.Serialize(request));
+            await Task.CompletedTask;
+            return Ok();
         }
 
         [HttpPost]

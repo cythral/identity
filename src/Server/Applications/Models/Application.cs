@@ -42,7 +42,7 @@ namespace Brighid.Identity.Applications
         /// </summary>
         /// <value>The date/time this application was created.</value>
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public virtual DateTimeOffset CreatedDate { get; init; }
+        public virtual DateTimeOffset CreatedDate { get; private set; }
 
         /// <summary>
         /// Gets or sets the roles this application is allowed to use.

@@ -1,6 +1,6 @@
 namespace Brighid.Identity.Sns
 {
-    public record CloudFormationResponse
+    public class CloudFormationResponse
     {
         public CloudFormationResponse(ICloudFormationRequest<object> request, string? givenPhysicalResourceId = null)
         {
@@ -10,19 +10,23 @@ namespace Brighid.Identity.Sns
             PhysicalResourceId = givenPhysicalResourceId ?? request.PhysicalResourceId;
         }
 
-        public CloudFormationResponseStatus Status { get; init; } = CloudFormationResponseStatus.SUCCESS;
+        public CloudFormationResponse()
+        {
+        }
 
-        public string PhysicalResourceId { get; init; }
+        public CloudFormationResponseStatus Status { get; set; } = CloudFormationResponseStatus.SUCCESS;
 
-        public string StackId { get; init; }
+        public string PhysicalResourceId { get; set; }
 
-        public string LogicalResourceId { get; init; }
+        public string StackId { get; set; }
 
-        public string RequestId { get; init; }
+        public string LogicalResourceId { get; set; }
 
-        public string? Reason { get; init; }
+        public string RequestId { get; set; }
 
-        public object? Data { get; init; }
+        public string? Reason { get; set; }
+
+        public object? Data { get; set; }
 
     }
 }

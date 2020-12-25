@@ -48,14 +48,22 @@ public class AppFactory : WebApplicationFactory<Startup>
             webHostBuilder.UseUrls($"http://{endpoint}");
         }).Build();
 
-        host.Start();
         RootUri = new Uri($"http://{endpoint}");
     }
+
+    private async Task Start()
+    {
+        await host.StartAsync();
+    }
+
+    public override IServiceProvider Services => host.Services;
 
     public static async Task<AppFactory> Create()
     {
         var serverIp = await MySqlContainer.GetMysqlServerAddress();
-        return new AppFactory(serverIp);
+        var app = new AppFactory(serverIp);
+        await app.Start();
+        return app;
     }
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
@@ -67,13 +75,21 @@ public class AppFactory : WebApplicationFactory<Startup>
                 ["Database:Name"] = MySqlContainer.DbName,
                 ["Database:User"] = MySqlContainer.DbUser,
                 ["Database:Password"] = MySqlContainer.DbPassword,
+                ["EncryptionOptions:KmsKeyId"] = "alias/SecretsKey",
             })
         );
 
         builder.ConfigureTestServices(services =>
         {
-            services.AddAuthentication("Test")
-                    .AddScheme<AuthenticationSchemeOptions, TestAuthHandler>("Test", options => { });
+            services
+            .AddSingleton<MockControllerCalls>()
+            .AddMvc()
+            .AddApplicationPart(typeof(AppFactory).Assembly)
+            .AddControllersAsServices();
+
+            services
+            .AddAuthentication("Test")
+            .AddScheme<AuthenticationSchemeOptions, TestAuthHandler>("Test", options => { });
         });
     }
 
