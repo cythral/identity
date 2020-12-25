@@ -68,7 +68,7 @@ public class MySqlContainer
         var client = Configuration.CreateClient();
         var createContainerResponse = await client.Containers.CreateContainerAsync(new CreateContainerParameters
         {
-            Image = "mariadb/server:10.4",
+            Image = "public.ecr.aws/bitnami/mariadb:10.4.17-debian-10-r41",
             Env = new List<string>
             {
                 "MYSQL_RANDOM_ROOT_PASSWORD=1",
