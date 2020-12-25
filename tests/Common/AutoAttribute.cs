@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using System.Linq;
 
@@ -33,9 +34,13 @@ internal class AutoAttribute : AutoDataAttribute
                 {
                     try
                     {
+                        var args = Environment.GetEnvironmentVariable("CI") != null
+                            ? new[] { "--no-sandbox" }
+                            : Array.Empty<string>();
+
                         BrowserSetup.Browser = Puppeteer.LaunchAsync(new LaunchOptions
                         {
-                            Args = new[] { "--no-sandbox" }
+                            Args = args
                         }).GetAwaiter().GetResult();
                     }
                     catch (FileNotFoundException)

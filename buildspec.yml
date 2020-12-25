@@ -1,6 +1,7 @@
 version: 0.2
 env:
   variables:
+    CI: true
     DOTNET_NOLOGO: true
     CONFIGURATION: Release
     
