@@ -21,8 +21,10 @@ using static NSubstitute.Arg;
 using SignInResult = Microsoft.AspNetCore.Identity.SignInResult;
 namespace Brighid.Identity.Auth
 {
+    [Category("Unit")]
     public class SignupControllerTests
     {
+        [Category("Unit")]
         public class Render
         {
             [Test, Auto]
@@ -86,6 +88,7 @@ namespace Brighid.Identity.Auth
             }
         }
 
+        [Category("Unit")]
         public class Signup
         {
             [Test, Auto]

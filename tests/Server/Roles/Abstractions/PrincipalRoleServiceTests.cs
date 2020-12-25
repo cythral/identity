@@ -49,8 +49,10 @@ namespace Brighid.Identity.Roles
         }
     }
 
+    [Category("Unit")]
     public class PrincipalRoleServiceTests
     {
+        [Category("Unit")]
         public class UpdatePrincipalRolesTests
         {
             private static readonly List<TestPrincipalRole> ExistingRoles = new()
@@ -117,6 +119,7 @@ namespace Brighid.Identity.Roles
             }
         }
 
+        [Category("Unit")]
         public class AddRoleToPrincipalTests
         {
             [Test, Auto]

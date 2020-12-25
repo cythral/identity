@@ -24,8 +24,10 @@ using static NSubstitute.Arg;
 
 namespace Brighid.Identity.Auth
 {
+    [Category("Unit")]
     public class DefaultAuthUtilsTests
     {
+        [Category("Unit")]
         public class CreateClaimsIdentity
         {
             [Test, Auto]
@@ -197,6 +199,7 @@ namespace Brighid.Identity.Auth
             }
         }
 
+        [Category("Unit")]
         public class CreateAuthTicket
         {
             [Test, Auto]

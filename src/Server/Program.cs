@@ -1,4 +1,3 @@
-using Brighid.Identity;
 
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;

@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Threading;
 using System.Threading.Tasks;
 
 using AutoFixture.AutoNSubstitute;
@@ -22,8 +21,10 @@ using static NSubstitute.Arg;
 
 namespace Brighid.Identity.Applications
 {
+    [Category("Unit")]
     public class DefaultApplicationServiceTests
     {
+        [Category("Unit")]
         public class CreateTests
         {
             [Test, Auto]
@@ -115,7 +116,7 @@ namespace Brighid.Identity.Applications
             }
         }
 
-
+        [Category("Unit")]
         public class UpdateTests
         {
             [Test, Auto]
@@ -380,6 +381,7 @@ namespace Brighid.Identity.Applications
             }
         }
 
+        [Category("Unit")]
         public class DeleteTests
         {
             [Test, Auto]

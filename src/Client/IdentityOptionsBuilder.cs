@@ -1,9 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Net.Http;
-using System.Net.Http.Json;
-using System.Threading;
-using System.Threading.Tasks;
 
 using Microsoft.Extensions.DependencyInjection;
 
@@ -20,7 +15,7 @@ namespace Brighid.Identity.Client
         public IdentityOptionsBuilder(IServiceCollection services)
         {
             this.services = services;
-            this.context = new ConfigurationContext();
+            context = new ConfigurationContext();
         }
 
         public IdentityOptionsBuilder<TServiceType, TImplementation> WithBaseAddress(string baseAddress)

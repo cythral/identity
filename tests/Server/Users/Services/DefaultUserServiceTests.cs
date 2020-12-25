@@ -1,5 +1,4 @@
 using System;
-using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 
@@ -23,8 +22,10 @@ using static NSubstitute.Arg;
 
 namespace Brighid.Identity.Users
 {
+    [Category("Unit")]
     public class DefaultUserServiceTests
     {
+        [Category("Unit")]
         public class Create
         {
             [Test, Auto]
@@ -100,6 +101,7 @@ namespace Brighid.Identity.Users
             }
         }
 
+        [Category("Unit")]
         public class CreateLogin
         {
             [Test, Auto]

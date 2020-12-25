@@ -1,6 +1,7 @@
 version: 0.2
 env:
   variables:
+    CI: true
     DOTNET_NOLOGO: true
     CONFIGURATION: Release
     
@@ -13,6 +14,7 @@ phases:
       - ./scripts/codebuild-extras.sh
       - dotnet-install.sh --jsonfile global.json
       - pip install cfn-lint
+      - docker pull public.ecr.aws/bitnami/mariadb:10.4
       
   pre_build:
     commands:

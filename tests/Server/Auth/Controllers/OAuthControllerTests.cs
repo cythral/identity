@@ -21,8 +21,10 @@ using static NSubstitute.Arg;
 
 namespace Brighid.Identity.Auth
 {
+    [Category("Unit")]
     public class OAuthControllerTests
     {
+        [Category("Unit")]
         public class Exchange
         {
             [Test, Auto]
