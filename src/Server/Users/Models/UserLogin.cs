@@ -13,7 +13,7 @@ namespace Brighid.Identity.Users
     public class UserLogin : IdentityUserLogin<Guid>
     {
         [Key]
-        public Guid Id { get; private set; } = Guid.NewGuid();
+        public Guid Id { get; internal set; } = Guid.NewGuid();
 
         [JsonIgnore]
         public override Guid UserId { get; set; }

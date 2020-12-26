@@ -13,7 +13,7 @@ namespace Brighid.Identity.Roles
         /// </summary>
         /// <value>A unique id number.</value>
         [Key]
-        public override Guid Id { get; set; } = Guid.NewGuid();
+        public new Guid Id { get; internal set; } = Guid.NewGuid();
 
         /// <summary>
         /// Gets or sets the description of the role.

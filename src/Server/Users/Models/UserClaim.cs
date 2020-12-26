@@ -9,7 +9,7 @@ namespace Brighid.Identity.Users
     public class UserClaim : IdentityUserClaim<Guid>
     {
         [Key]
-        public new Guid Id { get; set; } = Guid.NewGuid();
+        public new Guid Id { get; internal set; } = Guid.NewGuid();
 
         public override Guid UserId { get; set; }
 

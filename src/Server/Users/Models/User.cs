@@ -14,7 +14,7 @@ namespace Brighid.Identity.Users
     {
 
         [Key]
-        public override Guid Id { get; set; } = Guid.NewGuid();
+        public new Guid Id { get; internal set; } = Guid.NewGuid();
 
         [NotMapped]
         [JsonIgnore]
