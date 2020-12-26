@@ -83,6 +83,8 @@ public class AppFactory : WebApplicationFactory<Startup>
         {
             services
             .AddSingleton<MockControllerCalls>()
+            .AddScoped<IItemRepository>(provider => null!)
+            .AddScoped<IItemService>(provider => null!)
             .AddMvc()
             .AddApplicationPart(typeof(AppFactory).Assembly)
             .AddControllersAsServices();

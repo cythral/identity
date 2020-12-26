@@ -31,13 +31,13 @@ namespace Brighid.Identity.Users
                 [Target] UserController controller
             )
             {
-                repository.GetById(Any<Guid>(), Any<string[]>()).Returns((User)null!);
+                repository.FindById(Any<Guid>(), Any<string[]>()).Returns((User)null!);
 
                 var response = await controller.Get(id);
                 var result = response.Result;
 
                 result.Should().BeOfType<NotFoundResult>();
-                await repository.Received().GetById(Is(id), Any<string[]>());
+                await repository.Received().FindById(Is(id), Any<string[]>());
             }
 
             [Test, Auto]
@@ -48,14 +48,14 @@ namespace Brighid.Identity.Users
                 [Target] UserController controller
             )
             {
-                repository.GetById(Any<Guid>(), Any<string[]>()).Returns(user);
+                repository.FindById(Any<Guid>(), Any<string[]>()).Returns(user);
 
                 var response = await controller.Get(id);
                 var result = response.Result;
 
                 result.Should().BeOfType<OkObjectResult>();
                 result.As<OkObjectResult>().Value.Should().Be(user);
-                await repository.Received().GetById(Is(id), Any<string[]>());
+                await repository.Received().FindById(Is(id), Any<string[]>());
             }
         }
 

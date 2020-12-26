@@ -23,8 +23,6 @@ namespace Brighid.Identity.Applications
     [Category("Integration")]
     public class ApplicationsIntegrationTests
     {
-        private const string EndpointUrl = "/api/applications";
-
         [TestFixture, Category("Integration")]
         public class CloudFormationCustomResourceTests
         {
@@ -50,7 +48,7 @@ namespace Brighid.Identity.Applications
 
                 #region Create Application
                 {
-                    var response = await client.PostAsJsonAsync(EndpointUrl, new SnsMessage<CloudFormationRequest<Application>>
+                    var response = await client.PostAsJsonAsync(ApplicationController.BasePath, new SnsMessage<CloudFormationRequest<Application>>
                     {
                         Message = new CloudFormationRequest<Application>
                         {
@@ -102,7 +100,7 @@ namespace Brighid.Identity.Applications
 
                 #region Update Application Serial
                 {
-                    var response = await client.PostAsJsonAsync(EndpointUrl, new SnsMessage<CloudFormationRequest<Application>>
+                    var response = await client.PostAsJsonAsync(ApplicationController.BasePath, new SnsMessage<CloudFormationRequest<Application>>
                     {
                         Message = new CloudFormationRequest<Application>
                         {
@@ -153,7 +151,7 @@ namespace Brighid.Identity.Applications
 
                 #region Delete Application
                 {
-                    var response = await client.PostAsJsonAsync(EndpointUrl, new SnsMessage<CloudFormationRequest<Application>>
+                    var response = await client.PostAsJsonAsync(ApplicationController.BasePath, new SnsMessage<CloudFormationRequest<Application>>
                     {
                         Message = new CloudFormationRequest<Application>
                         {

@@ -42,7 +42,7 @@ namespace Brighid.Identity.Users
         [HttpGet("{userId}")]
         public async Task<ActionResult<User>> Get(Guid userId)
         {
-            var result = await repository.GetById(userId, Embeds);
+            var result = await repository.FindById(userId, Embeds);
             return result == null ? NotFound() : Ok(result);
         }
 

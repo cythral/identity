@@ -20,5 +20,11 @@ namespace Brighid.Identity.Roles
 
             return query.FirstOrDefaultAsync(cancellationToken);
         }
+
+        public async Task<bool> IsAttachedToAPrincipal(Guid id, CancellationToken cancellationToken = default)
+        {
+            var query = Context.Roles.FromSqlInterpolated($"select 1 from Roles where exists (select 1 from UserRoles where RoleId = {id}) or (select 1 from ApplicationRoles where RoleId = {id}) limit 1");
+            return await query.AnyAsync(cancellationToken);
+        }
     }
 }

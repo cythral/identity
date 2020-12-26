@@ -19,6 +19,7 @@ using Brighid.Identity.Users;
 
 using Flurl.Http;
 
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -78,6 +79,38 @@ namespace Brighid.Identity
             })
             .AddEntityFrameworkStores<DatabaseContext>()
             .AddDefaultTokenProviders();
+
+            services.ConfigureApplicationCookie(options =>
+            {
+                options.LoginPath = "/login";
+                options.Events = new CookieAuthenticationEvents
+                {
+                    OnRedirectToAccessDenied = context =>
+                    {
+                        if (context.Request.Path.StartsWithSegments("/api"))
+                        {
+                            context.Response.StatusCode = 403;
+                        }
+                        else
+                        {
+                            context.Response.Redirect(context.RedirectUri);
+                        }
+                        return Task.FromResult(0);
+                    },
+                    OnRedirectToLogin = context =>
+                    {
+                        if (context.Request.Path.StartsWithSegments("/api"))
+                        {
+                            context.Response.StatusCode = 401;
+                        }
+                        else
+                        {
+                            context.Response.Redirect(context.RedirectUri);
+                        }
+                        return Task.FromResult(0);
+                    }
+                };
+            });
 
             // Replace Default User Manager with an overridden one
             var oldUserManagerDescriptor = services.First(descriptor => descriptor.ServiceType == typeof(UserManager<User>));
@@ -179,60 +212,22 @@ namespace Brighid.Identity
             var provider = app.ApplicationServices;
 
             SeedBasicRole(provider).GetAwaiter().GetResult();
-            SeedUser(env, provider, "test@example.com", "Password123!").GetAwaiter().GetResult();
         }
 
         public async Task SeedBasicRole(IServiceProvider provider)
         {
             using var scope = provider.CreateScope();
             var services = scope.ServiceProvider;
-            var roleManager = services.GetRequiredService<RoleManager<Role>>();
-            var role = new Role { Name = "Basic" };
+            var roleRepository = services.GetRequiredService<IRoleRepository>();
+            var existingRole = await roleRepository.FindByName("Basic").ConfigureAwait(false);
 
-            if (await roleManager.RoleExistsAsync(role.Name).ConfigureAwait(false))
+            if (existingRole != null)
             {
                 return;
             }
 
-            var result = await roleManager.CreateAsync(role).ConfigureAwait(false);
-            if (!result.Succeeded)
-            {
-                throw new Exception("Could not seed database with the Basic role.");
-            }
-        }
-
-        public async Task SeedUser(IWebHostEnvironment env, IServiceProvider provider, string username, string password)
-        {
-            if (!env.IsDevelopment())
-            {
-                return;
-            }
-
-            using var scope = provider.CreateScope();
-            var services = scope.ServiceProvider;
-            var roleManager = services.GetRequiredService<RoleManager<Role>>();
-            var userManager = services.GetRequiredService<UserManager<User>>();
-            var context = services.GetRequiredService<DatabaseContext>();
-            var id = new Guid("D4759009EB67427ABF21272509A27F1A");
-            var concurrencyStamp = Guid.NewGuid().ToString();
-            var user = new User { Id = id, UserName = username, Email = username, ConcurrencyStamp = concurrencyStamp };
-
-            if (await userManager.FindByIdAsync(id.ToString()) != null)
-            {
-                return;
-            }
-
-            var createResult = await userManager.CreateAsync(user, password);
-            if (!createResult.Succeeded)
-            {
-                throw new Exception("Could not seed database with test user.");
-            }
-
-            var role = await roleManager.FindByNameAsync("Basic");
-            var userRole = new UserRole { User = user, Role = role };
-
-            context.UserRoles.Add(userRole);
-            await context.SaveChangesAsync();
+            var role = new Role { Name = "Basic", NormalizedName = "BASIC" };
+            await roleRepository.Add(role);
         }
     }
 }
