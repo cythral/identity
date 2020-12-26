@@ -9,7 +9,7 @@ namespace Brighid.Identity.Users
 
         public string Value { get; set; }
 
-        public Guid LoginId { get; set; }
+        public Guid LoginId { get; internal set; }
 
         [ForeignKey("LoginId")]
         public UserLogin Login { get; set; }

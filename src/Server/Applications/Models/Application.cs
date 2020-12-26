@@ -14,7 +14,7 @@ namespace Brighid.Identity.Applications
         /// </summary>
         /// <value>A unique id number.</value>
         [Key]
-        public virtual Guid Id { get; set; } = Guid.NewGuid();
+        public virtual Guid Id { get; internal set; } = Guid.NewGuid();
 
         /// <summary>
         /// Gets the unique name for this application.
