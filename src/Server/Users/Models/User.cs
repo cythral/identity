@@ -13,8 +13,17 @@ namespace Brighid.Identity.Users
     public class User : IdentityUser<Guid>, IPrincipalWithRoles<User, UserRole>
     {
 
+        public User()
+        {
+            Id = Guid.NewGuid();
+        }
+
         [Key]
-        public new Guid Id { get; internal set; } = Guid.NewGuid();
+        public new Guid Id
+        {
+            get => base.Id;
+            internal set => base.Id = value;
+        }
 
         [NotMapped]
         [JsonIgnore]

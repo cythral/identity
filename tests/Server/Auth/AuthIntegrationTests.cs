@@ -13,7 +13,7 @@ using PuppeteerSharp;
 
 namespace Brighid.Identity.Auth
 {
-    [Category("Integration")]
+    [TestFixture, Category("Integration")]
     public class AuthIntegrationTests
     {
         private const string email = "test@tester.com";

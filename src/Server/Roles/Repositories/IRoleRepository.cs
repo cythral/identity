@@ -10,5 +10,7 @@ namespace Brighid.Identity.Roles
     public interface IRoleRepository : IRepository<Role, Guid>
     {
         Task<Role?> FindByName(string name, CancellationToken cancellationToken = default);
+
+        Task<bool> IsAttachedToAPrincipal(Guid id, CancellationToken cancellationToken = default);
     }
 }

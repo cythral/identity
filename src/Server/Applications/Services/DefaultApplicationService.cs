@@ -12,14 +12,12 @@ namespace Brighid.Identity.Applications
     {
         private readonly OpenIddictApplicationManager<OpenIddictApplication> appManager;
         private readonly IApplicationRepository appRepository;
-        private readonly IApplicationRoleRepository appRoleRepository;
         private readonly IApplicationRoleService appRoleService;
         private readonly GenerateRandomString generateRandomString;
         private readonly IEncryptionService encryptionService;
 
         public DefaultApplicationService(
            IApplicationRepository appRepository,
-           IApplicationRoleRepository appRoleRepository,
            IApplicationRoleService appRoleService,
            OpenIddictApplicationManager<OpenIddictApplication> appManager,
            GenerateRandomString generateRandomString,
@@ -27,12 +25,13 @@ namespace Brighid.Identity.Applications
        )
         {
             this.appRepository = appRepository;
-            this.appRoleRepository = appRoleRepository;
             this.appRoleService = appRoleService;
             this.appManager = appManager;
             this.generateRandomString = generateRandomString;
             this.encryptionService = encryptionService;
         }
+
+        public Guid GetPrimaryKey(Application application) => application.Id;
 
         public async Task<Application> Create(Application application)
         {
@@ -60,10 +59,10 @@ namespace Brighid.Identity.Applications
 
             return application;
         }
-#pragma warning disable IDE0046
-        public async Task<Application> Update(Guid id, Application application)
+
+        public async Task<Application> UpdateById(Guid id, Application application)
         {
-            var existingApp = await appRepository.GetById(id, "Roles.Role");
+            var existingApp = await appRepository.FindById(id, "Roles.Role");
             if (existingApp == null)
             {
                 throw new UpdateApplicationException($"Application with ID={id} does not exist.");
@@ -93,7 +92,7 @@ namespace Brighid.Identity.Applications
             return existingApp;
         }
 
-        public async Task<Application> Delete(Guid id)
+        public async Task<Application> DeleteById(Guid id)
         {
             var result = await appRepository.Remove(id).ConfigureAwait(false);
             var client = await appManager.FindByClientIdAsync(id.ToString()).ConfigureAwait(false);

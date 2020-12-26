@@ -4,11 +4,9 @@ services:
     build:
       context: .
       target: development
-    restart: always
+    restart: unless-stopped
     ports:
-      - "80:80"
-      - "443:443"
-      - "8736:8736"
+      - 80:80
     volumes:
       - ./:/app
       - ~/.aws:/root/.aws
@@ -25,7 +23,7 @@ services:
 
   db:
     image: mariadb/server:10.4
-    restart: always
+    restart: unless-stopped
     environment:
       MYSQL_DATABASE: ${DB_NAME}
       MYSQL_USER: ${DB_USER}

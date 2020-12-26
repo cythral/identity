@@ -39,7 +39,7 @@ namespace Brighid.Identity
 
         public virtual IQueryable<TEntity> All => Set.AsQueryable();
 
-        public async Task<TEntity> Add(TEntity entity)
+        public virtual async Task<TEntity> Add(TEntity entity)
         {
             var result = await Set.AddAsync(entity);
 
@@ -55,7 +55,7 @@ namespace Brighid.Identity
             }
         }
 
-        public async Task<TEntity?> TryAdd(TEntity entity)
+        public virtual async Task<TEntity?> TryAdd(TEntity entity)
         {
             try
             {
@@ -66,7 +66,7 @@ namespace Brighid.Identity
 #pragma warning restore CA1031
         }
 
-        public async Task<TEntity> GetById(TPrimaryKeyType primaryKey, params string[] embeds)
+        public virtual async Task<TEntity> FindById(TPrimaryKeyType primaryKey, params string[] embeds)
         {
             var entitySet = embeds
                 .Aggregate(All, (query, embed) => query.Include(embed))
@@ -79,21 +79,21 @@ namespace Brighid.Identity
             return await query.FirstOrDefaultAsync();
         }
 
-        public async Task<bool> Exists(TPrimaryKeyType primaryKey)
+        public virtual async Task<bool> Exists(TPrimaryKeyType primaryKey)
         {
             var query = from obj in All where EF.Property<TPrimaryKeyType>(obj, PrimaryKeyName).Equals(primaryKey) select obj;
             var count = await query.CountAsync();
             return count > 0;
         }
 
-        public async Task<TEntity> Save(TEntity entity)
+        public virtual async Task<TEntity> Save(TEntity entity)
         {
             Context.Attach(entity);
             await Context.SaveChangesAsync();
             return entity;
         }
 
-        public async Task<TEntity> Remove(TPrimaryKeyType primaryKey)
+        public virtual async Task<TEntity> Remove(TPrimaryKeyType primaryKey)
         {
             if (SetPrimaryKey == null)
             {
@@ -107,19 +107,19 @@ namespace Brighid.Identity
             return await Remove(entity);
         }
 
-        public async Task<TEntity> Remove(TEntity entity)
+        public virtual async Task<TEntity> Remove(TEntity entity)
         {
             Set.Remove(entity);
             await Context.SaveChangesAsync();
             return entity;
         }
 
-        public void TrackAsDeleted(TEntity entity)
+        public virtual void TrackAsDeleted(TEntity entity)
         {
             Context.Entry(entity).State = EFEntityState.Deleted;
         }
 
-        public EntityState GetState(TEntity? entity)
+        public virtual EntityState GetState(TEntity? entity)
         {
             if (entity == null)
             {
