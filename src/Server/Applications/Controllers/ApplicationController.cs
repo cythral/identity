@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 
 using Brighid.Identity.Roles;
 
@@ -10,7 +11,7 @@ namespace Brighid.Identity.Applications
     [Roles(new[]
     {
         nameof(BuiltInRole.ApplicationManager),
-        nameof(BuiltInRole.Administrator)
+        nameof(BuiltInRole.Administrator),
     })]
     public class ApplicationController : EntityController<Application, Guid, IApplicationRepository, IApplicationService>
     {
@@ -29,5 +30,13 @@ namespace Brighid.Identity.Applications
             base.SetSnsContextItems(id, data);
         }
 
+        public override async Task<ActionResult<Application>> Create([FromBody] Application entity)
+        {
+            try
+            {
+                return await base.Create(entity);
+            }
+            catch (RoleNotFoundException e) { return BadRequest(new { e.Message }); }
+        }
     }
 }

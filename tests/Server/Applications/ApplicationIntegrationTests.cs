@@ -200,6 +200,61 @@ namespace Brighid.Identity.Applications
                 #endregion
             }
 
+            [Test, Auto]
+            public async Task CreateWithUnknownRoleFails(
+                string createRequestId,
+                string name,
+                string randomRoleName,
+                string description,
+                AppFactory app
+            )
+            {
+                await EnsureValidAwsCredentials(app);
+
+                var serial = 0UL;
+                var options = new JsonSerializerOptions { DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull };
+                var client = app.CreateClient();
+                client.DefaultRequestHeaders.Add("x-amz-sns-message-type", "Notification");
+
+                #region Attempt to Create Application
+                {
+                    var response = await client.PostAsJsonAsync(ApplicationController.BasePath, new SnsMessage<CloudFormationRequest<Application>>
+                    {
+                        Message = new CloudFormationRequest<Application>
+                        {
+                            RequestId = createRequestId,
+                            RequestType = CloudFormationRequestType.Create,
+                            ResponseURL = new Uri($"{app.RootUri}mock"),
+                            ResourceProperties = new Application
+                            {
+                                Name = name,
+                                Description = description,
+                                Serial = serial,
+                                Roles = new List<ApplicationRole>
+                                {
+                                    new ApplicationRole { Role = new Role { Name = randomRoleName } }
+                                }
+                            }
+                        }
+                    }, options);
+
+                    response.StatusCode.Should().Be(400);
+                }
+                #endregion
+
+                #region Ensure Failure Response was Received
+                {
+                    var calls = app.Services.GetRequiredService<MockControllerCalls>();
+
+                    calls.Should().Contain(response =>
+                        response.RequestId == createRequestId &&
+                        response.Status == CloudFormationResponseStatus.FAILED
+                    );
+                    calls.Clear();
+                }
+                #endregion
+            }
+
             private async Task EnsureValidAwsCredentials(AppFactory app)
             {
                 try

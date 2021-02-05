@@ -81,10 +81,25 @@ namespace Brighid.Identity.Sns
                 await WriteBody(context, resourceProperties);
                 UpdateRequestProperties(context, message);
 
+                using var bodyStream = new MemoryStream();
+                using var reader = new StreamReader(bodyStream);
+
+                await context.Response.Body.DisposeAsync();
+                context.Response.Body = bodyStream;
+
                 await next(context);
 
                 context.Items.TryGetValue(CloudFormationConstants.Id, out var physicalResourceId);
                 context.Items.TryGetValue(CloudFormationConstants.Data, out var model);
+
+#pragma warning disable IDE0078
+                if (context.Response.StatusCode < 200 || context.Response.StatusCode >= 400)
+                {
+                    bodyStream.Position = 0;
+                    var body = await reader.ReadToEndAsync();
+                    throw new Exception(body);
+                }
+#pragma warning restore IDE0078
 
                 await message.ResponseURL.PutJsonAsync(new CloudFormationResponse(message, physicalResourceId?.ToString())
                 {
