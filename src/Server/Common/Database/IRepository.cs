@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -6,6 +7,8 @@ namespace Brighid.Identity
     public interface IRepository<TEntity, TPrimaryKeyType> where TEntity : class
     {
         IQueryable<TEntity> All { get; }
+
+        Task<IEnumerable<TEntity>> List();
 
         Task<TEntity> Add(TEntity entity);
 
