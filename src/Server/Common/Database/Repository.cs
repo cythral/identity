@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization;
@@ -38,6 +39,11 @@ namespace Brighid.Identity
         }
 
         public virtual IQueryable<TEntity> All => Set.AsQueryable();
+
+        public virtual async Task<IEnumerable<TEntity>> List()
+        {
+            return await All.ToListAsync();
+        }
 
         public virtual async Task<TEntity> Add(TEntity entity)
         {

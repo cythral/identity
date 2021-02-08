@@ -1,7 +1,11 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 using Microsoft.AspNetCore.Mvc;
+
+using Microsoft.EntityFrameworkCore;
 
 namespace Brighid.Identity.Roles
 {
@@ -20,6 +24,13 @@ namespace Brighid.Identity.Roles
             IRoleRepository repository
         ) : base(BasePath, service, repository)
         {
+        }
+
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<Role>>> List()
+        {
+            var results = await Repository.List();
+            return Ok(results);
         }
 
         [HttpGet("{id:guid}")]

@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -16,6 +17,7 @@ using NSubstitute;
 
 using NUnit.Framework;
 
+
 using static NSubstitute.Arg;
 
 namespace Brighid.Identity.Roles
@@ -32,6 +34,26 @@ namespace Brighid.Identity.Roles
             httpContext.Items.Returns(itemDictionary);
             httpContext.Items[Constants.RequestSource] = source;
             return httpContext;
+        }
+
+        [TestFixture, Category("Unit")]
+        public class ListTests
+        {
+            [Test, Auto]
+            public async Task ShouldReturnListOfRoles(
+                IEnumerable<Role> roles,
+                [Frozen, Substitute] IRoleRepository repository,
+                [Target] RoleController controller
+            )
+            {
+                repository.List().Returns(roles);
+
+                var response = await controller.List();
+                var result = response.Result;
+
+                result.Should().BeOfType<OkObjectResult>();
+                result.As<OkObjectResult>().Value.Should().Be(roles);
+            }
         }
 
         [TestFixture, Category("Unit")]
