@@ -1,0 +1,19 @@
+@page "/roles"
+@inject IRoleRepository roleRepository;
+
+<div class="heading">
+    <h1>Identity Roles</h1>
+    <a href="#" class="create-new-btn btn-link">Create New <i class="fa fa-plus"></i></a>
+</div>
+
+<ul>
+    @foreach (var role in roleRepository.All)
+    {
+        <li>
+            <span>@role.Name</span>
+            <div class="actions">
+                <a href="#"><i class="fa fa-trash"></i></a>
+            </div>
+        </li>
+    }
+</ul>

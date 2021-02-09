@@ -26,6 +26,10 @@ a:hover,
   text-decoration: underline;
 }
 
+.btn-link:hover i {
+  text-decoration: underline;
+}
+
 .text-danger {
   color: var(--primary-color);
 }
@@ -33,7 +37,6 @@ a:hover,
 .btn-primary {
   color: #fff;
   background-color: var(--primary-color);
-  border-color: #1861ac;
 }
 
 .content {

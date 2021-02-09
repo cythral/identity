@@ -1,0 +1,48 @@
+.heading {
+  display: flex;
+  align-items: center;
+}
+
+.heading h1 {
+  padding: 0 15px;
+  flex: 80%;
+  flex-grow: 1;
+}
+
+.heading a {
+  padding: 0 15px;
+  flex: 20%;
+  flex-grow: 1;
+}
+
+ul {
+  list-style-type: none;
+  padding-left: 0;
+}
+
+li {
+  height: 50px;
+  line-height: 50px;
+  transition: background 0.5s, color 0.5s;
+  padding: 0 15px;
+  cursor: pointer;
+  display: flex;
+}
+
+li:hover {
+  background: var(--primary-color);
+  color: white;
+}
+
+li span {
+  flex: 80%;
+}
+
+li .actions {
+  flex: 20%;
+  text-align: right;
+}
+
+li .actions a {
+  color: white;
+}
