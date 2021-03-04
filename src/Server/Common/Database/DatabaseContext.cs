@@ -1,6 +1,7 @@
 using System;
 
 using Brighid.Identity.Applications;
+using Brighid.Identity.LoginProviders;
 using Brighid.Identity.Roles;
 using Brighid.Identity.Users;
 
@@ -53,6 +54,8 @@ namespace Brighid.Identity
         public virtual DbSet<Application> Applications { get; init; }
 
         public virtual DbSet<ApplicationRole> ApplicationRoles { get; init; }
+
+        public virtual DbSet<LoginProvider> LoginProviders { get; init; }
 
         public override DbSet<UserRole> UserRoles { get; set; }
     }
