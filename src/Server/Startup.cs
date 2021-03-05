@@ -65,6 +65,7 @@ namespace Brighid.Identity
             services.AddServicesWithAttributeOfType<ScopedServiceAttribute>();
             services.AddServicesWithAttributeOfType<SingletonServiceAttribute>();
             services.AddDbContextPool<DatabaseContext>(ConfigureDatabaseOptions);
+            services.AddHttpContextAccessor();
 
             services
             .AddRazorPages()
