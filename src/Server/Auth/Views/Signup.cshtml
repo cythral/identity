@@ -10,28 +10,35 @@
     var redirectUri = Uri.EscapeDataString(Model.RedirectUri.ToString());
 }
 
-<form method="post">
-    <input type="hidden" asp-for="RedirectUri" />
-
-    <div asp-validation-summary="All" class="text-danger"></div>
-
-    <div class="form-field">
-        <input placeholder="Email" asp-for="Email" />
-        <span asp-validation-for="Email" class="text-danger"></span>
+<div class="auth-page">
+    <div>
+        <h1>Brighid Identity</h1>
     </div>
+    <form method="post" class="auth-form">
+        <div class="form-content">
+            <input type="hidden" asp-for="RedirectUri" />
 
-    <div class="form-field">
-        <input placeholder="Password" type="password" asp-for="Password" />
-        <span asp-validation-for="Password" class="text-danger"></span>
-    </div>
+            <div asp-validation-summary="All" class="text-danger"></div>
 
-    <div class="form-field">
-        <input placeholder="Confirm Password" type="password" asp-for="ConfirmPassword" />
-        <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
-    </div>
+            <div class="form-field">
+                <input placeholder="Email" asp-for="Email" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
 
-    <div class="form-actions">
-        <input value="Signup" type="submit" class="w-25" />
-        <div>or <a href="/login?redirect_uri=@redirectUri">Login</a></div>
-    </div>
-</form>
+            <div class="form-field">
+                <input placeholder="Password" type="password" asp-for="Password" />
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+
+            <div class="form-field">
+                <input placeholder="Confirm Password" type="password" asp-for="ConfirmPassword" />
+                <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+            </div>
+
+            <div class="form-actions">
+                <input value="Signup" type="submit" class="w-25" />
+                <div>or <a href="/login?redirect_uri=@redirectUri">Login</a></div>
+            </div>
+        </div>
+    </form>
+</div>

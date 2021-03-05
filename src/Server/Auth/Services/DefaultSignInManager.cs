@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -35,6 +34,7 @@ namespace Brighid.Identity.Auth
         {
             var claims = new List<Claim>(additionalClaims) { };
             claims.Add(new Claim(OpenIdConnectConstants.Claims.Subject, user.Id.ToString()));
+            claims.Add(new Claim(OpenIdConnectConstants.Claims.Name, user.Name));
 
             var roles = await UserManager.GetRolesAsync(user);
             Logger.LogInformation("User Roles: " + string.Join(',', roles));
