@@ -1,18 +1,21 @@
 .heading {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
 }
 
 .heading h1 {
   padding: 0 15px;
   flex: 80%;
   flex-grow: 1;
+  min-width: 320px;
 }
 
 .heading a {
-  padding: 0 15px;
+  padding: 15px;
   flex: 20%;
   flex-grow: 1;
+  white-space: nowrap;
 }
 
 ul {

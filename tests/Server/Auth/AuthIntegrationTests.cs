@@ -74,7 +74,7 @@ namespace Brighid.Identity.Auth
             {
                 var cookies = await page.GetCookiesAsync();
                 await page.DeleteCookieAsync(cookies);
-                await page.GoToAsync($"{app.RootUri}login");
+                await page.GoToAsync($"{app.RootUri}login", waitUntil: WaitUntilNavigation.DOMContentLoaded);
             }
             #endregion
 

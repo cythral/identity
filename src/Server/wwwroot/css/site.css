@@ -98,6 +98,7 @@ form .form-field span {
 }
 
 form .form-field input {
+  border-radius: 0;
   padding: 5px 0;
   background: none;
   border: none;
@@ -121,12 +122,21 @@ form .validation-summary-errors ul li:before {
   margin-right: 15px;
 }
 
+form .form-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
 form .form-actions div {
   padding: 15px 30px;
 }
 
 form .form-actions input[type="submit"] {
-  border-radius: 0;
+  -webkit-appearance: none;
+  appearance: none;
+  min-width: 300px;
+  border-radius: 0 !important;
   flex: 30%;
   flex-grow: 1;
   border: none;
@@ -143,7 +153,8 @@ form .form-actions input[type="submit"]:hover {
 }
 
 .auth-page {
-  height: 100vh;
+  min-height: 100vh;
+  width: 100vw;
   display: flex;
   flex-wrap: wrap;
   background-image: linear-gradient(
@@ -159,7 +170,7 @@ form .form-actions input[type="submit"]:hover {
   display: flex;
   justify-content: center;
   align-items: center;
-  min-width: 500px;
+  min-width: 320px;
   min-height: 200px;
 }
 
@@ -174,8 +185,8 @@ form .form-actions input[type="submit"]:hover {
   display: flex;
   align-items: center;
   background-color: white;
-  height: 100%;
-  min-width: 500px;
+  min-height: 100%;
+  min-width: 320px;
 }
 
 .auth-form .form-content {
