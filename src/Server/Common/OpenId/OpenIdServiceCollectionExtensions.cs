@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.IO;
 using System.Security.Cryptography.X509Certificates;
@@ -10,6 +11,8 @@ namespace Microsoft.Extensions.DependencyInjection
 {
     public static class OpenIdServiceCollectionExtensions
     {
+        private static readonly HashSet<IServiceCollection> servicesWithDevelopmentCertificates = new();
+
         public static void AddOpenId(this IServiceCollection services, OpenIdConfig openIdOptions)
         {
             services
@@ -32,9 +35,10 @@ namespace Microsoft.Extensions.DependencyInjection
                     OpenIdConnectConstants.Claims.Subject
                 );
 
-                if (!Directory.Exists(openIdOptions.CertificatesDirectory))
+                if (!Directory.Exists(openIdOptions.CertificatesDirectory) && !servicesWithDevelopmentCertificates.Contains(services))
                 {
                     options.AddDevelopmentSigningCertificate();
+                    servicesWithDevelopmentCertificates.Add(services);
                     return;
                 }
 
