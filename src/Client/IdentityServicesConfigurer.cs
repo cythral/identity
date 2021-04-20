@@ -30,7 +30,7 @@ namespace Brighid.Identity.Client
             services.TryAddScoped<ClientCredentialsHandler<TCredentials>>();
 
             services
-            .AddHttpClient<IdentityServerClient>(options => options.BaseAddress = new Uri("https://identity.brigh.id/"));
+            .AddHttpClient<IdentityServerClient>(options => options.BaseAddress = context.IdentityServerUri);
 
             var baseUri = new Uri(context.BaseAddress);
             services
