@@ -46,13 +46,6 @@ namespace Brighid.Identity.Users
             return result == null ? NotFound() : Ok(result);
         }
 
-        [HttpGet("login-provider/{loginProvider}/{providerKey}")]
-        public async Task<ActionResult<User>> GetByLoginProvider(string loginProvider, string providerKey)
-        {
-            var result = await repository.FindByLogin(loginProvider, providerKey, Embeds);
-            return result == null ? NotFound() : Ok(result);
-        }
-
         [HttpPost("{userId}/logins")]
         [Policies(new[] { nameof(IdentityPolicy.RestrictedToSelfByUserId) })]
         public async Task<ActionResult<UserLogin>> CreateLogin(Guid userId, [FromBody] UserLogin loginInfo)

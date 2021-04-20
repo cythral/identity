@@ -60,46 +60,6 @@ namespace Brighid.Identity.Users
         }
 
         [Category("Unit")]
-        public class GetByLoginProviderTests
-        {
-            [Test, Auto]
-            public async Task ShouldReturnNotFound_IfUserDoesntExist(
-                string loginProvider,
-                string providerKey,
-                [Frozen, Substitute] IUserRepository repository,
-                [Target] UserController controller
-            )
-            {
-                repository.FindByLogin(Any<string>(), Any<string>(), Any<string[]>()).Returns((User)null!);
-
-                var response = await controller.GetByLoginProvider(loginProvider, providerKey);
-                var result = response.Result;
-
-                result.Should().BeOfType<NotFoundResult>();
-                await repository.Received().FindByLogin(Is(loginProvider), Is(providerKey), Any<string[]>());
-            }
-
-            [Test, Auto]
-            public async Task ShouldReturnOk_IfUserExists(
-                string loginProvider,
-                string providerKey,
-                User user,
-                [Frozen, Substitute] IUserRepository repository,
-                [Target] UserController controller
-            )
-            {
-                repository.FindByLogin(Any<string>(), Any<string>(), Any<string[]>()).Returns(user);
-
-                var response = await controller.GetByLoginProvider(loginProvider, providerKey);
-                var result = response.Result;
-
-                result.Should().BeOfType<OkObjectResult>();
-                result.As<OkObjectResult>().Value.Should().Be(user);
-                await repository.Received().FindByLogin(Is(loginProvider), Is(providerKey), Any<string[]>());
-            }
-        }
-
-        [Category("Unit")]
         public class CreateLoginTests
         {
             [Test]
