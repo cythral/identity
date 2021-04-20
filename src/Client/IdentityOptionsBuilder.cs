@@ -18,6 +18,12 @@ namespace Brighid.Identity.Client
             context = new ConfigurationContext();
         }
 
+        public IdentityOptionsBuilder<TServiceType, TImplementation> WithIdentityServerUri(Uri identityServerUri)
+        {
+            context.IdentityServerUri = identityServerUri;
+            return this;
+        }
+
         public IdentityOptionsBuilder<TServiceType, TImplementation> WithBaseAddress(string baseAddress)
         {
             context.BaseAddress = baseAddress;
