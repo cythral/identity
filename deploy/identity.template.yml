@@ -35,7 +35,7 @@ Parameters:
       - "prod"
 
 Conditions:
-  IsDev: !!Equals 
+  IsDev: !Equals 
     - !Ref EnvironmentName
     - "dev"
 
