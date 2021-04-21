@@ -14,6 +14,7 @@ services:
       - ~/.vsdbg:/remote_debugger:rw
     environment:
       CONFIGURATION: Debug
+      OpenId__DomainName: http://localhost/
       Database__Host: db
       Database__Name: ${DB_NAME}
       Database__User: ${DB_USER}

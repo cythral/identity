@@ -81,6 +81,28 @@ namespace Brighid.Identity
             .AddEntityFrameworkStores<DatabaseContext>()
             .AddDefaultTokenProviders();
 
+            // Replace Default User Manager with an overridden one
+            var oldUserManagerDescriptor = services.First(descriptor => descriptor.ServiceType == typeof(UserManager<User>));
+            services.Remove(oldUserManagerDescriptor);
+            services.AddScoped<UserManager<User>, DefaultUserManager>();
+
+            var oldSignInManagerDescriptor = services.First(descriptor => descriptor.ServiceType == typeof(SignInManager<User>));
+            services.Remove(oldSignInManagerDescriptor);
+            services.AddScoped<SignInManager<User>, DefaultSignInManager>();
+
+            services.AddTransient(provider =>
+            {
+                var user = provider.GetService<IHttpContextAccessor>()?.HttpContext?.User;
+                return user ?? new GenericPrincipal(new GenericIdentity("Anonymous"), null);
+            });
+
+            services.Configure<IdentityOptions>(options =>
+            {
+                options.ClaimsIdentity.UserNameClaimType = Claims.Name;
+                options.ClaimsIdentity.UserIdClaimType = Claims.Subject;
+                options.ClaimsIdentity.RoleClaimType = Claims.Role;
+            });
+
             services.ConfigureApplicationCookie(options =>
             {
                 options.LoginPath = "/login";
@@ -111,28 +133,6 @@ namespace Brighid.Identity
                         return Task.FromResult(0);
                     }
                 };
-            });
-
-            // Replace Default User Manager with an overridden one
-            var oldUserManagerDescriptor = services.First(descriptor => descriptor.ServiceType == typeof(UserManager<User>));
-            services.Remove(oldUserManagerDescriptor);
-            services.AddScoped<UserManager<User>, DefaultUserManager>();
-
-            var oldSignInManagerDescriptor = services.First(descriptor => descriptor.ServiceType == typeof(SignInManager<User>));
-            services.Remove(oldSignInManagerDescriptor);
-            services.AddScoped<SignInManager<User>, DefaultSignInManager>();
-
-            services.AddTransient(provider =>
-            {
-                var user = provider.GetService<IHttpContextAccessor>()?.HttpContext?.User;
-                return user ?? new GenericPrincipal(new GenericIdentity("Anonymous"), null);
-            });
-
-            services.Configure<IdentityOptions>(options =>
-            {
-                options.ClaimsIdentity.UserNameClaimType = Claims.Name;
-                options.ClaimsIdentity.UserIdClaimType = Claims.Subject;
-                options.ClaimsIdentity.RoleClaimType = Claims.Role;
             });
 
             services.AddOpenId(OpenIdConfig);
