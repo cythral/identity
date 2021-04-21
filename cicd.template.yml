@@ -58,13 +58,13 @@ Resources:
             HostedZoneId: !ImportValue cfn-gateway:LoadBalancerCanonicalHostedZoneId
             DNSName: !ImportValue cfn-gateway:LoadBalancerDnsName
 
-  TestClient:
+  DevTestApplication:
     Type: Custom::IdentityApplication
     Properties:
       ServiceToken: arn:aws:sns:us-east-1:694042977401:identity-ApplicationTopic-ETVXNZ73HR8R
-      Name: test-application-2
+      Name: brighid-test-application
       Roles:
-        - test-role
+        - Basic
 
   ArtifactStore:
     Type: AWS::S3::Bucket
@@ -223,3 +223,12 @@ Resources:
           ignore_checks:
             - E3002
             - E3003
+
+Outputs:
+  DevTestApplicationClientId:
+    Description: Client ID for the Dev Test Application
+    Value: !GetAtt DevTestApplication.Id
+
+  DevTestApplicationClientSecret:
+    Description: Encrypted Client Secret for the Dev Test Application
+    Value: !GetAtt DevTestApplication.EncryptedSecret
