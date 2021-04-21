@@ -1,13 +1,13 @@
 using System;
 using System.Security.Cryptography;
 
-using AspNet.Security.OpenIdConnect.Primitives;
-
+using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.DependencyInjection;
+
+using OpenIddict.Abstractions;
 
 public delegate string GenerateRandomString(int length);
-public delegate OpenIdConnectRequest GetOpenIdConnectRequest(Controller controller);
+public delegate OpenIddictRequest GetOpenIdConnectRequest(Controller controller);
 
 namespace Brighid.Identity
 {
@@ -21,9 +21,9 @@ namespace Brighid.Identity
             return Convert.ToBase64String(buffer);
         }
 
-        public static OpenIdConnectRequest GetOpenIdConnectRequest(Controller controller)
+        public static OpenIddictRequest GetOpenIdConnectRequest(Controller controller)
         {
-            return controller.HttpContext.GetOpenIdConnectRequest();
+            return controller.HttpContext.GetOpenIddictServerRequest()!;
         }
     }
 }

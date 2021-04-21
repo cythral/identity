@@ -7,8 +7,6 @@ using System.Threading.Tasks;
 
 using Amazon.KeyManagementService;
 
-using AspNet.Security.OpenIdConnect.Primitives;
-
 using AspNetCore.ServiceRegistration.Dynamic.Attributes;
 using AspNetCore.ServiceRegistration.Dynamic.Extensions;
 
@@ -29,6 +27,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+
+using static OpenIddict.Abstractions.OpenIddictConstants;
 
 #pragma warning disable IDE0061
 
@@ -130,11 +130,10 @@ namespace Brighid.Identity
 
             services.Configure<IdentityOptions>(options =>
             {
-                options.ClaimsIdentity.UserNameClaimType = OpenIdConnectConstants.Claims.Name;
-                options.ClaimsIdentity.UserIdClaimType = OpenIdConnectConstants.Claims.Subject;
-                options.ClaimsIdentity.RoleClaimType = OpenIdConnectConstants.Claims.Role;
+                options.ClaimsIdentity.UserNameClaimType = Claims.Name;
+                options.ClaimsIdentity.UserIdClaimType = Claims.Subject;
+                options.ClaimsIdentity.RoleClaimType = Claims.Role;
             });
-
 
             services.AddOpenId(OpenIdConfig);
             services.AddAuthorization(options =>
@@ -144,7 +143,7 @@ namespace Brighid.Identity
                     static object? parse(string? input) =>
                         input != null ? new Guid(input).ToString() : null;
 
-                    policy.AddRequirements(new RestrictedToSelfPolicyRequirement("userId", OpenIdConnectConstants.Claims.Subject, parse));
+                    policy.AddRequirements(new RestrictedToSelfPolicyRequirement("userId", Claims.Subject, parse));
                 });
             });
             services.AddSingleton<IAuthorizationHandler, RestrictedToSelfPolicyHandler>();

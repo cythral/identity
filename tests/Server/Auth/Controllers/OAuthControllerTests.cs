@@ -2,8 +2,6 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-using AspNet.Security.OpenIdConnect.Primitives;
-
 using AutoFixture.AutoNSubstitute;
 using AutoFixture.NUnit3;
 
@@ -17,7 +15,10 @@ using NSubstitute;
 
 using NUnit.Framework;
 
+using OpenIddict.Abstractions;
+
 using static NSubstitute.Arg;
+using static OpenIddict.Abstractions.OpenIddictConstants;
 
 namespace Brighid.Identity.Auth
 {
@@ -29,7 +30,7 @@ namespace Brighid.Identity.Auth
         {
             [Test, Auto]
             public async Task ShouldGetOpenIdConnectRequest(
-                OpenIdConnectRequest request,
+                OpenIddictRequest request,
                 [Frozen, Substitute] HttpContext httpContext,
                 [Frozen, Substitute] GetOpenIdConnectRequest getOpenIdConnectRequest,
                 [Target] OAuthController authController
@@ -37,7 +38,7 @@ namespace Brighid.Identity.Auth
             {
                 getOpenIdConnectRequest(Any<Controller>()).Returns(request);
                 authController.ControllerContext = new ControllerContext { HttpContext = httpContext };
-                request.GrantType = OpenIdConnectConstants.GrantTypes.ClientCredentials;
+                request.GrantType = GrantTypes.ClientCredentials;
 
                 var result = await authController.Exchange();
 
@@ -46,7 +47,7 @@ namespace Brighid.Identity.Auth
 
             [Test, Auto]
             public async Task ShouldPerformClientExchange_AndSetPrincipal(
-                OpenIdConnectRequest request,
+                OpenIddictRequest request,
                 AuthenticationTicket ticket,
                 [Frozen, Substitute] HttpContext httpContext,
                 [Frozen, Substitute] IAuthService authService,
@@ -55,9 +56,9 @@ namespace Brighid.Identity.Auth
             )
             {
                 getOpenIdConnectRequest(Any<Controller>()).Returns(request);
-                authService.ClientExchange(Any<OpenIdConnectRequest>(), Any<CancellationToken>()).Returns(ticket);
+                authService.ClientExchange(Any<OpenIddictRequest>(), Any<CancellationToken>()).Returns(ticket);
 
-                request.GrantType = OpenIdConnectConstants.GrantTypes.ClientCredentials;
+                request.GrantType = GrantTypes.ClientCredentials;
                 authController.ControllerContext = new ControllerContext { HttpContext = httpContext };
 
                 var requestAborted = httpContext.RequestAborted;
@@ -72,7 +73,7 @@ namespace Brighid.Identity.Auth
 
             [Test, Auto]
             public async Task ShouldPerformClientExchange_AndSetProperties(
-                OpenIdConnectRequest request,
+                OpenIddictRequest request,
                 AuthenticationTicket ticket,
                 [Frozen, Substitute] HttpContext httpContext,
                 [Frozen, Substitute] IAuthService authService,
@@ -81,9 +82,9 @@ namespace Brighid.Identity.Auth
             )
             {
                 getOpenIdConnectRequest(Any<Controller>()).Returns(request);
-                authService.ClientExchange(Any<OpenIdConnectRequest>(), Any<CancellationToken>()).Returns(ticket);
+                authService.ClientExchange(Any<OpenIddictRequest>(), Any<CancellationToken>()).Returns(ticket);
 
-                request.GrantType = OpenIdConnectConstants.GrantTypes.ClientCredentials;
+                request.GrantType = GrantTypes.ClientCredentials;
                 authController.ControllerContext = new ControllerContext { HttpContext = httpContext };
 
                 var requestAborted = httpContext.RequestAborted;
@@ -98,7 +99,7 @@ namespace Brighid.Identity.Auth
 
             [Test, Auto]
             public async Task ShouldPerformClientExchange_AndSetScheme(
-                OpenIdConnectRequest request,
+                OpenIddictRequest request,
                 AuthenticationTicket ticket,
                 [Frozen, Substitute] HttpContext httpContext,
                 [Frozen, Substitute] IAuthService authService,
@@ -107,9 +108,9 @@ namespace Brighid.Identity.Auth
             )
             {
                 getOpenIdConnectRequest(Any<Controller>()).Returns(request);
-                authService.ClientExchange(Any<OpenIdConnectRequest>(), Any<CancellationToken>()).Returns(ticket);
+                authService.ClientExchange(Any<OpenIddictRequest>(), Any<CancellationToken>()).Returns(ticket);
 
-                request.GrantType = OpenIdConnectConstants.GrantTypes.ClientCredentials;
+                request.GrantType = GrantTypes.ClientCredentials;
                 authController.ControllerContext = new ControllerContext { HttpContext = httpContext };
 
                 var requestAborted = httpContext.RequestAborted;
@@ -124,7 +125,7 @@ namespace Brighid.Identity.Auth
 
             [Test, Auto]
             public async Task ShouldThrowForUnknownGrantType(
-                OpenIdConnectRequest request,
+                OpenIddictRequest request,
                 AuthenticationTicket ticket,
                 [Frozen, Substitute] IAuthService authService,
                 [Frozen, Substitute] GetOpenIdConnectRequest getOpenIdConnectRequest,
@@ -132,14 +133,14 @@ namespace Brighid.Identity.Auth
             )
             {
                 getOpenIdConnectRequest(Any<Controller>()).Returns(request);
-                authService.ClientExchange(Any<OpenIdConnectRequest>(), Any<CancellationToken>()).Returns(ticket);
+                authService.ClientExchange(Any<OpenIddictRequest>(), Any<CancellationToken>()).Returns(ticket);
 
                 request.GrantType = "unknown";
 
                 Func<Task> func = async () => await authController.Exchange();
                 await func.Should().ThrowAsync<InvalidOperationException>();
 
-                await authService.DidNotReceive().ClientExchange(Any<OpenIdConnectRequest>(), Any<CancellationToken>());
+                await authService.DidNotReceive().ClientExchange(Any<OpenIddictRequest>(), Any<CancellationToken>());
             }
         }
     }

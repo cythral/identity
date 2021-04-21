@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Linq;
+using System.Text.Json;
 
 using AutoFixture;
 using AutoFixture.AutoNSubstitute;
@@ -55,6 +56,7 @@ internal class AutoAttribute : AutoDataAttribute
         });
         fixture.Register(() => AppFactory.Create().GetAwaiter().GetResult());
         fixture.Customize(new AutoNSubstituteCustomization { ConfigureMembers = true });
+        fixture.Customizations.Add(new TypeOmitter<JsonElement>());
         fixture.Customizations.Insert(-1, new TargetRelay());
         fixture.Behaviors
         .OfType<ThrowingRecursionBehavior>()

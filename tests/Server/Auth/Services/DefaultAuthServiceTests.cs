@@ -5,8 +5,6 @@ using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
 
-using AspNet.Security.OpenIdConnect.Primitives;
-
 using AutoFixture.NUnit3;
 
 using FluentAssertions;
@@ -17,7 +15,10 @@ using NSubstitute;
 
 using NUnit.Framework;
 
+using OpenIddict.Abstractions;
+
 using static NSubstitute.Arg;
+using static OpenIddict.Abstractions.OpenIddictConstants;
 
 namespace Brighid.Identity.Auth
 {
@@ -29,11 +30,11 @@ namespace Brighid.Identity.Auth
         {
             [Test, Auto]
             public async Task ShouldThrowIfNotClientGrantType(
-                OpenIdConnectRequest request,
+                OpenIddictRequest request,
                 [Target] DefaultAuthService authService
             )
             {
-                request.GrantType = OpenIdConnectConstants.GrantTypes.AuthorizationCode;
+                request.GrantType = GrantTypes.AuthorizationCode;
 
                 Func<Task> func = async () => await authService.ClientExchange(request);
                 await func.Should().ThrowAsync<InvalidOperationException>();
@@ -42,14 +43,14 @@ namespace Brighid.Identity.Auth
             [Test, Auto]
             public async Task ShouldCreateClaimsIdentity(
                 Guid id,
-                OpenIdConnectRequest request,
+                OpenIddictRequest request,
                 [Frozen] IAuthUtils authUtils,
                 [Target] DefaultAuthService authService,
                 CancellationToken cancellationToken
             )
             {
                 request.ClientId = id.ToString();
-                request.GrantType = OpenIdConnectConstants.GrantTypes.ClientCredentials;
+                request.GrantType = GrantTypes.ClientCredentials;
 
                 await authService.ClientExchange(request, cancellationToken);
 
@@ -59,7 +60,7 @@ namespace Brighid.Identity.Auth
             [Test, Auto]
             public async Task ShouldCreateAuthTicket(
                 Guid id,
-                OpenIdConnectRequest request,
+                OpenIddictRequest request,
                 ClaimsIdentity claimsIdentity,
                 AuthenticationTicket authenticationTicket,
                 [Frozen] IAuthUtils authUtils,
@@ -69,7 +70,7 @@ namespace Brighid.Identity.Auth
             {
                 var clientId = id.ToString();
                 request.ClientId = clientId;
-                request.GrantType = OpenIdConnectConstants.GrantTypes.ClientCredentials;
+                request.GrantType = GrantTypes.ClientCredentials;
 
                 authUtils.CreateClaimsIdentity(Any<Guid>(), Any<CancellationToken>()).Returns(claimsIdentity);
                 authUtils.CreateAuthTicket(Any<ClaimsIdentity>(), Any<IEnumerable<string>>()).Returns(authenticationTicket);
@@ -86,7 +87,7 @@ namespace Brighid.Identity.Auth
             public async Task ShouldCreateAuthTicket_WithScope(
                 Guid id,
                 string[] scopes,
-                OpenIdConnectRequest request,
+                OpenIddictRequest request,
                 AuthenticationTicket authenticationTicket,
                 ClaimsIdentity claimsIdentity,
                 [Frozen] IAuthUtils authUtils,
@@ -96,7 +97,7 @@ namespace Brighid.Identity.Auth
             {
                 var clientId = id.ToString();
                 request.ClientId = clientId;
-                request.GrantType = OpenIdConnectConstants.GrantTypes.ClientCredentials;
+                request.GrantType = GrantTypes.ClientCredentials;
                 request.Scope = string.Join(' ', scopes);
 
                 authUtils.CreateClaimsIdentity(Any<Guid>(), Any<CancellationToken>()).Returns(claimsIdentity);

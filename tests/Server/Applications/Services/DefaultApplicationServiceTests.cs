@@ -31,7 +31,7 @@ namespace Brighid.Identity.Applications
             public async Task ShouldCreateANewApplication(
                 Application application,
                 [Frozen, Substitute] IApplicationRepository applicationRepository,
-                [Frozen, Substitute] OpenIddictApplicationManager<OpenIddictApplication> _appManager,
+                [Frozen, Substitute] OpenIddictApplicationManager<OpenIddictEntityFrameworkCoreApplication> _appManager,
                 [Target] DefaultApplicationService applicationService
             )
             {
@@ -46,7 +46,7 @@ namespace Brighid.Identity.Applications
                 Application application,
                 [Frozen, Substitute] IApplicationRepository applicationRepository,
                 [Frozen, Substitute] IApplicationRoleService roleService,
-                [Frozen, Substitute] OpenIddictApplicationManager<OpenIddictApplication> _appManager,
+                [Frozen, Substitute] OpenIddictApplicationManager<OpenIddictEntityFrameworkCoreApplication> _appManager,
                 [Target] DefaultApplicationService applicationService
             )
             {
@@ -68,7 +68,7 @@ namespace Brighid.Identity.Applications
                 [Frozen, Substitute] GenerateRandomString generateRandomString,
                 [Frozen, Substitute] IEncryptionService encryptionService,
                 [Frozen, Substitute] IApplicationRepository appRepository,
-                [Frozen, Substitute] OpenIddictApplicationManager<OpenIddictApplication> _appManager,
+                [Frozen, Substitute] OpenIddictApplicationManager<OpenIddictEntityFrameworkCoreApplication> _appManager,
                 [Target] DefaultApplicationService applicationService
             )
             {
@@ -96,7 +96,7 @@ namespace Brighid.Identity.Applications
                 Application application,
                 [Frozen, Substitute] GenerateRandomString generateRandomString,
                 [Frozen, Substitute] IEncryptionService encryptionService,
-                [Frozen, Substitute] OpenIddictApplicationManager<OpenIddictApplication> appManager,
+                [Frozen, Substitute] OpenIddictApplicationManager<OpenIddictEntityFrameworkCoreApplication> appManager,
                 [Target] DefaultApplicationService applicationService
             )
             {
@@ -218,7 +218,7 @@ namespace Brighid.Identity.Applications
                 Application application,
                 [Frozen, Substitute] IApplicationRepository repository,
                 [Frozen, Substitute] IApplicationRoleService roleService,
-                [Frozen, Substitute] OpenIddictApplicationManager<OpenIddictApplication> applicationManager,
+                [Frozen, Substitute] OpenIddictApplicationManager<OpenIddictEntityFrameworkCoreApplication> applicationManager,
                 [Target] DefaultApplicationService service
             )
             {
@@ -227,7 +227,7 @@ namespace Brighid.Identity.Applications
                 repository.FindById(Any<Guid>(), Any<string>()).Returns(existingApp);
                 await service.UpdateById(id, application);
 
-                var openIddictApplication = new OpenIddictApplication { ClientId = id.ToString() };
+                var openIddictApplication = new OpenIddictEntityFrameworkCoreApplication { ClientId = id.ToString() };
                 applicationManager.FindByClientIdAsync(Any<string>()).Returns(openIddictApplication);
 
                 await repository.Received().Save(Is<Application>(app =>
@@ -245,7 +245,7 @@ namespace Brighid.Identity.Applications
                 [Frozen, Substitute] GenerateRandomString generateRandomString,
                 [Frozen, Substitute] IEncryptionService encryptionService,
                 [Frozen, Substitute] IApplicationRepository repository,
-                [Frozen, Substitute] OpenIddictApplicationManager<OpenIddictApplication> applicationManager,
+                [Frozen, Substitute] OpenIddictApplicationManager<OpenIddictEntityFrameworkCoreApplication> applicationManager,
                 [Frozen, Substitute] IApplicationRoleService roleService,
                 [Target] DefaultApplicationService service
             )
@@ -256,7 +256,7 @@ namespace Brighid.Identity.Applications
                 encryptionService.Encrypt(Any<string>()).Returns(encryptedSecret);
                 repository.FindById(Any<Guid>(), Any<string>()).Returns(existingApp);
 
-                var openIddictApplication = new OpenIddictApplication { ClientId = id.ToString() };
+                var openIddictApplication = new OpenIddictEntityFrameworkCoreApplication { ClientId = id.ToString() };
                 applicationManager.FindByClientIdAsync(Any<string>()).Returns(openIddictApplication);
 
                 await service.UpdateById(id, application);
@@ -307,7 +307,7 @@ namespace Brighid.Identity.Applications
                 [Frozen, Substitute] GenerateRandomString generateRandomString,
                 [Frozen, Substitute] IEncryptionService encryptionService,
                 [Frozen, Substitute] IApplicationRepository repository,
-                [Frozen, Substitute] OpenIddictApplicationManager<OpenIddictApplication> applicationManager,
+                [Frozen, Substitute] OpenIddictApplicationManager<OpenIddictEntityFrameworkCoreApplication> applicationManager,
                 [Frozen, Substitute] IApplicationRoleService roleService,
                 [Target] DefaultApplicationService service
             )
@@ -317,7 +317,7 @@ namespace Brighid.Identity.Applications
                 generateRandomString(Any<int>()).Returns(secret);
                 encryptionService.Encrypt(Any<string>()).Returns(encryptedSecret);
 
-                var openIddictApplication = new OpenIddictApplication { ClientId = id.ToString() };
+                var openIddictApplication = new OpenIddictEntityFrameworkCoreApplication { ClientId = id.ToString() };
                 applicationManager.FindByClientIdAsync(Any<string>()).Returns(openIddictApplication);
 
                 repository.FindById(Any<Guid>(), Any<string>()).Returns(existingApp);
@@ -358,7 +358,7 @@ namespace Brighid.Identity.Applications
                 Application existingApp,
                 Application application,
                 [Frozen, Substitute] GenerateRandomString generateRandomString,
-                [Frozen, Substitute] OpenIddictApplicationManager<OpenIddictApplication> applicationManager,
+                [Frozen, Substitute] OpenIddictApplicationManager<OpenIddictEntityFrameworkCoreApplication> applicationManager,
                 [Frozen, Substitute] IApplicationRepository repository,
                 [Frozen, Substitute] IApplicationRoleService roleService,
                 [Target] DefaultApplicationService service
@@ -368,14 +368,14 @@ namespace Brighid.Identity.Applications
                 application.Serial = 1;
                 generateRandomString(Any<int>()).Returns(secret);
 
-                var openIddictApplication = new OpenIddictApplication { ClientId = id.ToString() };
+                var openIddictApplication = new OpenIddictEntityFrameworkCoreApplication { ClientId = id.ToString() };
                 applicationManager.FindByClientIdAsync(Any<string>()).Returns(openIddictApplication);
 
                 repository.FindById(Any<Guid>(), Any<string>()).Returns(existingApp);
                 var result = await service.UpdateById(id, application);
 
                 await applicationManager.Received().FindByClientIdAsync(Is(id.ToString()));
-                await applicationManager.Received().UpdateAsync(Is<OpenIddictApplication>(app =>
+                await applicationManager.Received().UpdateAsync(Is<OpenIddictEntityFrameworkCoreApplication>(app =>
                     app.ClientSecret == secret
                 ));
             }
@@ -399,11 +399,11 @@ namespace Brighid.Identity.Applications
             [Test, Auto]
             public async Task ShouldDeleteTheApplicationCredentials(
                 Guid id,
-                [Frozen, Substitute] OpenIddictApplicationManager<OpenIddictApplication> applicationManager,
+                [Frozen, Substitute] OpenIddictApplicationManager<OpenIddictEntityFrameworkCoreApplication> applicationManager,
                 [Target] DefaultApplicationService service
             )
             {
-                var openIddictApplication = new OpenIddictApplication { ClientId = id.ToString() };
+                var openIddictApplication = new OpenIddictEntityFrameworkCoreApplication { ClientId = id.ToString() };
                 applicationManager.FindByClientIdAsync(Any<string>()).Returns(openIddictApplication);
 
                 await service.DeleteById(id);

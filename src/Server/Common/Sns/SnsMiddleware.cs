@@ -5,8 +5,6 @@ using System.Security.Claims;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-using AspNet.Security.OpenIdConnect.Primitives;
-
 using Brighid.Identity.Roles;
 
 using Flurl.Http;
@@ -15,6 +13,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Primitives;
 
 using static Brighid.Identity.Sns.CloudFormationRequestType;
+using static OpenIddict.Abstractions.OpenIddictConstants;
 
 namespace Brighid.Identity.Sns
 {
@@ -40,8 +39,8 @@ namespace Brighid.Identity.Sns
 
             context.Request.EnableBuffering();
 
-            var roleClaim = new Claim(OpenIdConnectConstants.Claims.Role, nameof(BuiltInRole.ApplicationManager));
-            var claimsIdentity = new ClaimsIdentity(null, null, OpenIdConnectConstants.Claims.Role);
+            var roleClaim = new Claim(Claims.Role, nameof(BuiltInRole.ApplicationManager));
+            var claimsIdentity = new ClaimsIdentity(null, null, Claims.Role);
             var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
             claimsIdentity.AddClaim(roleClaim);
             Console.WriteLine("IsInRole: " + claimsPrincipal.IsInRole(nameof(BuiltInRole.ApplicationManager)));
