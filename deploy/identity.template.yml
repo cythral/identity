@@ -152,7 +152,8 @@ Resources:
               Value: !Ref DatabasePassword
             - Name: EncryptionOptions__KmsKeyId
               Value: alias/SecretsKey
-
+            - Name: OpenId__DomainName
+              Value: !Sub https://${DomainName}/
 
   ApplicationTopic:
     Type: AWS::SNS::Topic
