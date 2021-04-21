@@ -11,5 +11,7 @@ namespace Brighid.Identity
         public string TokenEndpoint { get; set; } = "/oauth2/token";
 
         public string UserInfoEndpoint { get; set; } = "/oauth2/userinfo";
+
+        public string DomainName { get; set; } = string.Empty;
     }
 }
