@@ -4,9 +4,6 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
-using AspNet.Security.OpenIdConnect.Extensions;
-using AspNet.Security.OpenIdConnect.Primitives;
-
 using AutoFixture.NUnit3;
 
 using Brighid.Identity.Applications;
@@ -18,9 +15,11 @@ using NSubstitute;
 
 using NUnit.Framework;
 
-using OpenIddict.Server;
+using OpenIddict.Abstractions;
+using OpenIddict.Server.AspNetCore;
 
 using static NSubstitute.Arg;
+using static OpenIddict.Abstractions.OpenIddictConstants;
 
 namespace Brighid.Identity.Auth
 {
@@ -38,7 +37,7 @@ namespace Brighid.Identity.Auth
             {
                 var result = await authUtils.CreateClaimsIdentity(id);
 
-                var nameClaim = result.GetClaim(OpenIdConnectConstants.Claims.Name);
+                var nameClaim = result.GetClaim(Claims.Name);
                 nameClaim.Should().Be(id.ToString());
             }
 
@@ -49,10 +48,10 @@ namespace Brighid.Identity.Auth
             )
             {
                 var result = await authUtils.CreateClaimsIdentity(id);
-                var nameClaim = result.Claims.Where(claim => claim.Type == OpenIdConnectConstants.Claims.Name).First();
+                var nameClaim = result.Claims.Where(claim => claim.Type == Claims.Name).First();
                 var destinations = nameClaim.GetDestinations();
 
-                destinations.Should().Contain(OpenIdConnectConstants.Destinations.AccessToken);
+                destinations.Should().Contain(Destinations.AccessToken);
             }
 
             [Test, Auto]
@@ -62,10 +61,10 @@ namespace Brighid.Identity.Auth
             )
             {
                 var result = await authUtils.CreateClaimsIdentity(id);
-                var nameClaim = result.Claims.Where(claim => claim.Type == OpenIdConnectConstants.Claims.Name).First();
+                var nameClaim = result.Claims.Where(claim => claim.Type == Claims.Name).First();
                 var destinations = nameClaim.GetDestinations();
 
-                destinations.Should().Contain(OpenIdConnectConstants.Destinations.IdentityToken);
+                destinations.Should().Contain(Destinations.IdentityToken);
             }
 
             [Test, Auto]
@@ -76,7 +75,7 @@ namespace Brighid.Identity.Auth
             {
                 var result = await authUtils.CreateClaimsIdentity(id);
 
-                var subjectClaim = result.GetClaim(OpenIdConnectConstants.Claims.Subject);
+                var subjectClaim = result.GetClaim(Claims.Subject);
                 subjectClaim.Should().Be(id.ToString());
             }
 
@@ -87,10 +86,10 @@ namespace Brighid.Identity.Auth
             )
             {
                 var result = await authUtils.CreateClaimsIdentity(id);
-                var subjectClaim = result.Claims.Where(claim => claim.Type == OpenIdConnectConstants.Claims.Subject).First();
+                var subjectClaim = result.Claims.Where(claim => claim.Type == Claims.Subject).First();
                 var destinations = subjectClaim.GetDestinations();
 
-                destinations.Should().Contain(OpenIdConnectConstants.Destinations.AccessToken);
+                destinations.Should().Contain(Destinations.AccessToken);
             }
 
             [Test, Auto]
@@ -100,10 +99,10 @@ namespace Brighid.Identity.Auth
             )
             {
                 var result = await authUtils.CreateClaimsIdentity(id);
-                var subjectClaim = result.Claims.Where(claim => claim.Type == OpenIdConnectConstants.Claims.Subject).First();
+                var subjectClaim = result.Claims.Where(claim => claim.Type == Claims.Subject).First();
                 var destinations = subjectClaim.GetDestinations();
 
-                destinations.Should().Contain(OpenIdConnectConstants.Destinations.IdentityToken);
+                destinations.Should().Contain(Destinations.IdentityToken);
             }
 
             [Test, Auto]
@@ -118,7 +117,7 @@ namespace Brighid.Identity.Auth
                 roleRepository.FindRolesForApplication(Any<Guid>()).Returns(new Role[] { role1, role2 });
 
                 var result = await authUtils.CreateClaimsIdentity(id);
-                var roleClaim = result.GetClaim(OpenIdConnectConstants.Claims.Role);
+                var roleClaim = result.GetClaim(Claims.Role);
 
                 roleClaim.Should().Be($"[\"{role1.Name}\",\"{role2.Name}\"]");
                 await roleRepository.Received().FindRolesForApplication(Is(id));
@@ -131,7 +130,7 @@ namespace Brighid.Identity.Auth
             )
             {
                 var result = await authUtils.CreateClaimsIdentity(id);
-                var roleClaim = result.Claims.Where(claim => claim.Type == OpenIdConnectConstants.Claims.Role).First();
+                var roleClaim = result.Claims.Where(claim => claim.Type == Claims.Role).First();
 
                 roleClaim.ValueType.Should().Be(JsonClaimValueTypes.JsonArray);
             }
@@ -143,10 +142,10 @@ namespace Brighid.Identity.Auth
             )
             {
                 var result = await authUtils.CreateClaimsIdentity(id);
-                var roleClaim = result.Claims.Where(claim => claim.Type == OpenIdConnectConstants.Claims.Role).First();
+                var roleClaim = result.Claims.Where(claim => claim.Type == Claims.Role).First();
                 var destinations = roleClaim.GetDestinations();
 
-                destinations.Should().Contain(OpenIdConnectConstants.Destinations.AccessToken);
+                destinations.Should().Contain(Destinations.AccessToken);
             }
 
             [Test, Auto]
@@ -156,10 +155,10 @@ namespace Brighid.Identity.Auth
             )
             {
                 var result = await authUtils.CreateClaimsIdentity(id);
-                var roleClaim = result.Claims.Where(claim => claim.Type == OpenIdConnectConstants.Claims.Role).First();
+                var roleClaim = result.Claims.Where(claim => claim.Type == Claims.Role).First();
                 var destinations = roleClaim.GetDestinations();
 
-                destinations.Should().Contain(OpenIdConnectConstants.Destinations.IdentityToken);
+                destinations.Should().Contain(Destinations.IdentityToken);
             }
 
             [Test, Auto]
@@ -171,7 +170,7 @@ namespace Brighid.Identity.Auth
                 var result = await authUtils.CreateClaimsIdentity(id);
                 var scheme = result.AuthenticationType;
 
-                scheme.Should().Be(OpenIddictServerDefaults.AuthenticationScheme);
+                scheme.Should().Be(OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);
             }
 
             [Test, Auto]
@@ -183,7 +182,7 @@ namespace Brighid.Identity.Auth
                 var result = await authUtils.CreateClaimsIdentity(id);
                 var nameClaimType = result.NameClaimType;
 
-                nameClaimType.Should().Be(OpenIdConnectConstants.Claims.Name);
+                nameClaimType.Should().Be(Claims.Name);
             }
 
             [Test, Auto]
@@ -195,7 +194,7 @@ namespace Brighid.Identity.Auth
                 var result = await authUtils.CreateClaimsIdentity(id);
                 var roleClaimType = result.RoleClaimType;
 
-                roleClaimType.Should().Be(OpenIdConnectConstants.Claims.Role);
+                roleClaimType.Should().Be(Claims.Role);
             }
         }
 
@@ -223,7 +222,7 @@ namespace Brighid.Identity.Auth
                 var result = authUtils.CreateAuthTicket(claimsIdentity);
                 var scheme = result.AuthenticationScheme;
 
-                scheme.Should().Be(OpenIddictServerDefaults.AuthenticationScheme);
+                scheme.Should().Be(OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);
             }
 
             [Test, Auto]
@@ -233,7 +232,7 @@ namespace Brighid.Identity.Auth
             )
             {
                 var result = authUtils.CreateAuthTicket(claimsIdentity);
-                var resources = result.GetResources();
+                var resources = result.Principal.GetResources();
 
                 resources.Should().Contain("identity.brigh.id");
             }
@@ -246,7 +245,7 @@ namespace Brighid.Identity.Auth
             )
             {
                 var result = authUtils.CreateAuthTicket(claimsIdentity, scopes);
-                var actualScopes = result.GetScopes();
+                var actualScopes = result.Principal.GetScopes();
 
                 actualScopes.Should().BeEquivalentTo(scopes);
             }

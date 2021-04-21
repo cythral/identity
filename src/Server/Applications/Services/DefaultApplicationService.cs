@@ -10,7 +10,7 @@ namespace Brighid.Identity.Applications
 {
     public class DefaultApplicationService : IApplicationService
     {
-        private readonly OpenIddictApplicationManager<OpenIddictApplication> appManager;
+        private readonly OpenIddictApplicationManager<OpenIddictEntityFrameworkCoreApplication> appManager;
         private readonly IApplicationRepository appRepository;
         private readonly IApplicationRoleService appRoleService;
         private readonly GenerateRandomString generateRandomString;
@@ -19,7 +19,7 @@ namespace Brighid.Identity.Applications
         public DefaultApplicationService(
            IApplicationRepository appRepository,
            IApplicationRoleService appRoleService,
-           OpenIddictApplicationManager<OpenIddictApplication> appManager,
+           OpenIddictApplicationManager<OpenIddictEntityFrameworkCoreApplication> appManager,
            GenerateRandomString generateRandomString,
            IEncryptionService encryptionService
        )
@@ -49,13 +49,13 @@ namespace Brighid.Identity.Applications
                 }
             };
 
-            application.EncryptedSecret = await encryptionService.Encrypt(secret).ConfigureAwait(false);
+            application.EncryptedSecret = await encryptionService.Encrypt(secret);
             application.Secret = secret;
             application.Roles = new List<ApplicationRole>();
 
             await appRoleService.UpdatePrincipalRoles(application, roles);
-            await appRepository.Add(application).ConfigureAwait(false);
-            await appManager.CreateAsync(descriptor).ConfigureAwait(false);
+            await appRepository.Add(application);
+            await appManager.CreateAsync(descriptor);
 
             return application;
         }
@@ -76,27 +76,27 @@ namespace Brighid.Identity.Applications
             if (serialChanged)
             {
                 var secret = generateRandomString(128);
-                var encryptedSecret = await encryptionService.Encrypt(secret).ConfigureAwait(false);
-                var client = await appManager.FindByClientIdAsync(id.ToString()).ConfigureAwait(false);
+                var encryptedSecret = await encryptionService.Encrypt(secret);
+                var client = await appManager.FindByClientIdAsync(id.ToString());
 
                 existingApp.EncryptedSecret = encryptedSecret;
                 existingApp.Secret = secret;
-                client.ClientSecret = secret;
+                client!.ClientSecret = secret;
 
-                await appManager.UpdateAsync(client).ConfigureAwait(false);
+                await appManager.UpdateAsync(client);
             }
 
             await appRoleService.UpdatePrincipalRoles(existingApp, application.Roles);
-            await appRepository.Save(existingApp).ConfigureAwait(false);
+            await appRepository.Save(existingApp);
 
             return existingApp;
         }
 
         public async Task<Application> DeleteById(Guid id)
         {
-            var result = await appRepository.Remove(id).ConfigureAwait(false);
-            var client = await appManager.FindByClientIdAsync(id.ToString()).ConfigureAwait(false);
-            await appManager.DeleteAsync(client).ConfigureAwait(false);
+            var result = await appRepository.Remove(id);
+            var client = await appManager.FindByClientIdAsync(id.ToString());
+            await appManager.DeleteAsync(client!);
 
             return result;
         }

@@ -1,6 +1,6 @@
-using AspNet.Security.OpenIdConnect.Primitives;
-
 using Microsoft.AspNetCore.Http;
+
+using static OpenIddict.Abstractions.OpenIddictConstants;
 
 namespace Brighid.Identity.Auth
 {
@@ -14,6 +14,6 @@ namespace Brighid.Identity.Auth
         }
 
         public string UserName => httpContextAccessor.HttpContext?.User
-            .FindFirst(OpenIdConnectConstants.Claims.Name)?.Value ?? string.Empty;
+            .FindFirst(Claims.Name)?.Value ?? string.Empty;
     }
 }

@@ -6,15 +6,14 @@ using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
 
-using AspNet.Security.OpenIdConnect.Extensions;
-
 using Brighid.Identity.Applications;
 
 using Microsoft.AspNetCore.Authentication;
 
-using OpenIddict.Server;
+using OpenIddict.Abstractions;
+using OpenIddict.Server.AspNetCore;
 
-using static AspNet.Security.OpenIdConnect.Primitives.OpenIdConnectConstants;
+using static OpenIddict.Abstractions.OpenIddictConstants;
 
 namespace Brighid.Identity.Auth
 {
@@ -34,7 +33,7 @@ namespace Brighid.Identity.Auth
             var roles = await roleRepository.FindRolesForApplication(applicationId, cancellationToken);
             var roleNames = roles.Select(role => $"\"{role.Name}\"");
 
-            var result = new ClaimsIdentity(OpenIddictServerDefaults.AuthenticationScheme, Claims.Name, Claims.Role);
+            var result = new ClaimsIdentity(OpenIddictServerAspNetCoreDefaults.AuthenticationScheme, Claims.Name, Claims.Role);
 
             // TODO: Set Claims.Name to Application Name
             result.AddClaim(Claims.Name, applicationId.ToString(), Destinations.AccessToken, Destinations.IdentityToken);
@@ -52,12 +51,11 @@ namespace Brighid.Identity.Auth
             scopes ??= Array.Empty<string>();
 
             var principal = new ClaimsPrincipal(claimsIdentity);
+            principal.SetResources("identity.brigh.id");
+            principal.SetScopes(scopes);
+
             var authProps = new AuthenticationProperties();
-            var ticket = new AuthenticationTicket(principal, authProps, OpenIddictServerDefaults.AuthenticationScheme);
-
-            ticket.SetResources("identity.brigh.id");
-            ticket.SetScopes(scopes);
-
+            var ticket = new AuthenticationTicket(principal, authProps, OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);
             return ticket;
         }
     }

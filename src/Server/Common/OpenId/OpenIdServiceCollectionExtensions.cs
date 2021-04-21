@@ -3,9 +3,9 @@ using System.IdentityModel.Tokens.Jwt;
 using System.IO;
 using System.Security.Cryptography.X509Certificates;
 
-using AspNet.Security.OpenIdConnect.Primitives;
-
 using Brighid.Identity;
+
+using static OpenIddict.Abstractions.OpenIddictConstants;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
@@ -23,17 +23,25 @@ namespace Microsoft.Extensions.DependencyInjection
             )
             .AddServer(options =>
             {
-                options.EnableAuthorizationEndpoint(openIdOptions.AuthorizationEndpoint);
-                options.EnableLogoutEndpoint(openIdOptions.LogoutEndpoint);
-                options.EnableUserinfoEndpoint(openIdOptions.UserInfoEndpoint);
-                options.EnableTokenEndpoint(openIdOptions.TokenEndpoint);
-                options.UseJsonWebTokens();
-                options.DisableHttpsRequirement();
+                options.SetAuthorizationEndpointUris(openIdOptions.AuthorizationEndpoint);
+                options.SetLogoutEndpointUris(openIdOptions.LogoutEndpoint);
+                options.SetUserinfoEndpointUris(openIdOptions.UserInfoEndpoint);
+                options.SetTokenEndpointUris(openIdOptions.TokenEndpoint);
                 options.AllowClientCredentialsFlow();
                 options.RegisterClaims(
-                    OpenIdConnectConstants.Claims.Role,
-                    OpenIdConnectConstants.Claims.Subject
+                    Claims.Role,
+                    Claims.Subject
                 );
+
+                options.UseAspNetCore()
+                        .EnableAuthorizationEndpointPassthrough()
+                        .EnableLogoutEndpointPassthrough()
+                        .EnableUserinfoEndpointPassthrough()
+                        .EnableTokenEndpointPassthrough()
+                        .DisableTransportSecurityRequirement();
+
+                options.DisableAccessTokenEncryption();
+                options.AddEphemeralEncryptionKey();
 
                 if (!Directory.Exists(openIdOptions.CertificatesDirectory) && !servicesWithDevelopmentCertificates.Contains(services))
                 {

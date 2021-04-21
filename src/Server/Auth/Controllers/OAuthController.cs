@@ -3,8 +3,7 @@ using System.Threading.Tasks;
 
 using Microsoft.AspNetCore.Mvc;
 
-using static AspNet.Security.OpenIdConnect.Primitives.OpenIdConnectConstants;
-
+using static OpenIddict.Abstractions.OpenIddictConstants;
 namespace Brighid.Identity.Auth
 {
     [Route("/oauth2/")]

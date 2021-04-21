@@ -4,9 +4,9 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-using AspNet.Security.OpenIdConnect.Primitives;
-
 using Microsoft.AspNetCore.Authentication;
+
+using OpenIddict.Abstractions;
 
 namespace Brighid.Identity.Auth
 {
@@ -22,11 +22,16 @@ namespace Brighid.Identity.Auth
             this.authUtils = authUtils;
         }
 
-        public async Task<AuthenticationTicket> ClientExchange(OpenIdConnectRequest request, CancellationToken cancellationToken = default)
+        public async Task<AuthenticationTicket> ClientExchange(OpenIddictRequest request, CancellationToken cancellationToken = default)
         {
             if (!request.IsClientCredentialsGrantType())
             {
                 throw new InvalidOperationException("Expected client credentials grant type.");
+            }
+
+            if (request.ClientId == null)
+            {
+                throw new InvalidOperationException("Expected client_id to not be null.");
             }
 
             var clientId = new Guid(request.ClientId);

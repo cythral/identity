@@ -9,7 +9,7 @@ namespace Brighid.Identity.Client
 {
     public class IdentityServerClient
     {
-        private static readonly Uri tokenUri = new Uri("/oauth2/token", UriKind.Relative);
+        private static readonly Uri tokenUri = new("/oauth2/token", UriKind.Relative);
         private readonly HttpClient httpClient;
 
         public IdentityServerClient(HttpClient httpClient)
@@ -32,7 +32,7 @@ namespace Brighid.Identity.Client
 
             return token switch
             {
-                Token _ => token,
+                Token => token,
                 _ => throw new Exception("Token unexpectedly deserialized to null value."),
             };
         }
