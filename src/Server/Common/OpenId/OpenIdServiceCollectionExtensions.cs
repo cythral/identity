@@ -101,7 +101,7 @@ namespace Microsoft.Extensions.DependencyInjection
                 options.SaveToken = true;
                 options.RefreshOnIssuerKeyNotFound = true;
                 options.RequireHttpsMetadata = false;
-                options.MetadataAddress = $"{openIdOptions.DomainName}.well-known/openid-configuration";
+                options.MetadataAddress = $"http://localhost/.well-known/openid-configuration";
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
                     RequireSignedTokens = true,
