@@ -45,6 +45,16 @@ namespace Brighid.Identity
             return await All.ToListAsync();
         }
 
+        public virtual async Task LoadCollection(TEntity entity, params string[] embeds)
+        {
+            var entry = Context.Entry(entity);
+
+            foreach (var embed in embeds)
+            {
+                await entry.Collection(embed).LoadAsync();
+            }
+        }
+
         public virtual async Task<TEntity> Add(TEntity entity)
         {
             var result = await Set.AddAsync(entity);

@@ -19,18 +19,18 @@ namespace Brighid.Identity.Auth
 {
     public class DefaultAuthUtils : IAuthUtils
     {
-        private readonly IApplicationRoleRepository roleRepository;
+        private readonly IApplicationRepository applicationRepository;
 
         public DefaultAuthUtils(
-            IApplicationRoleRepository roleRepository
+            IApplicationRepository applicationRepository
         )
         {
-            this.roleRepository = roleRepository;
+            this.applicationRepository = applicationRepository;
         }
 
         public async Task<ClaimsIdentity> CreateClaimsIdentity(Guid applicationId, CancellationToken cancellationToken = default)
         {
-            var roles = await roleRepository.FindRolesForApplication(applicationId, cancellationToken);
+            var roles = await applicationRepository.FindRolesById(applicationId);
             var roleNames = roles.Select(role => $"\"{role.Name}\"");
 
             var result = new ClaimsIdentity(OpenIddictServerAspNetCoreDefaults.AuthenticationScheme, Claims.Name, Claims.Role);

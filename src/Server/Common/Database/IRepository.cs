@@ -10,6 +10,8 @@ namespace Brighid.Identity
 
         Task<IEnumerable<TEntity>> List();
 
+        Task LoadCollection(TEntity entity, params string[] embeds);
+
         Task<TEntity> Add(TEntity entity);
 
         Task<TEntity?> TryAdd(TEntity entity);

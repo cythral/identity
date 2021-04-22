@@ -7,7 +7,7 @@ using Brighid.Identity.Roles;
 
 namespace Brighid.Identity.Applications
 {
-    public class Application : IPrincipalWithRoles<Application, ApplicationRole>
+    public class Application
     {
         /// <summary>
         /// Gets the ID number for this application.  This also serves as the ClientId.
@@ -51,7 +51,7 @@ namespace Brighid.Identity.Applications
         /// This gets serialized to/from a list of role names.
         /// </remarks>
         /// <value>The roles this application is allowed to use.</value>
-        public virtual ICollection<ApplicationRole> Roles { get; set; } = new List<ApplicationRole>();
+        public virtual ICollection<Role> Roles { get; set; } = new List<Role>();
 
         /// <summary>
         /// Gets or sets the encrypted form of the application/client secret, which is a randomly-generated,

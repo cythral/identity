@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http.Json;
 using System.Text.Json;
@@ -48,25 +47,23 @@ namespace Brighid.Identity.Applications
 
                 #region Create Application
                 {
-                    var response = await client.PostAsJsonAsync(ApplicationController.BasePath, new SnsMessage<CloudFormationRequest<Application>>
+                    var response = await client.PostAsJsonAsync(ApplicationController.BasePath, new SnsMessage<CloudFormationRequest<ApplicationRequest>>
                     {
-                        Message = new CloudFormationRequest<Application>
+                        Message = new CloudFormationRequest<ApplicationRequest>
                         {
                             RequestId = createRequestId,
                             RequestType = CloudFormationRequestType.Create,
                             ResponseURL = new Uri($"{app.RootUri}mock"),
-                            ResourceProperties = new Application
+                            ResourceProperties = new ApplicationRequest
                             {
                                 Name = name,
                                 Description = description,
                                 Serial = serial,
-                                Roles = new List<ApplicationRole>
-                                {
-                                    new ApplicationRole { Role = new Role { Name = nameof(BuiltInRole.Basic) } }
-                                }
+                                Roles = new[] { nameof(BuiltInRole.Basic) }
                             }
                         }
-                    }, options);
+                    },
+                        options);
 
                     response.EnsureSuccessStatusCode();
                 }
@@ -100,26 +97,24 @@ namespace Brighid.Identity.Applications
 
                 #region Update Application Serial
                 {
-                    var response = await client.PostAsJsonAsync(ApplicationController.BasePath, new SnsMessage<CloudFormationRequest<Application>>
+                    var response = await client.PostAsJsonAsync(ApplicationController.BasePath, new SnsMessage<CloudFormationRequest<ApplicationRequest>>
                     {
-                        Message = new CloudFormationRequest<Application>
+                        Message = new CloudFormationRequest<ApplicationRequest>
                         {
                             RequestId = updateRequestId,
                             RequestType = CloudFormationRequestType.Update,
                             PhysicalResourceId = applicationId.ToString(),
                             ResponseURL = new Uri($"{app.RootUri}mock"),
-                            ResourceProperties = new Application
+                            ResourceProperties = new ApplicationRequest
                             {
                                 Name = name,
                                 Description = description,
                                 Serial = ++serial,
-                                Roles = new List<ApplicationRole>
-                                {
-                                    new ApplicationRole { Role = new Role { Name = nameof(BuiltInRole.Basic) } }
-                                }
+                                Roles = new[] { nameof(BuiltInRole.Basic) }
                             }
-                        }
-                    }, options);
+                        },
+                    },
+                    options);
 
                     response.EnsureSuccessStatusCode();
                 }
@@ -151,23 +146,20 @@ namespace Brighid.Identity.Applications
 
                 #region Delete Application
                 {
-                    var response = await client.PostAsJsonAsync(ApplicationController.BasePath, new SnsMessage<CloudFormationRequest<Application>>
+                    var response = await client.PostAsJsonAsync(ApplicationController.BasePath, new SnsMessage<CloudFormationRequest<ApplicationRequest>>
                     {
-                        Message = new CloudFormationRequest<Application>
+                        Message = new CloudFormationRequest<ApplicationRequest>
                         {
                             RequestId = deleteRequestId,
                             RequestType = CloudFormationRequestType.Delete,
                             PhysicalResourceId = applicationId.ToString(),
                             ResponseURL = new Uri($"{app.RootUri}mock"),
-                            ResourceProperties = new Application
+                            ResourceProperties = new ApplicationRequest
                             {
                                 Name = name,
                                 Description = description,
                                 Serial = serial,
-                                Roles = new List<ApplicationRole>
-                                {
-                                    new ApplicationRole { Role = new Role { Name = nameof(BuiltInRole.Basic) } }
-                                }
+                                Roles = new[] { nameof(BuiltInRole.Basic) }
                             }
                         }
                     }, options);
@@ -218,22 +210,19 @@ namespace Brighid.Identity.Applications
 
                 #region Attempt to Create Application
                 {
-                    var response = await client.PostAsJsonAsync(ApplicationController.BasePath, new SnsMessage<CloudFormationRequest<Application>>
+                    var response = await client.PostAsJsonAsync(ApplicationController.BasePath, new SnsMessage<CloudFormationRequest<ApplicationRequest>>
                     {
-                        Message = new CloudFormationRequest<Application>
+                        Message = new CloudFormationRequest<ApplicationRequest>
                         {
                             RequestId = createRequestId,
                             RequestType = CloudFormationRequestType.Create,
                             ResponseURL = new Uri($"{app.RootUri}mock"),
-                            ResourceProperties = new Application
+                            ResourceProperties = new ApplicationRequest
                             {
                                 Name = name,
                                 Description = description,
                                 Serial = serial,
-                                Roles = new List<ApplicationRole>
-                                {
-                                    new ApplicationRole { Role = new Role { Name = randomRoleName } }
-                                }
+                                Roles = new[] { randomRoleName },
                             }
                         }
                     }, options);

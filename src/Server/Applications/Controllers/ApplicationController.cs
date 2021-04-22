@@ -1,9 +1,12 @@
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 using Brighid.Identity.Roles;
 
 using Microsoft.AspNetCore.Mvc;
+
+#pragma warning disable IDE0050
 
 namespace Brighid.Identity.Applications
 {
@@ -13,14 +16,15 @@ namespace Brighid.Identity.Applications
         nameof(BuiltInRole.ApplicationManager),
         nameof(BuiltInRole.Administrator),
     })]
-    public class ApplicationController : EntityController<Application, Guid, IApplicationRepository, IApplicationService>
+    public class ApplicationController : EntityController<Application, ApplicationRequest, Guid, IApplicationRepository, IApplicationMapper, IApplicationService>
     {
         public const string BasePath = "/api/applications";
 
         public ApplicationController(
+            IApplicationMapper appMapper,
             IApplicationService appService,
             IApplicationRepository appRepository
-        ) : base(BasePath, appService, appRepository)
+        ) : base(BasePath, appMapper, appService, appRepository)
         {
         }
 
@@ -30,13 +34,21 @@ namespace Brighid.Identity.Applications
             base.SetSnsContextItems(id, data);
         }
 
-        public override async Task<ActionResult<Application>> Create([FromBody] Application entity)
+        public override async Task<ActionResult<Application>> Create([FromBody] ApplicationRequest request)
         {
             try
             {
-                return await base.Create(entity);
+                return await base.Create(request);
             }
             catch (RoleNotFoundException e) { return BadRequest(new { e.Message }); }
+            catch (AggregateException e)
+            {
+                return BadRequest(new
+                {
+                    Message = "Multiple validation errors occurred.",
+                    ValidationErrors = from innerException in e.InnerExceptions select innerException.Message,
+                });
+            }
         }
     }
 }

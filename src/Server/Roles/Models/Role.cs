@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
+using Brighid.Identity.Applications;
+using Brighid.Identity.Users;
+
 using Microsoft.AspNetCore.Identity;
 
 namespace Brighid.Identity.Roles
@@ -46,5 +49,11 @@ namespace Brighid.Identity.Roles
         public string Description { get; set; } = "";
 
         public virtual ICollection<RoleClaim> Claims { get; set; } = new List<RoleClaim>();
+
+        [JsonIgnore]
+        public virtual ICollection<User> Users { get; set; } = new List<User>();
+
+        [JsonIgnore]
+        public virtual ICollection<Application> Applications { get; set; } = new List<Application>();
     }
 }

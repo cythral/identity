@@ -67,6 +67,7 @@ namespace Brighid.Identity
             services.AddServicesWithAttributeOfType<SingletonServiceAttribute>();
             services.AddDbContextPool<DatabaseContext>(ConfigureDatabaseOptions);
             services.AddHttpContextAccessor();
+            services.AddSwaggerGen();
 
             services
             .AddRazorPages()
@@ -195,6 +196,12 @@ namespace Brighid.Identity
                 }
 
                 await next();
+            });
+
+            app.UseSwagger();
+            app.UseSwaggerUI(options =>
+            {
+                options.SwaggerEndpoint("/swagger/v1/swagger.json", "Brighid Identity Swagger");
             });
 
             app.UseStaticFiles();

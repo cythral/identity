@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
 using OpenIddict.Abstractions;
@@ -12,20 +11,17 @@ namespace Brighid.Identity.Applications
     {
         private readonly OpenIddictApplicationManager<OpenIddictEntityFrameworkCoreApplication> appManager;
         private readonly IApplicationRepository appRepository;
-        private readonly IApplicationRoleService appRoleService;
         private readonly GenerateRandomString generateRandomString;
         private readonly IEncryptionService encryptionService;
 
         public DefaultApplicationService(
            IApplicationRepository appRepository,
-           IApplicationRoleService appRoleService,
            OpenIddictApplicationManager<OpenIddictEntityFrameworkCoreApplication> appManager,
            GenerateRandomString generateRandomString,
            IEncryptionService encryptionService
        )
         {
             this.appRepository = appRepository;
-            this.appRoleService = appRoleService;
             this.appManager = appManager;
             this.generateRandomString = generateRandomString;
             this.encryptionService = encryptionService;
@@ -36,7 +32,6 @@ namespace Brighid.Identity.Applications
         public async Task<Application> Create(Application application)
         {
             var secret = generateRandomString(128);
-            var roles = application.Roles;
             var descriptor = new OpenIddictApplicationDescriptor
             {
                 ClientId = application.Id.ToString(),
@@ -51,9 +46,7 @@ namespace Brighid.Identity.Applications
 
             application.EncryptedSecret = await encryptionService.Encrypt(secret);
             application.Secret = secret;
-            application.Roles = new List<ApplicationRole>();
 
-            await appRoleService.UpdatePrincipalRoles(application, roles);
             await appRepository.Add(application);
             await appManager.CreateAsync(descriptor);
 
@@ -62,7 +55,7 @@ namespace Brighid.Identity.Applications
 
         public async Task<Application> UpdateById(Guid id, Application application)
         {
-            var existingApp = await appRepository.FindById(id, "Roles.Role");
+            var existingApp = await appRepository.FindById(id, "Roles");
             if (existingApp == null)
             {
                 throw new UpdateApplicationException($"Application with ID={id} does not exist.");
@@ -72,6 +65,7 @@ namespace Brighid.Identity.Applications
             existingApp.Name = application.Name;
             existingApp.Description = application.Description;
             existingApp.Serial = application.Serial;
+            existingApp.Roles = application.Roles;
 
             if (serialChanged)
             {
@@ -86,7 +80,6 @@ namespace Brighid.Identity.Applications
                 await appManager.UpdateAsync(client);
             }
 
-            await appRoleService.UpdatePrincipalRoles(existingApp, application.Roles);
             await appRepository.Save(existingApp);
 
             return existingApp;
