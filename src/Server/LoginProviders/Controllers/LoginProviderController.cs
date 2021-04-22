@@ -28,7 +28,7 @@ namespace Brighid.Identity.LoginProviders
             this.repository = repository;
         }
 
-        [HttpGet("{loginProvider}/{providerKey}", Name = "GetUserByLoginProviderKey")]
+        [HttpGet("{loginProvider}/{providerKey}", Name = "LoginProviders:GetUserByLoginProviderKey")]
         public async Task<ActionResult<User>> GetUserByLoginProviderKey(string loginProvider, string providerKey)
         {
             var result = await repository.FindByLogin(loginProvider, providerKey, UserEmbeds);
