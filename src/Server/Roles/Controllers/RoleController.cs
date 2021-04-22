@@ -12,14 +12,15 @@ namespace Brighid.Identity.Roles
         nameof(BuiltInRole.RoleManager),
         nameof(BuiltInRole.Administrator)
     })]
-    public class RoleController : EntityController<Role, Guid, IRoleRepository, IRoleService>
+    public class RoleController : EntityController<Role, Role, Guid, IRoleRepository, IRoleMapper, IRoleService>
     {
         public const string BasePath = "/api/roles";
 
         public RoleController(
+            IRoleMapper mapper,
             IRoleService service,
             IRoleRepository repository
-        ) : base(BasePath, service, repository)
+        ) : base(BasePath, mapper, service, repository)
         {
         }
 

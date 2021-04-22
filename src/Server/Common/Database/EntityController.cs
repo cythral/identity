@@ -7,21 +7,25 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Brighid.Identity
 {
-    public abstract class EntityController<TEntity, TPrimaryKey, TRepository, TService> : Controller
+    public abstract class EntityController<TEntity, TEntityRequest, TPrimaryKey, TRepository, TMapper, TService> : Controller
         where TEntity : class
+        where TMapper : IRequestToEntityMapper<TEntityRequest, TEntity>
         where TRepository : IRepository<TEntity, TPrimaryKey>
         where TService : IEntityService<TEntity, TPrimaryKey>
     {
         protected string BaseAddress { get; }
         protected TService Service { get; }
         protected TRepository Repository { get; }
+        protected TMapper Mapper { get; }
 
         public EntityController(
             string baseAddress,
+            TMapper mapper,
             TService service,
             TRepository repository
         )
         {
+            Mapper = mapper;
             BaseAddress = baseAddress;
             Service = service;
             Repository = repository;
@@ -43,8 +47,9 @@ namespace Brighid.Identity
         }
 
         [HttpPost]
-        public virtual async Task<ActionResult<TEntity>> Create([FromBody] TEntity entity)
+        public virtual async Task<ActionResult<TEntity>> Create([FromBody] TEntityRequest request)
         {
+            var entity = await Mapper.MapRequestToEntity(request, HttpContext.RequestAborted);
             var result = await Service.Create(entity);
             var primaryKey = Service.GetPrimaryKey(entity);
             var destination = new Uri($"{BaseAddress}/{primaryKey}", UriKind.Relative);
@@ -60,8 +65,9 @@ namespace Brighid.Identity
         }
 
         [HttpPut("{id}")]
-        public virtual async Task<ActionResult<TEntity>> UpdateById(TPrimaryKey id, [FromBody] TEntity entity)
+        public virtual async Task<ActionResult<TEntity>> UpdateById(TPrimaryKey id, [FromBody] TEntityRequest request)
         {
+            var entity = await Mapper.MapRequestToEntity(request, HttpContext.RequestAborted);
             var result = await Service.UpdateById(id, entity);
             TrySetSnsContextItems(id, result);
             return Ok(result);

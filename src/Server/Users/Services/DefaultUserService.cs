@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -17,21 +16,21 @@ namespace Brighid.Identity.Users
     {
         private const string defaultRole = nameof(BuiltInRole.Basic);
         private readonly UserManager<User> userManager;
+        private readonly IRoleRepository roleRepository;
         private readonly IUserLoginRepository loginRepository;
-        private readonly IUserRoleService roleService;
 
         public DefaultUserService(
             UserManager<User> userManager,
-            IUserLoginRepository loginRepository,
-            IUserRoleService roleService
+            IRoleRepository roleRepository,
+            IUserLoginRepository loginRepository
         )
         {
             this.userManager = userManager;
+            this.roleRepository = roleRepository;
             this.loginRepository = loginRepository;
-            this.roleService = roleService;
         }
 
-        public async Task<User> Create(string username, string password, string? role = null)
+        public async Task<User> Create(string username, string password, string? roleName = null)
         {
             static void EnsureSucceeded(IdentityResult result)
             {
@@ -43,10 +42,16 @@ namespace Brighid.Identity.Users
                     throw new CreateUserException(innerExceptions);
                 }
             }
-            role ??= defaultRole;
+            roleName ??= defaultRole;
 
-            var user = new User { UserName = username, Email = username, Roles = new List<UserRole>() };
-            await roleService.AddRoleToPrincipal(user, role);
+            var role = await roleRepository.FindByName(roleName);
+            if (role == null)
+            {
+                throw new RoleNotFoundException(roleName);
+            }
+
+            var user = new User { UserName = username, Email = username };
+            user.Roles.Add(role);
 
             var createResult = await userManager.CreateAsync(user, password);
             EnsureSucceeded(createResult);

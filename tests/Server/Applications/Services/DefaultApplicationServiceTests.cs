@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
 using AutoFixture.AutoNSubstitute;
@@ -37,28 +36,6 @@ namespace Brighid.Identity.Applications
             {
                 await applicationService.Create(application);
                 await applicationRepository.Received().Add(application);
-            }
-
-            [Test, Auto]
-            public async Task ShouldAddRolesToTheApplication(
-                List<ApplicationRole> roles,
-                List<ApplicationRole> newRoles,
-                Application application,
-                [Frozen, Substitute] IApplicationRepository applicationRepository,
-                [Frozen, Substitute] IApplicationRoleService roleService,
-                [Frozen, Substitute] OpenIddictApplicationManager<OpenIddictEntityFrameworkCoreApplication> _appManager,
-                [Target] DefaultApplicationService applicationService
-            )
-            {
-                roleService
-                .When(svc => svc.UpdatePrincipalRoles(Any<Application>(), Any<ICollection<ApplicationRole>>()))
-                .Do(x => application.Roles = newRoles);
-
-                application.Roles = roles;
-                await applicationService.Create(application);
-
-                application.Roles.Should().BeSameAs(newRoles);
-                await roleService.Received().UpdatePrincipalRoles(Is(application), Is(roles));
             }
 
             [Test, Auto]
@@ -132,7 +109,7 @@ namespace Brighid.Identity.Applications
                 Func<Task<Application>> func = () => service.UpdateById(id, application);
 
                 await func.Should().ThrowAsync<Exception>();
-                await repository.Received().FindById(Is(id), Is("Roles.Role"));
+                await repository.Received().FindById(Is(id), Is("Roles"));
             }
 
             [Test, Auto]
@@ -151,32 +128,12 @@ namespace Brighid.Identity.Applications
             }
 
             [Test, Auto]
-            public async Task ShouldUpdateApplicationRoles(
-                ulong serial,
-                Guid id,
-                Application existingApp,
-                Application application,
-                [Frozen, Substitute] IApplicationRepository repository,
-                [Frozen, Substitute] IApplicationRoleService roleService,
-                [Target] DefaultApplicationService service
-            )
-            {
-                existingApp.Serial = serial;
-                application.Serial = serial;
-                repository.FindById(Any<Guid>(), Any<string>()).Returns(existingApp);
-                await service.UpdateById(id, application);
-
-                await roleService.Received().UpdatePrincipalRoles(Is(existingApp), Is(application.Roles));
-            }
-
-            [Test, Auto]
             public async Task ShouldSaveAppWithUpdatedName(
                 ulong serial,
                 Guid id,
                 Application existingApp,
                 Application application,
                 [Frozen, Substitute] IApplicationRepository repository,
-                [Frozen, Substitute] IApplicationRoleService roleService,
                 [Target] DefaultApplicationService service
             )
             {
@@ -197,7 +154,6 @@ namespace Brighid.Identity.Applications
                 Application existingApp,
                 Application application,
                 [Frozen, Substitute] IApplicationRepository repository,
-                [Frozen, Substitute] IApplicationRoleService roleService,
                 [Target] DefaultApplicationService service
             )
             {
@@ -217,7 +173,6 @@ namespace Brighid.Identity.Applications
                 Application existingApp,
                 Application application,
                 [Frozen, Substitute] IApplicationRepository repository,
-                [Frozen, Substitute] IApplicationRoleService roleService,
                 [Frozen, Substitute] OpenIddictApplicationManager<OpenIddictEntityFrameworkCoreApplication> applicationManager,
                 [Target] DefaultApplicationService service
             )
@@ -246,7 +201,6 @@ namespace Brighid.Identity.Applications
                 [Frozen, Substitute] IEncryptionService encryptionService,
                 [Frozen, Substitute] IApplicationRepository repository,
                 [Frozen, Substitute] OpenIddictApplicationManager<OpenIddictEntityFrameworkCoreApplication> applicationManager,
-                [Frozen, Substitute] IApplicationRoleService roleService,
                 [Target] DefaultApplicationService service
             )
             {
@@ -278,7 +232,6 @@ namespace Brighid.Identity.Applications
                 [Frozen, Substitute] GenerateRandomString generateRandomString,
                 [Frozen, Substitute] IEncryptionService encryptionService,
                 [Frozen, Substitute] IApplicationRepository repository,
-                [Frozen, Substitute] IApplicationRoleService roleService,
                 [Target] DefaultApplicationService service
             )
             {
@@ -308,7 +261,6 @@ namespace Brighid.Identity.Applications
                 [Frozen, Substitute] IEncryptionService encryptionService,
                 [Frozen, Substitute] IApplicationRepository repository,
                 [Frozen, Substitute] OpenIddictApplicationManager<OpenIddictEntityFrameworkCoreApplication> applicationManager,
-                [Frozen, Substitute] IApplicationRoleService roleService,
                 [Target] DefaultApplicationService service
             )
             {
@@ -336,7 +288,6 @@ namespace Brighid.Identity.Applications
                 [Frozen, Substitute] GenerateRandomString generateRandomString,
                 [Frozen, Substitute] IEncryptionService encryptionService,
                 [Frozen, Substitute] IApplicationRepository repository,
-                [Frozen, Substitute] IApplicationRoleService roleService,
                 [Target] DefaultApplicationService service
             )
             {
@@ -360,7 +311,6 @@ namespace Brighid.Identity.Applications
                 [Frozen, Substitute] GenerateRandomString generateRandomString,
                 [Frozen, Substitute] OpenIddictApplicationManager<OpenIddictEntityFrameworkCoreApplication> applicationManager,
                 [Frozen, Substitute] IApplicationRepository repository,
-                [Frozen, Substitute] IApplicationRoleService roleService,
                 [Target] DefaultApplicationService service
             )
             {
@@ -387,10 +337,14 @@ namespace Brighid.Identity.Applications
             [Test, Auto]
             public async Task ShouldDeleteTheApplication(
                 Guid id,
+                [Frozen, Substitute] OpenIddictApplicationManager<OpenIddictEntityFrameworkCoreApplication> applicationManager,
                 [Frozen, Substitute] IApplicationRepository repository,
                 [Target] DefaultApplicationService service
             )
             {
+                var openIddictApplication = new OpenIddictEntityFrameworkCoreApplication { ClientId = id.ToString() };
+                applicationManager.FindByClientIdAsync(Any<string>()).Returns(openIddictApplication);
+
                 await service.DeleteById(id);
 
                 await repository.Received().Remove(Is(id));
@@ -416,10 +370,13 @@ namespace Brighid.Identity.Applications
             public async Task ShouldReturnTheApplication(
                 Guid id,
                 Application application,
+                [Frozen, Substitute] OpenIddictApplicationManager<OpenIddictEntityFrameworkCoreApplication> applicationManager,
                 [Frozen, Substitute] IApplicationRepository repository,
                 [Target] DefaultApplicationService service
             )
             {
+                var openIddictApplication = new OpenIddictEntityFrameworkCoreApplication { ClientId = id.ToString() };
+                applicationManager.FindByClientIdAsync(Any<string>()).Returns(openIddictApplication);
                 repository.Remove(Any<Guid>()).Returns(application);
 
                 var result = await service.DeleteById(id);

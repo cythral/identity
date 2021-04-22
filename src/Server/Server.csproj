@@ -6,8 +6,6 @@
     <RootNamespace>Brighid.Identity</RootNamespace>
     <LangVersion>9.0</LangVersion>
     <Configuration Condition="$(Configuration) == ''">Debug</Configuration>
-    <NuGetLockFilePath Condition="$(Configuration) == 'Debug'">packages-debug.lock.json</NuGetLockFilePath>
-    <NuGetLockFilePath Condition="$(Configuration) == 'Release'">packages-release.lock.json</NuGetLockFilePath>
   </PropertyGroup>
 
   <ItemGroup>
@@ -22,15 +20,13 @@
     <PackageReference Include="OpenIddict.AspNetCore" Version="3.0.3" />
     <PackageReference Include="OpenIddict.Server.AspNetCore" Version="3.0.3" />
     <PackageReference Include="OpenIddict.EntityFrameworkCore" Version="3.0.3" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.1.3" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.8.0" />
     <PackageReference Include="System.Linq.Async" Version="5.0.0" />
     <PackageReference Include="System.Security.Cryptography.Algorithms" Version="4.3.1" />
     <PackageReference Include="System.Security.Cryptography.OpenSsl" Version="5.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="5.0.0" />
     <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="5.0.0-alpha.2" />
-  </ItemGroup>
-
-  <ItemGroup Condition="$(Configuration) == 'Debug'">
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="5.0.0" />
   </ItemGroup>
 

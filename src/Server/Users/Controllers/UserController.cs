@@ -17,7 +17,7 @@ namespace Brighid.Identity.Users
     })]
     public class UserController : Controller
     {
-        private readonly string[] Embeds = new[] { "Roles.Role", "Logins" };
+        private readonly string[] Embeds = new[] { "Roles", "Logins" };
 
         private readonly IUserRepository repository;
         private readonly IUserService service;

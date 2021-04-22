@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace Brighid.Identity.Users
 {
-    public class User : IdentityUser<Guid>, IPrincipalWithRoles<User, UserRole>
+    public class User : IdentityUser<Guid>
     {
 
         public User()
@@ -30,13 +30,13 @@ namespace Brighid.Identity.Users
         public string Name => UserName;
 
         [JsonIgnore]
-        public override string NormalizedUserName { get; set; } = "";
+        public override string NormalizedUserName { get; set; } = string.Empty;
 
         [JsonIgnore]
-        public override string NormalizedEmail { get; set; } = "";
+        public override string NormalizedEmail { get; set; } = string.Empty;
 
         [JsonIgnore]
-        public override string PasswordHash { get; set; } = "";
+        public override string PasswordHash { get; set; } = string.Empty;
 
         [JsonIgnore]
         public override string SecurityStamp { get; set; } = Guid.NewGuid().ToString();
@@ -52,7 +52,6 @@ namespace Brighid.Identity.Users
         /// Gets the roles this user is allowed to use.
         /// </summary>
         /// <returns>The roles this user is allowed to use.</returns>
-        [InverseProperty("User")]
-        public virtual ICollection<UserRole> Roles { get; set; } = new List<UserRole>();
+        public virtual ICollection<Role> Roles { get; set; } = new List<Role>();
     }
 }

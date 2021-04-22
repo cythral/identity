@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 
 using AutoFixture.AutoNSubstitute;
@@ -45,14 +46,17 @@ namespace Brighid.Identity.Applications
             public async Task ShouldRemoveUnencryptedSecretFromResult_IfRequestSourceIsSns(
                 Guid id,
                 string secret,
-                Application request,
+                ApplicationRequest request,
+                Application mappedRequest,
                 Application application,
+                [Frozen, Substitute] IApplicationMapper mapper,
                 [Frozen, Substitute] IApplicationService service,
                 [Target] ApplicationController controller
             )
             {
                 application.Id = id;
                 application.Secret = secret;
+                mapper.MapRequestToEntity(Any<ApplicationRequest>(), Any<CancellationToken>()).Returns(mappedRequest);
                 service.GetPrimaryKey(Any<Application>()).Returns(id);
                 service.Create(Any<Application>()).Returns(application);
                 var httpContext = SetupHttpContext(controller, IdentityRequestSource.Sns);
@@ -70,14 +74,17 @@ namespace Brighid.Identity.Applications
             public async Task ShouldNotRemoveUnencryptedSecretFromResult_IfRequestSourceIsDirect(
                 Guid id,
                 string secret,
-                Application request,
+                ApplicationRequest request,
+                Application mappedRequest,
                 Application application,
+                [Frozen, Substitute] IApplicationMapper mapper,
                 [Frozen, Substitute] IApplicationService service,
                 [Target] ApplicationController controller
             )
             {
                 application.Id = id;
                 application.Secret = secret;
+                mapper.MapRequestToEntity(Any<ApplicationRequest>(), Any<CancellationToken>()).Returns(mappedRequest);
                 service.GetPrimaryKey(Any<Application>()).Returns(id);
                 service.Create(Any<Application>()).Returns(application);
                 SetupHttpContext(controller, IdentityRequestSource.Direct);
@@ -98,14 +105,17 @@ namespace Brighid.Identity.Applications
             public async Task ShouldRemoveUnencryptedSecretFromResult_IfRequestSourceIsSns(
                 Guid id,
                 string secret,
-                Application request,
+                ApplicationRequest request,
+                Application mappedRequest,
                 Application application,
+                [Frozen, Substitute] IApplicationMapper mapper,
                 [Frozen, Substitute] IApplicationService service,
                 [Target] ApplicationController controller
             )
             {
                 application.Id = id;
                 application.Secret = secret;
+                mapper.MapRequestToEntity(Any<ApplicationRequest>(), Any<CancellationToken>()).Returns(mappedRequest);
                 service.GetPrimaryKey(Any<Application>()).Returns(id);
                 service.UpdateById(Any<Guid>(), Any<Application>()).Returns(application);
                 var httpContext = SetupHttpContext(controller, IdentityRequestSource.Sns);
@@ -123,14 +133,17 @@ namespace Brighid.Identity.Applications
             public async Task ShouldNotRemoveUnencryptedSecretFromResult_IfRequestSourceIsDirect(
                 Guid id,
                 string secret,
-                Application request,
+                ApplicationRequest request,
+                Application mappedRequest,
                 Application application,
+                [Frozen, Substitute] IApplicationMapper mapper,
                 [Frozen, Substitute] IApplicationService service,
                 [Target] ApplicationController controller
             )
             {
                 application.Id = id;
                 application.Secret = secret;
+                mapper.MapRequestToEntity(Any<ApplicationRequest>(), Any<CancellationToken>()).Returns(mappedRequest);
                 service.GetPrimaryKey(Any<Application>()).Returns(id);
                 service.UpdateById(Any<Guid>(), Any<Application>()).Returns(application);
                 SetupHttpContext(controller, IdentityRequestSource.Direct);

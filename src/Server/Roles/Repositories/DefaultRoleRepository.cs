@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Threading;
@@ -23,8 +24,17 @@ namespace Brighid.Identity.Roles
 
         public async Task<bool> IsAttachedToAPrincipal(Guid id, CancellationToken cancellationToken = default)
         {
-            var query = Context.Roles.FromSqlInterpolated($"select 1 from Roles where exists (select 1 from UserRoles where RoleId = {id}) or (select 1 from ApplicationRoles where RoleId = {id}) limit 1");
+            var query = Context.Roles.FromSqlInterpolated($"select 1 from Roles where exists (select 1 from RoleUser where RoleId = {id}) or (select 1 from ApplicationRole where RoleId = {id}) limit 1");
             return await query.AnyAsync(cancellationToken);
+        }
+
+        public async Task<IEnumerable<Role>> FindAllByName(IEnumerable<string> names, CancellationToken cancellationToken = default)
+        {
+            var placeholders = string.Join(",", Enumerable.Range(0, names.Count()).Select(i => "{" + i + "}"));
+            var values = names.Cast<object>().ToArray();
+            var query = Context.Roles.FromSqlRaw($@"select * from Roles where Name in ({placeholders})", values);
+            await query.LoadAsync(cancellationToken);
+            return query;
         }
     }
 }

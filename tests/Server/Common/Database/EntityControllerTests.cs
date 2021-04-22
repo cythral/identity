@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 
 using AutoFixture.AutoNSubstitute;
@@ -24,19 +25,22 @@ namespace Brighid.Identity
 {
 
     public class Item { public Guid Id { get; set; } }
+    public class ItemRequest { public string Name { get; set; } }
 
     public interface IItemRepository : IRepository<Item, Guid> { }
+    public interface IItemMapper : IRequestToEntityMapper<ItemRequest, Item> { }
 
     public interface IItemService : IEntityService<Item, Guid> { }
 
-    public class ItemController : EntityController<Item, Guid, IItemRepository, IItemService>
+    public class ItemController : EntityController<Item, ItemRequest, Guid, IItemRepository, IItemMapper, IItemService>
     {
         public const string BasePath = "/api/items";
 
         public ItemController(
+            IItemMapper mapper,
             IItemService service,
             IItemRepository repository
-        ) : base(BasePath, service, repository)
+        ) : base(BasePath, mapper, service, repository)
         {
         }
 
@@ -60,36 +64,43 @@ namespace Brighid.Identity
         public class CreateTests
         {
             [Test, Auto]
-            public async Task ShouldCreateAndReturnItem(
+            public async Task ShouldMapCreateAndReturnItem(
+                ItemRequest request,
                 Item item,
+                [Frozen, Substitute] IItemMapper itemMapper,
                 [Frozen, Substitute] IItemService itemService,
                 [Target] ItemController controller
             )
             {
+                itemMapper.MapRequestToEntity(Any<ItemRequest>(), Any<CancellationToken>()).Returns(item);
                 itemService.Create(Any<Item>()).Returns(item);
                 SetupHttpContext(controller);
 
-                var response = await controller.Create(item);
+                var response = await controller.Create(request);
                 var result = response.Result;
 
                 result.As<CreatedResult>().Value.Should().Be(item);
+                await itemMapper.Received().MapRequestToEntity(Is(request), Any<CancellationToken>());
                 await itemService.Received().Create(Is(item));
             }
 
             [Test, Auto]
             public async Task ShouldRedirectToApplicationPage(
                 Guid id,
+                ItemRequest request,
                 Item item,
+                [Frozen, Substitute] IItemMapper itemMapper,
                 [Frozen, Substitute] IItemService itemService,
                 [Target] ItemController controller
             )
             {
                 item.Id = id;
+                itemMapper.MapRequestToEntity(Any<ItemRequest>(), Any<CancellationToken>()).Returns(item);
                 itemService.GetPrimaryKey(Any<Item>()).Returns(id);
                 itemService.Create(Any<Item>()).Returns(item);
                 SetupHttpContext(controller);
 
-                var response = await controller.Create(item);
+                var response = await controller.Create(request);
                 var result = response.Result;
 
                 result.As<CreatedResult>().Location.Should().Be($"/api/items/{id}");
@@ -98,17 +109,20 @@ namespace Brighid.Identity
             [Test, Auto]
             public async Task ShouldSetIdItemInHttpContext_IfRequestSourceIsSns(
                 Guid id,
+                ItemRequest request,
                 Item item,
+                [Frozen, Substitute] IItemMapper itemMapper,
                 [Frozen, Substitute] IItemService itemService,
                 [Target] ItemController controller
             )
             {
                 item.Id = id;
+                itemMapper.MapRequestToEntity(Any<ItemRequest>(), Any<CancellationToken>()).Returns(item);
                 itemService.GetPrimaryKey(Any<Item>()).Returns(id);
                 itemService.Create(Any<Item>()).Returns(item);
                 var httpContext = SetupHttpContext(controller, IdentityRequestSource.Sns);
 
-                await controller.Create(item);
+                await controller.Create(request);
 
                 httpContext.Items[CloudFormationConstants.Id].Should().Be(id);
             }
@@ -116,17 +130,20 @@ namespace Brighid.Identity
             [Test, Auto]
             public async Task ShouldNotSetIdItemInHttpContext_IfRequestSourceIsDirect(
                 Guid id,
+                ItemRequest request,
                 Item item,
+                [Frozen, Substitute] IItemMapper itemMapper,
                 [Frozen, Substitute] IItemService itemService,
                 [Target] ItemController controller
             )
             {
                 item.Id = id;
+                itemMapper.MapRequestToEntity(Any<ItemRequest>(), Any<CancellationToken>()).Returns(item);
                 itemService.GetPrimaryKey(Any<Item>()).Returns(id);
                 itemService.Create(Any<Item>()).Returns(item);
                 var httpContext = SetupHttpContext(controller, IdentityRequestSource.Direct);
 
-                await controller.Create(item);
+                await controller.Create(request);
 
                 httpContext.Items.Should().NotContainKey(CloudFormationConstants.Id);
             }
@@ -134,36 +151,42 @@ namespace Brighid.Identity
             [Test, Auto]
             public async Task ShouldSetDataItemInHttpContext_IfRequestSourceIsSns(
                 Guid id,
-                Item request,
-                Item item,
+                ItemRequest request,
+                Item entity,
+                Item resultingItem,
+                [Frozen, Substitute] IItemMapper itemMapper,
                 [Frozen, Substitute] IItemService itemService,
                 [Target] ItemController controller
             )
             {
-                item.Id = id;
+                resultingItem.Id = id;
+                itemMapper.MapRequestToEntity(Any<ItemRequest>(), Any<CancellationToken>()).Returns(entity);
                 itemService.GetPrimaryKey(Any<Item>()).Returns(id);
-                itemService.Create(Any<Item>()).Returns(item);
+                itemService.Create(Any<Item>()).Returns(resultingItem);
                 var httpContext = SetupHttpContext(controller, IdentityRequestSource.Sns);
 
                 await controller.Create(request);
 
-                httpContext.Items[CloudFormationConstants.Data].Should().Be(item);
+                httpContext.Items[CloudFormationConstants.Data].Should().Be(resultingItem);
             }
 
             [Test, Auto]
             public async Task ShouldNotSetDataItemInHttpContext_IfRequestSourceIsDirect(
                 Guid id,
                 Item item,
+                ItemRequest request,
+                [Frozen, Substitute] IItemMapper itemMapper,
                 [Frozen, Substitute] IItemService itemService,
                 [Target] ItemController controller
             )
             {
                 item.Id = id;
+                itemMapper.MapRequestToEntity(Any<ItemRequest>(), Any<CancellationToken>()).Returns(item);
                 itemService.GetPrimaryKey(Any<Item>()).Returns(id);
                 itemService.Create(Any<Item>()).Returns(item);
                 var httpContext = SetupHttpContext(controller, IdentityRequestSource.Direct);
 
-                await controller.Create(item);
+                await controller.Create(request);
 
                 httpContext.Items.Should().NotContainKey(CloudFormationConstants.Data);
             }
@@ -211,21 +234,25 @@ namespace Brighid.Identity
         public class UpdateByIdTests
         {
             [Test, Auto]
-            public async Task ShouldUpdateAndReturnApplication(
+            public async Task ShouldMapUpdateAndReturnApplication(
                 Guid id,
                 Item item,
+                ItemRequest request,
+                [Frozen, Substitute] IItemMapper itemMapper,
                 [Frozen, Substitute] IItemService itemService,
                 [Target] ItemController controller
             )
             {
+                itemMapper.MapRequestToEntity(Any<ItemRequest>(), Any<CancellationToken>()).Returns(item);
                 itemService.GetPrimaryKey(Any<Item>()).Returns(id);
                 itemService.UpdateById(Any<Guid>(), Any<Item>()).Returns(item);
                 SetupHttpContext(controller);
 
-                var response = await controller.UpdateById(id, item);
+                var response = await controller.UpdateById(id, request);
                 var result = response.Result;
 
                 result.As<OkObjectResult>().Value.Should().Be(item);
+                await itemMapper.Received().MapRequestToEntity(Is(request), Any<CancellationToken>());
                 await itemService.Received().UpdateById(Is(id), Is(item));
             }
 
@@ -233,15 +260,18 @@ namespace Brighid.Identity
             public async Task ShouldSetIdItemInHttpContext_IfRequestSourceIsSns(
                 Guid id,
                 Item item,
+                ItemRequest request,
+                [Frozen, Substitute] IItemMapper itemMapper,
                 [Frozen, Substitute] IItemService itemService,
                 [Target] ItemController controller
             )
             {
+                itemMapper.MapRequestToEntity(Any<ItemRequest>(), Any<CancellationToken>()).Returns(item);
                 itemService.GetPrimaryKey(Any<Item>()).Returns(id);
                 itemService.UpdateById(Any<Guid>(), Any<Item>()).Returns(item);
                 var httpContext = SetupHttpContext(controller, IdentityRequestSource.Sns);
 
-                await controller.UpdateById(id, item);
+                await controller.UpdateById(id, request);
 
                 httpContext.Items[CloudFormationConstants.Id].Should().Be(id);
             }
@@ -250,15 +280,18 @@ namespace Brighid.Identity
             public async Task ShouldNotSetIdItemInHttpContext_IfRequestSourceIsDirect(
                 Guid id,
                 Item item,
+                ItemRequest request,
+                [Frozen, Substitute] IItemMapper itemMapper,
                 [Frozen, Substitute] IItemService itemService,
                 [Target] ItemController controller
             )
             {
+                itemMapper.MapRequestToEntity(Any<ItemRequest>(), Any<CancellationToken>()).Returns(item);
                 itemService.GetPrimaryKey(Any<Item>()).Returns(id);
                 itemService.UpdateById(Any<Guid>(), Any<Item>()).Returns(item);
                 var httpContext = SetupHttpContext(controller, IdentityRequestSource.Direct);
 
-                await controller.UpdateById(id, item);
+                await controller.UpdateById(id, request);
 
                 httpContext.Items.Should().NotContainKey(CloudFormationConstants.Id);
             }
@@ -267,16 +300,19 @@ namespace Brighid.Identity
             public async Task ShouldSetDataItemInHttpContext_IfRequestSourceIsSns(
                 Guid id,
                 Item item,
+                ItemRequest request,
+                [Frozen, Substitute] IItemMapper itemMapper,
                 [Frozen, Substitute] IItemService itemService,
                 [Target] ItemController controller
             )
             {
                 item.Id = id;
+                itemMapper.MapRequestToEntity(Any<ItemRequest>(), Any<CancellationToken>()).Returns(item);
                 itemService.GetPrimaryKey(Any<Item>()).Returns(id);
                 itemService.UpdateById(Any<Guid>(), Any<Item>()).Returns(item);
                 var httpContext = SetupHttpContext(controller, IdentityRequestSource.Sns);
 
-                await controller.UpdateById(id, item);
+                await controller.UpdateById(id, request);
 
                 httpContext.Items[CloudFormationConstants.Data].Should().Be(item);
             }
@@ -285,16 +321,19 @@ namespace Brighid.Identity
             public async Task ShouldNotSetDataItemInHttpContext_IfRequestSourceIsDirect(
                 Guid id,
                 Item item,
+                ItemRequest request,
+                [Frozen, Substitute] IItemMapper itemMapper,
                 [Frozen, Substitute] IItemService itemService,
                 [Target] ItemController controller
             )
             {
                 item.Id = id;
+                itemMapper.MapRequestToEntity(Any<ItemRequest>(), Any<CancellationToken>()).Returns(item);
                 itemService.GetPrimaryKey(Any<Item>()).Returns(id);
                 itemService.UpdateById(Any<Guid>(), Any<Item>()).Returns(item);
                 var httpContext = SetupHttpContext(controller, IdentityRequestSource.Direct);
 
-                await controller.UpdateById(id, item);
+                await controller.UpdateById(id, request);
 
                 httpContext.Items.Should().NotContainKey(CloudFormationConstants.Data);
             }

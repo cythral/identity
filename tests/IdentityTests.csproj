@@ -23,7 +23,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="../src/Client/Client.csproj" />
     <ProjectReference Include="../src/Server/Server.csproj" AdditionalProperties="Configuration=Release" />
   </ItemGroup>
 

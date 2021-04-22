@@ -63,42 +63,6 @@ namespace Brighid.Identity.Users
 
                 await func.Should().ThrowAsync<CreateUserException>();
             }
-
-            [Test, Auto]
-            public async Task AddsUserToDefaultRole(
-                string username,
-                string password,
-                [Frozen, Substitute] IUserRoleService roleService,
-                [Frozen, Substitute] UserManager<User> userManager,
-                [Target] DefaultUserService userService
-            )
-            {
-                var result = IdentityResult.Success;
-                userManager.CreateAsync(Any<User>(), Any<string>()).Returns(result);
-
-                await userService.Create(username, password);
-
-                await roleService.Received().AddRoleToPrincipal(Is<User>(user => user.Email == username && user.Roles != null), Is(nameof(BuiltInRole.Basic)));
-            }
-
-            [Test, Auto]
-            public async Task AddsUserToGivenRole(
-                string username,
-                string password,
-                string role,
-                [Frozen, Substitute] IUserRoleService roleService,
-                [Frozen, Substitute] UserManager<User> userManager,
-                [Target] DefaultUserService userService
-            )
-            {
-                var result = IdentityResult.Success;
-                userManager.CreateAsync(Any<User>(), Any<string>()).Returns(result);
-                userManager.AddToRoleAsync(Any<User>(), Any<string>()).Returns(result);
-
-                await userService.Create(username, password, role);
-
-                await roleService.Received().AddRoleToPrincipal(Is<User>(user => user.Email == username && user.Roles != null), Is(role));
-            }
         }
 
         [Category("Unit")]

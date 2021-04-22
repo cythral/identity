@@ -106,24 +106,6 @@ namespace Brighid.Identity.Auth
             }
 
             [Test, Auto]
-            public async Task Should_SetRoleClaim(
-                Guid id,
-                Role role1,
-                Role role2,
-                [Frozen] IApplicationRoleRepository roleRepository,
-                [Target] DefaultAuthUtils authUtils
-            )
-            {
-                roleRepository.FindRolesForApplication(Any<Guid>()).Returns(new Role[] { role1, role2 });
-
-                var result = await authUtils.CreateClaimsIdentity(id);
-                var roleClaim = result.GetClaim(Claims.Role);
-
-                roleClaim.Should().Be($"[\"{role1.Name}\",\"{role2.Name}\"]");
-                await roleRepository.Received().FindRolesForApplication(Is(id));
-            }
-
-            [Test, Auto]
             public async Task Role_ShouldBeJsonArray(
                 Guid id,
                 [Target] DefaultAuthUtils authUtils

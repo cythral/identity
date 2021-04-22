@@ -18,7 +18,10 @@ namespace Brighid.Identity.Auth
 {
     public class DefaultSignInManager : SignInManager<User>
     {
+        private readonly IUserRepository userRepository;
+
         public DefaultSignInManager(
+            IUserRepository userRepository,
             UserManager<User> userManager,
             IHttpContextAccessor contextAccessor,
             IUserClaimsPrincipalFactory<User> claimsFactory,
@@ -28,6 +31,7 @@ namespace Brighid.Identity.Auth
             IUserConfirmation<User> confirmation
         ) : base(userManager, contextAccessor, claimsFactory, optionsAccessor, logger, schemes, confirmation)
         {
+            this.userRepository = userRepository;
         }
 
         public override async Task SignInWithClaimsAsync(User user, AuthenticationProperties authenticationProperties, IEnumerable<Claim> additionalClaims)
@@ -36,11 +40,10 @@ namespace Brighid.Identity.Auth
             claims.Add(new Claim(Claims.Subject, user.Id.ToString()));
             claims.Add(new Claim(Claims.Name, user.Name));
 
-            var roles = await UserManager.GetRolesAsync(user);
-            Logger.LogInformation("User Roles: " + string.Join(',', roles));
-            foreach (var role in roles)
+            await userRepository.LoadCollection(user, "Roles");
+            foreach (var role in user.Roles)
             {
-                claims.Add(new Claim(Claims.Role, role));
+                claims.Add(new Claim(Claims.Role, role.Name));
             }
 
             await base.SignInWithClaimsAsync(user, authenticationProperties, claims);
