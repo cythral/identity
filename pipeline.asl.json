@@ -52,25 +52,9 @@
         {
           "Variable": "$.SupersededOutput.Superseded",
           "BooleanEquals": false,
-          "Next": "Deploy to NuGet"
+          "Next": "Start Dev Database"
         }
       ]
-    },
-    "Deploy to NuGet": {
-      "Type": "Task",
-      "Resource": "arn:aws:states:::codebuild:startBuild.sync",
-      "Parameters": {
-        "ProjectName": "${NugetDeployProject}",
-        "SecondarySourcesOverride": [
-          {
-            "SourceIdentifier": "PACKAGES",
-            "Type": "S3",
-            "Location.$": "$.BuildOutput.Build.Artifacts.Location"
-          }
-        ]
-      },
-      "ResultPath": null,
-      "Next": "Start Dev Database"
     },
     "Start Dev Database": {
       "Type": "Task",
