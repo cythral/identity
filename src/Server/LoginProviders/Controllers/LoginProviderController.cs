@@ -17,7 +17,7 @@ namespace Brighid.Identity.LoginProviders
     })]
     public class LoginProviderController : Controller
     {
-        private readonly string[] UserEmbeds = new[] { "Roles.Role", "Logins" };
+        private readonly string[] UserEmbeds = new[] { "Roles", "Logins" };
 
         private readonly IUserRepository repository;
 
