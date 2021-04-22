@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Security.Principal;
@@ -28,6 +29,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.OpenApi.Models;
 
 using static OpenIddict.Abstractions.OpenIddictConstants;
 
@@ -198,7 +200,23 @@ namespace Brighid.Identity
                 await next();
             });
 
-            app.UseSwagger();
+            app.UseSwagger(options =>
+            {
+                options.PreSerializeFilters.Add((swaggerDoc, httpReq) =>
+                {
+                    var paths = new OpenApiPaths();
+                    foreach (var (key, value) in swaggerDoc.Paths)
+                    {
+                        if (key.StartsWith("/api"))
+                        {
+                            paths[key.Replace("/api", "")] = value;
+                        }
+                    }
+
+                    swaggerDoc.Paths = paths;
+                    swaggerDoc.Servers = new List<OpenApiServer> { new OpenApiServer { Url = $"{httpReq.Scheme}://{httpReq.Host.Value}/api/" } };
+                });
+            });
             app.UseSwaggerUI(options =>
             {
                 options.SwaggerEndpoint("/swagger/v1/swagger.json", "Brighid Identity Swagger");
