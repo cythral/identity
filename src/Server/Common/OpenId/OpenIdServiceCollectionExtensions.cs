@@ -110,7 +110,7 @@ namespace Microsoft.Extensions.DependencyInjection
                     ValidateAudience = false,
                     ValidateIssuer = true,
                     RoleClaimType = Claims.Role,
-                    ValidIssuer = openIdOptions.DomainName,
+                    ValidIssuers = new string[] { $"https://{openIdOptions.DomainName}", $"http://{openIdOptions.DomainName}" },
                     ClockSkew = TimeSpan.FromMinutes(5),
                 };
             });

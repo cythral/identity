@@ -153,7 +153,7 @@ Resources:
             - Name: EncryptionOptions__KmsKeyId
               Value: alias/SecretsKey
             - Name: OpenId__DomainName
-              Value: !Sub https://${DomainName}/
+              Value: !Ref DomainName
             - Name: Network__InternalIpv4Cidr
               Value: !ImportValue cfn-utilities:Ipv4NetworkCidr
 
