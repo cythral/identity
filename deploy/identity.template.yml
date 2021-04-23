@@ -154,6 +154,8 @@ Resources:
               Value: alias/SecretsKey
             - Name: OpenId__DomainName
               Value: !Sub https://${DomainName}/
+            - Name: Network__InternalIpv4Cidr
+              Value: !ImportValue cfn-utilities:Ipv4NetworkCidr
 
   ApplicationTopic:
     Type: AWS::SNS::Topic

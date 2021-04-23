@@ -45,12 +45,14 @@ namespace Brighid.Identity
             Environment = environment;
             DatabaseConfig = Configuration.GetSection("Database").Get<DatabaseConfig>() ?? new DatabaseConfig();
             OpenIdConfig = Configuration.GetSection("OpenId").Get<OpenIdConfig>() ?? new OpenIdConfig();
+            NetworkConfig = Configuration.GetSection("Network").Get<NetworkConfig>() ?? new NetworkConfig();
         }
 
         public IWebHostEnvironment Environment { get; }
         public IConfiguration Configuration { get; }
         public DatabaseConfig DatabaseConfig { get; }
         public OpenIdConfig OpenIdConfig { get; }
+        public NetworkConfig NetworkConfig { get; }
 
         public void ConfigureServices(IServiceCollection services)
         {
@@ -192,7 +194,15 @@ namespace Brighid.Identity
                     context.Request.Headers["content-type"] = "application/json";
                 }
 
-                if (!env.IsDevelopment() && (context.Connection.RemoteIpAddress == null || !IPAddress.IsLoopback(context.Connection.RemoteIpAddress)))
+                context.Request.Headers.TryGetValue("x-forwarded-for", out var forwardedForAddressValues);
+                var internalRange = IPNetwork.Parse(NetworkConfig.InternalIpv4Cidr);
+                var remoteAddress = context.Connection.RemoteIpAddress;
+                var forwardedForAddress = forwardedForAddressValues.Count == 0 ? null : IPAddress.Parse(forwardedForAddressValues.First());
+
+                if (!env.IsDevelopment() &&
+                    (remoteAddress == null || !IPAddress.IsLoopback(remoteAddress)) &&
+                    (forwardedForAddress == null || !internalRange.Contains(forwardedForAddress))
+                )
                 {
                     context.Request.Scheme = "https";
                 }
