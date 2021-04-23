@@ -27,22 +27,9 @@ Parameters:
     Type: String
     Description: The encrypted database password
 
-  EnvironmentName:
-    Type: String
-    Description: Name of the environment that is being deployed to.
-    AllowedValues:
-      - "dev"
-      - "prod"
-
-Conditions:
-  IsDev: !Equals 
-    - !Ref EnvironmentName
-    - "dev"
-
 Resources:
   PrivateDnsRecord:
     Type: AWS::Route53::RecordSet
-    Condition: IsDev
     Properties:
       HostedZoneId: !ImportValue cfn-utilities:VPCHostedZoneId
       Type: A
