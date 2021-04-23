@@ -34,7 +34,7 @@ namespace Brighid.Identity.LoginProviders
             {
                 repository.FindByLogin(Any<string>(), Any<string>(), Any<string[]>()).Returns((User)null!);
 
-                var response = await controller.GetUserByLoginProvider(loginProvider, providerKey);
+                var response = await controller.GetUserByLoginProviderKey(loginProvider, providerKey);
                 var result = response.Result;
 
                 result.Should().BeOfType<NotFoundResult>();
@@ -52,7 +52,7 @@ namespace Brighid.Identity.LoginProviders
             {
                 repository.FindByLogin(Any<string>(), Any<string>(), Any<string[]>()).Returns(user);
 
-                var response = await controller.GetUserByLoginProvider(loginProvider, providerKey);
+                var response = await controller.GetUserByLoginProviderKey(loginProvider, providerKey);
                 var result = response.Result;
 
                 result.Should().BeOfType<OkObjectResult>();
