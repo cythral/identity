@@ -197,6 +197,8 @@ namespace Brighid.Identity
                 context.Request.Headers.TryGetValue("x-forwarded-for", out var forwardedForAddressValues);
                 var internalRange = IPNetwork.Parse(NetworkConfig.InternalIpv4Cidr);
                 var remoteAddress = context.Connection.RemoteIpAddress;
+
+                Console.WriteLine("Received forwarded for address: " + forwardedForAddressValues.FirstOrDefault());
                 var forwardedForAddress = forwardedForAddressValues.Count == 0 ? null : IPAddress.Parse(forwardedForAddressValues.First());
 
                 if (!env.IsDevelopment() &&
