@@ -4,3 +4,4 @@ obj/
 .ionide
 .fake
 .env
+.cert
