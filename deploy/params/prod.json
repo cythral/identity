@@ -1,6 +1,5 @@
 {
   "DomainName": "identity.brigh.id",
-  "EnableServiceStopping": "false",
   "DatabaseName": "identity",
   "DatabaseUser": "identity",
   "DatabasePassword": "AQICAHj/2SUStzyXNMLx0/GX2lnjChwPoR4BUvoYRIybQNwYyQHLN0/A3+6CyTxJKwxz1WmsAAAAcjBwBgkqhkiG9w0BBwagYzBhAgEAMFwGCSqGSIb3DQEHATAeBglghkgBZQMEAS4wEQQMBRWaEelvFjKJWpKGAgEQgC9jdrJDOy4poC1Nkpgq8rgST4vTvjo+3O/fUFTeEvT2S+IdqcujUTtuCpiJczH2yQ=="

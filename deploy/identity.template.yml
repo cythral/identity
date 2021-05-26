@@ -8,13 +8,6 @@ Parameters:
     Type: String
     Description: Domain name to use
 
-  EnableServiceStopping:
-    Type: String
-    AllowedValues:
-      - "true"
-      - "false"
-    Description: Whether or not to enable service stopping on the cluster
-  
   DatabaseName:
     Type: String
     Description: The name of the database to use
