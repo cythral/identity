@@ -195,16 +195,7 @@ namespace Brighid.Identity
                 }
 
                 context.Request.Headers.TryGetValue("x-forwarded-for", out var forwardedForAddressValues);
-                var internalRange = IPNetwork.Parse(NetworkConfig.InternalIpv4Cidr);
-                var remoteAddress = context.Connection.RemoteIpAddress;
-                var forwardedForAddress = forwardedForAddressValues.Count == 0
-                    ? null
-                    : IPAddress.Parse(forwardedForAddressValues.First().Split(',').ElementAt(0));
-
-                if (!env.IsDevelopment() &&
-                    (remoteAddress == null || !IPAddress.IsLoopback(remoteAddress)) &&
-                    (forwardedForAddress == null || !internalRange.Contains(forwardedForAddress))
-                )
+                if (env.IsDevelopment() || !forwardedForAddressValues.Any())
                 {
                     context.Request.Scheme = "https";
                 }
