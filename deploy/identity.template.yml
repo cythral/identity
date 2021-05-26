@@ -121,7 +121,7 @@ Resources:
             Options:
               awslogs-group: !Ref LogGroup
               awslogs-region: !Ref AWS::Region
-              awslogs-stream-prefix: !Ref AWS::StackName
+              awslogs-stream-prefix: brighid
           Environment:
             - Name: Database__Host
               Value: !ImportValue mutedac:ClusterAddress
