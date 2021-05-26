@@ -28,6 +28,22 @@ Parameters:
     Description: The encrypted database password
 
 Resources:
+  ServiceRegistryRecord:
+    Type: AWS::ServiceDiscovery::Service
+    Properties: 
+      Description: Internal Discovery Service for Brighid
+      DnsConfig:
+        RoutingPolicy: MULTIVALUE
+        DnsRecords:
+          - TTL: 60
+            Type: A
+          - TTL: 60
+            Type: SRV
+      HealthCheckCustomConfig:
+        FailureThreshold: 1
+      NamespaceId: !ImportValue brighid-infrastructure:ServiceRegistry
+      Name: identity
+
   DecryptedClientSecret:
     Type: Custom::Secret
     Properties:
@@ -61,18 +77,10 @@ Resources:
         - Key: deregistration_delay.timeout_seconds
           Value: "30"
 
-  Cluster:
-    Type: AWS::ECS::Cluster
-    Properties:
-      ClusterName: !Ref AWS::StackName
-      Tags:
-        - Key: ENABLE_SERVICE_STOPPING
-          Value: !Ref EnableServiceStopping
-
   Service:
     Type: AWS::ECS::Service
     Properties:
-      Cluster: !Ref Cluster
+      Cluster: !ImportValue brighid-infrastructure:ClusterName
       ServiceName: !Ref AWS::StackName
       LaunchType: FARGATE
       EnableECSManagedTags: true
@@ -89,6 +97,9 @@ Resources:
         - ContainerName: !Ref AWS::StackName
           ContainerPort: 80
           TargetGroupArn: !Ref TargetGroup
+      ServiceRegistries:
+        - RegistryArn: !GetAtt ServiceRegistryRecord.Arn
+          Port: 80
       TaskDefinition: !Ref TaskDefinition
       DesiredCount: 1
       DeploymentConfiguration:
