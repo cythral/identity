@@ -164,6 +164,7 @@ Resources:
     Properties:
       FunctionName: !ImportValue cfn-core:StackDeploymentFunctionArn
       EventSourceArn: !GetAtt DeploymentQueue.Arn
+      BatchSize: 1
 
   StateMachine:
     Type: AWS::StepFunctions::StateMachine
