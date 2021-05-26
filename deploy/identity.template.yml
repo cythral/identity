@@ -28,16 +28,6 @@ Parameters:
     Description: The encrypted database password
 
 Resources:
-  PrivateDnsRecord:
-    Type: AWS::Route53::RecordSet
-    Properties:
-      HostedZoneId: !ImportValue cfn-utilities:VPCHostedZoneId
-      Type: A
-      Name: !Ref DomainName
-      AliasTarget:
-        HostedZoneId: !ImportValue cfn-utilities:LoadBalancerCanonicalHostedZoneId
-        DNSName: !ImportValue cfn-utilities:LoadBalancerDnsName
-
   DecryptedClientSecret:
     Type: Custom::Secret
     Properties:
