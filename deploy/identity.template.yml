@@ -98,6 +98,9 @@ Resources:
       DeploymentConfiguration:
         MinimumHealthyPercent: 1
         MaximumPercent: 200
+        DeploymentCircuitBreaker:
+          Enable: true
+          Rollback: true
 
   TaskDefinition:
     Type: AWS::ECS::TaskDefinition
