@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/dotnet/sdk:5.0.200 AS development
+FROM mcr.microsoft.com/dotnet/sdk:5.0.300 AS development
 ENV \
     DOCKER_ENV=1 \
     CONFIGURATION=Release \
@@ -13,7 +13,7 @@ RUN if [ ! -f ${DLL_PATH} ]; then dotnet publish; fi
 EXPOSE 80
 ENTRYPOINT ["dotnet", "watch", "--project", "/app/src/Server", "run"]
 
-FROM mcr.microsoft.com/dotnet/aspnet:5.0.3 AS production
+FROM mcr.microsoft.com/dotnet/aspnet:5.0.6 AS production
 
 WORKDIR /app
 COPY --from=development /app/bin/Server/Release/net5.0/publish /app
