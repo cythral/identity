@@ -13,13 +13,15 @@ using PuppeteerSharp;
 
 namespace Brighid.Identity.Auth
 {
-    [TestFixture, Category("Integration")]
+    [TestFixture]
+    [Category("Integration")]
     public class AuthIntegrationTests
     {
-        private const string email = "test@tester.com";
-        private const string password = "Password123!";
+        private const string Email = "test@tester.com";
+        private const string Password = "Password123!";
 
-        [Test, Auto]
+        [Test]
+        [Auto]
         public async Task LoginRedirect(
             AppFactory app,
             Browser browser
@@ -32,7 +34,8 @@ namespace Brighid.Identity.Auth
             new Uri(page.Url).AbsolutePath.Should().Be("/login");
         }
 
-        [Test, Auto]
+        [Test]
+        [Auto]
         public async Task SignupThenLogin(
             AppFactory app,
             Browser browser
@@ -40,51 +43,43 @@ namespace Brighid.Identity.Auth
         {
             var page = await browser.NewPageAsync();
             await page.GoToAsync($"{app.RootUri}signup");
-
-            #region Signup
             {
                 var emailField = await page.MainFrame.QuerySelectorAsync("#Email");
-                await emailField.TypeAsync(email);
+                await emailField.TypeAsync(Email);
 
                 var passwordField = await page.MainFrame.QuerySelectorAsync("#Password");
-                await passwordField.TypeAsync(password);
+                await passwordField.TypeAsync(Password);
 
                 var confirmPasswordField = await page.MainFrame.QuerySelectorAsync("#ConfirmPassword");
-                await confirmPasswordField.TypeAsync(password);
+                await confirmPasswordField.TypeAsync(Password);
 
                 var submitButton = await page.MainFrame.QuerySelectorAsync("input[type=submit]");
                 await submitButton.ClickAsync();
 
                 await page.MainFrame.WaitForNavigationAsync();
             }
-            #endregion
 
-            #region Ensure User Was Created
             {
                 using var scope = app.Services.CreateScope();
                 var dbContext = scope.ServiceProvider.GetRequiredService<DatabaseContext>();
-                var query = from user in dbContext.Users.AsQueryable() where user.Email == email select user;
+                var query = from user in dbContext.Users.AsQueryable() where user.Email == Email select user;
                 var exists = await query.AnyAsync();
 
                 exists.Should().Be(true);
             }
-            #endregion
 
-            #region Logout (Delete Cookies)
             {
                 var cookies = await page.GetCookiesAsync();
                 await page.DeleteCookieAsync(cookies);
                 await page.GoToAsync($"{app.RootUri}login", waitUntil: WaitUntilNavigation.DOMContentLoaded);
             }
-            #endregion
 
-            #region Login
             {
                 var emailField = await page.MainFrame.QuerySelectorAsync("#Email");
-                await emailField.TypeAsync(email);
+                await emailField.TypeAsync(Email);
 
                 var passwordField = await page.MainFrame.QuerySelectorAsync("#Password");
-                await passwordField.TypeAsync(password);
+                await passwordField.TypeAsync(Password);
 
                 var submitButton = await page.MainFrame.QuerySelectorAsync("input[type=submit]");
                 await submitButton.ClickAsync();
@@ -94,7 +89,6 @@ namespace Brighid.Identity.Auth
                 var url = new Uri(page.Url);
                 url.AbsolutePath.Should().Be("/");
             }
-            #endregion
         }
     }
 }

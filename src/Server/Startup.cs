@@ -52,10 +52,15 @@ namespace Brighid.Identity
         }
 
         public IWebHostEnvironment Environment { get; }
+
         public IConfiguration Configuration { get; }
+
         public DatabaseConfig DatabaseConfig { get; }
+
         public OpenIdConfig OpenIdConfig { get; }
+
         public NetworkConfig NetworkConfig { get; }
+
         public AppConfig AppConfig { get; }
 
         public void ConfigureServices(IServiceCollection services)
@@ -155,10 +160,10 @@ namespace Brighid.Identity
             {
                 options.AddPolicy(nameof(IdentityPolicy.RestrictedToSelfByUserId), policy =>
                 {
-                    static object? parse(string? input) =>
+                    static object? Parse(string? input) =>
                         input != null ? new Guid(input).ToString() : null;
 
-                    policy.AddRequirements(new RestrictedToSelfPolicyRequirement("userId", Claims.Subject, parse));
+                    policy.AddRequirements(new RestrictedToSelfPolicyRequirement("userId", Claims.Subject, Parse));
                 });
             });
             services.AddSingleton<IAuthorizationHandler, RestrictedToSelfPolicyHandler>();
@@ -221,7 +226,7 @@ namespace Brighid.Identity
                     {
                         if (key.StartsWith("/api"))
                         {
-                            paths[key.Replace("/api", "")] = value;
+                            paths[key.Replace("/api", string.Empty)] = value;
                         }
                     }
 

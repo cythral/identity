@@ -23,6 +23,7 @@ namespace Brighid.Identity.Auth
         }
 
         public AuthenticationTicket? Unprotect(string protectedText) => Unprotect(protectedText, null);
+
         public string Protect(AuthenticationTicket data) => Protect(data, null);
 
         public AuthenticationTicket? Unprotect(string protectedText, string? purpose)

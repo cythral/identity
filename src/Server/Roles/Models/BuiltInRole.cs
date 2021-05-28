@@ -1,7 +1,7 @@
 namespace Brighid.Identity.Roles
 {
     /// <summary>
-    /// Names of built-in roles
+    /// Names of built-in roles.
     /// </summary>
     public enum BuiltInRole
     {

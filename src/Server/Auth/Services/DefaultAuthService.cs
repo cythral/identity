@@ -15,7 +15,7 @@ namespace Brighid.Identity.Auth
 {
     public class DefaultAuthService : IAuthService
     {
-        private static readonly string[] defaultScopes = { "openid" };
+        private static readonly string[] DefaultScopes = { "openid" };
         private readonly IAuthUtils authUtils;
         private readonly UserManager<User> userManager;
 
@@ -44,7 +44,7 @@ namespace Brighid.Identity.Auth
             var identity = await authUtils.CreateClaimsIdentityForApplication(clientId, cancellationToken);
 
             var existingScopes = request.Scope?.Split(' ') ?? Array.Empty<string>();
-            var scopes = new HashSet<string>(existingScopes).Union(defaultScopes);
+            var scopes = new HashSet<string>(existingScopes).Union(DefaultScopes);
 
             return authUtils.CreateAuthTicket(identity, scopes);
         }
@@ -59,7 +59,7 @@ namespace Brighid.Identity.Auth
             }
 
             var identity = await authUtils.CreateClaimsIdentityForUser(user, cancellationToken);
-            var ticket = authUtils.CreateAuthTicket(identity, defaultScopes, redirectUri, IdentityConstants.ApplicationScheme);
+            var ticket = authUtils.CreateAuthTicket(identity, DefaultScopes, redirectUri, IdentityConstants.ApplicationScheme);
             var accessToken = authUtils.GenerateAccessToken(ticket);
             var jwtAccessToken = new AuthenticationToken { Name = "jwt", Value = accessToken };
             ticket.Properties.StoreTokens(new[] { jwtAccessToken });

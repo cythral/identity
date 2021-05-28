@@ -13,12 +13,12 @@ using NSubstitute;
 
 using NUnit.Framework;
 
-
 using static NSubstitute.Arg;
 
 namespace Brighid.Identity.Roles
 {
-    [TestFixture, Category("Unit")]
+    [TestFixture]
+    [Category("Unit")]
     public class RoleControllerTests
     {
         public static HttpContext SetupHttpContext(Controller controller, IdentityRequestSource source = IdentityRequestSource.Direct)
@@ -32,10 +32,12 @@ namespace Brighid.Identity.Roles
             return httpContext;
         }
 
-        [TestFixture, Category("Unit")]
+        [TestFixture]
+        [Category("Unit")]
         public class ListTests
         {
-            [Test, Auto]
+            [Test]
+            [Auto]
             public async Task ShouldReturnListOfRoles(
                 IEnumerable<Role> roles,
                 [Frozen, Substitute] IRoleRepository repository,
@@ -52,10 +54,12 @@ namespace Brighid.Identity.Roles
             }
         }
 
-        [TestFixture, Category("Unit")]
+        [TestFixture]
+        [Category("Unit")]
         public class GetByNameTests
         {
-            [Test, Auto]
+            [Test]
+            [Auto]
             public async Task ShouldReturnEntityIfItExists(
                 string name,
                 Role role,
@@ -73,7 +77,8 @@ namespace Brighid.Identity.Roles
                 await repository.Received().FindByName(Is(name));
             }
 
-            [Test, Auto]
+            [Test]
+            [Auto]
             public async Task ShouldReturnNotFoundIfNotExists(
                 string name,
                 [Frozen, Substitute] IRoleRepository repository,

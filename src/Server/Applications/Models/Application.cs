@@ -17,16 +17,16 @@ namespace Brighid.Identity.Applications
         public virtual Guid Id { get; internal set; } = Guid.NewGuid();
 
         /// <summary>
-        /// Gets the unique name for this application.
+        /// Gets or sets the unique name for this application.
         /// </summary>
         /// <value>A globally unique identifier for the application.</value>
-        public virtual string Name { get; set; } = "";
+        public virtual string Name { get; set; } = string.Empty;
 
         /// <summary>
         /// Gets or sets a description of the application.
         /// </summary>
         /// <value>A description of what the application is/does.</value>
-        public virtual string Description { get; set; } = "";
+        public virtual string Description { get; set; } = string.Empty;
 
         /// <summary>
         /// Gets or sets the application's serial.
@@ -55,10 +55,10 @@ namespace Brighid.Identity.Applications
 
         /// <summary>
         /// Gets or sets the encrypted form of the application/client secret, which is a randomly-generated,
-        /// long-lived credential along with the application/client id. 
+        /// long-lived credential along with the application/client id.
         /// </summary>
         /// <value>The encrypted application/client secret.</value>
-        public virtual string EncryptedSecret { get; set; } = "";
+        public virtual string EncryptedSecret { get; set; } = string.Empty;
 
         /// <summary>
         /// Gets or sets the un-encrypted form of the application/client secret.

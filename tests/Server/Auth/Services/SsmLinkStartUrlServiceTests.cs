@@ -24,7 +24,8 @@ namespace Brighid.Identity.Auth
         [TestFixture]
         public class GetStartLinkForProviderTests
         {
-            [Test, Auto]
+            [Test]
+            [Auto]
             public async Task ShouldFetchTheStartLinkFromSsm(
                 string url,
                 [Frozen] GetParameterResponse response,
@@ -42,7 +43,8 @@ namespace Brighid.Identity.Auth
                 await ssmClient.Received().GetParameterAsync(Is<GetParameterRequest>(req => req.Name == $"/brighid/{provider}/account-link/start-url"), Is(cancellationToken));
             }
 
-            [Test, Auto]
+            [Test]
+            [Auto]
             public async Task ShouldReturnNullIfParameterDoesntExist(
                 string url,
                 [Frozen] GetParameterResponse response,
@@ -62,7 +64,8 @@ namespace Brighid.Identity.Auth
                 await ssmClient.Received().GetParameterAsync(Is<GetParameterRequest>(req => req.Name == $"/brighid/{provider}/account-link/start-url"), Is(cancellationToken));
             }
 
-            [Test, Auto]
+            [Test]
+            [Auto]
             public async Task ShouldCacheResponses(
                 string url,
                 [Frozen] GetParameterResponse response,
@@ -80,7 +83,8 @@ namespace Brighid.Identity.Auth
                 await ssmClient.Received(1).GetParameterAsync(Is<GetParameterRequest>(req => req.Name == $"/brighid/{provider}/account-link/start-url"), Is(cancellationToken));
             }
 
-            [Test, Auto]
+            [Test]
+            [Auto]
             public async Task ShouldNotCallSsmAndReturnNullIfProviderContainsNumbers(
                 string url,
                 [Frozen] GetParameterResponse response,
@@ -98,7 +102,8 @@ namespace Brighid.Identity.Auth
                 await ssmClient.DidNotReceive().GetParameterAsync(Is<GetParameterRequest>(req => req.Name == $"/brighid/{provider}/account-link/start-url"), Is(cancellationToken));
             }
 
-            [Test, Auto]
+            [Test]
+            [Auto]
             public async Task ShouldAllowHyphens(
                 string url,
                 [Frozen] GetParameterResponse response,

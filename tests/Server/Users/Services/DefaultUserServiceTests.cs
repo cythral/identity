@@ -5,8 +5,6 @@ using System.Threading.Tasks;
 using AutoFixture.AutoNSubstitute;
 using AutoFixture.NUnit3;
 
-using Brighid.Identity.Roles;
-
 using FluentAssertions;
 
 using Microsoft.AspNetCore.Identity;
@@ -28,7 +26,8 @@ namespace Brighid.Identity.Users
         [Category("Unit")]
         public class Create
         {
-            [Test, Auto]
+            [Test]
+            [Auto]
             public async Task CreatesUser(
                 string username,
                 string password,
@@ -45,7 +44,8 @@ namespace Brighid.Identity.Users
                 await userManager.Received().CreateAsync(Is<User>(user => user.UserName == username && user.Email == username), Is(password));
             }
 
-            [Test, Auto]
+            [Test]
+            [Auto]
             public async Task ThrowsIfCreationFails(
                 string username,
                 string password,
@@ -68,7 +68,8 @@ namespace Brighid.Identity.Users
         [Category("Unit")]
         public class CreateLogin
         {
-            [Test, Auto]
+            [Test]
+            [Auto]
             public async Task ShouldThrowIfUserDoesntExist(
                 Guid userId,
                 UserLogin loginInfo,
@@ -84,7 +85,8 @@ namespace Brighid.Identity.Users
                 await userManager.Received().FindByIdAsync(Is(userId.ToString()));
             }
 
-            [Test, Auto]
+            [Test]
+            [Auto]
             public async Task ShouldThrowIfUserAlreadyHasLoginProviderRegistered(
                 Guid userId,
                 User user,
@@ -95,10 +97,10 @@ namespace Brighid.Identity.Users
             )
             {
                 var errorCode = MySqlErrorCode.DuplicateKeyEntry;
-                var exception = (MySqlException)Activator.CreateInstance(typeof(MySqlException), BindingFlags.Instance | BindingFlags.NonPublic, null, new object[] { errorCode, "" }, null, null)!;
+                var exception = (MySqlException)Activator.CreateInstance(typeof(MySqlException), BindingFlags.Instance | BindingFlags.NonPublic, null, new object[] { errorCode, string.Empty }, null, null)!;
                 userManager.FindByIdAsync(Any<string>()).Returns(user);
                 loginRepository.Add(Any<UserLogin>()).Returns<UserLogin>(x =>
-                    throw new DbUpdateException("", exception)
+                    throw new DbUpdateException(string.Empty, exception)
                 );
 
                 Func<Task> func = async () => await service.CreateLogin(userId, loginInfo);
@@ -106,7 +108,8 @@ namespace Brighid.Identity.Users
                 await func.Should().ThrowAsync<UserLoginAlreadyExistsException>();
             }
 
-            [Test, Auto]
+            [Test]
+            [Auto]
             public async Task ShouldSaveLoginInfo(
                 Guid userId,
                 User user,
@@ -126,7 +129,8 @@ namespace Brighid.Identity.Users
                 ));
             }
 
-            [Test, Auto]
+            [Test]
+            [Auto]
             public async Task ShouldReturnTheSavedLogin(
                 Guid userId,
                 User user,

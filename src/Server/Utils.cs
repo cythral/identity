@@ -9,9 +9,6 @@ using Microsoft.IdentityModel.Tokens;
 
 using OpenIddict.Abstractions;
 
-public delegate string GenerateRandomString(int length);
-public delegate OpenIddictRequest GetOpenIdConnectRequest(Controller controller);
-
 namespace Brighid.Identity
 {
     public static class Utils
@@ -73,3 +70,7 @@ namespace Brighid.Identity
         }
     }
 }
+
+public delegate string GenerateRandomString(int length);
+
+public delegate OpenIddictRequest GetOpenIdConnectRequest(Controller controller);

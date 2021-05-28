@@ -99,7 +99,7 @@ namespace Brighid.Identity.Common.Database.Migrations
                     TwoFactorEnabled = table.Column<bool>(type: "tinyint(1)", nullable: false),
                     LockoutEnd = table.Column<DateTimeOffset>(type: "datetime(6)", nullable: true),
                     LockoutEnabled = table.Column<bool>(type: "tinyint(1)", nullable: false),
-                    AccessFailedCount = table.Column<int>(type: "int", nullable: false)
+                    AccessFailedCount = table.Column<int>(type: "int", nullable: false),
                 },
                 constraints: table =>
                 {
@@ -113,7 +113,7 @@ namespace Brighid.Identity.Common.Database.Migrations
                     Value = table.Column<string>(type: "varchar(95) CHARACTER SET utf8mb4", nullable: false),
                     UserId = table.Column<Guid>(type: "binary(16)", nullable: false),
                     LoginProvider = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true),
-                    Name = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true)
+                    Name = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true),
                 },
                 constraints: table =>
                 {
@@ -131,7 +131,7 @@ namespace Brighid.Identity.Common.Database.Migrations
                     Scopes = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true),
                     Status = table.Column<string>(type: "varchar(25) CHARACTER SET utf8mb4", maxLength: 25, nullable: false),
                     Subject = table.Column<string>(type: "varchar(450) CHARACTER SET utf8mb4", maxLength: 450, nullable: false),
-                    Type = table.Column<string>(type: "varchar(25) CHARACTER SET utf8mb4", maxLength: 25, nullable: false)
+                    Type = table.Column<string>(type: "varchar(25) CHARACTER SET utf8mb4", maxLength: 25, nullable: false),
                 },
                 constraints: table =>
                 {
@@ -149,7 +149,7 @@ namespace Brighid.Identity.Common.Database.Migrations
                 columns: table => new
                 {
                     ApplicationId = table.Column<Guid>(type: "binary(16)", nullable: false),
-                    RoleId = table.Column<Guid>(type: "binary(16)", nullable: false)
+                    RoleId = table.Column<Guid>(type: "binary(16)", nullable: false),
                 },
                 constraints: table =>
                 {
@@ -176,7 +176,7 @@ namespace Brighid.Identity.Common.Database.Migrations
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     RoleId = table.Column<Guid>(type: "binary(16)", nullable: false),
                     ClaimType = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true),
-                    ClaimValue = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true)
+                    ClaimValue = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true),
                 },
                 constraints: table =>
                 {
@@ -197,7 +197,7 @@ namespace Brighid.Identity.Common.Database.Migrations
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     UserId = table.Column<Guid>(type: "binary(16)", nullable: false),
                     ClaimType = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true),
-                    ClaimValue = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true)
+                    ClaimValue = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true),
                 },
                 constraints: table =>
                 {
@@ -218,7 +218,7 @@ namespace Brighid.Identity.Common.Database.Migrations
                     LoginProvider = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true),
                     ProviderKey = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true),
                     ProviderDisplayName = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: true),
-                    UserId = table.Column<Guid>(type: "binary(16)", nullable: false)
+                    UserId = table.Column<Guid>(type: "binary(16)", nullable: false),
                 },
                 constraints: table =>
                 {
@@ -236,7 +236,7 @@ namespace Brighid.Identity.Common.Database.Migrations
                 columns: table => new
                 {
                     UserId = table.Column<Guid>(type: "binary(16)", nullable: false),
-                    RoleId = table.Column<Guid>(type: "binary(16)", nullable: false)
+                    RoleId = table.Column<Guid>(type: "binary(16)", nullable: false),
                 },
                 constraints: table =>
                 {
@@ -270,7 +270,7 @@ namespace Brighid.Identity.Common.Database.Migrations
                     ReferenceId = table.Column<string>(type: "varchar(100) CHARACTER SET utf8mb4", maxLength: 100, nullable: true),
                     Status = table.Column<string>(type: "varchar(25) CHARACTER SET utf8mb4", maxLength: 25, nullable: false),
                     Subject = table.Column<string>(type: "varchar(450) CHARACTER SET utf8mb4", maxLength: 450, nullable: false),
-                    Type = table.Column<string>(type: "varchar(25) CHARACTER SET utf8mb4", maxLength: 25, nullable: false)
+                    Type = table.Column<string>(type: "varchar(25) CHARACTER SET utf8mb4", maxLength: 25, nullable: false),
                 },
                 constraints: table =>
                 {
@@ -295,7 +295,7 @@ namespace Brighid.Identity.Common.Database.Migrations
                 {
                     Key = table.Column<string>(type: "varchar(95) CHARACTER SET utf8mb4", nullable: false),
                     LoginId = table.Column<Guid>(type: "binary(16)", nullable: false),
-                    Value = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: false)
+                    Value = table.Column<string>(type: "longtext CHARACTER SET utf8mb4", nullable: false),
                 },
                 constraints: table =>
                 {

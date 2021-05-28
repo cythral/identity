@@ -27,6 +27,5 @@ namespace Brighid.Identity.Sns
         public string? Reason { get; set; }
 
         public object? Data { get; set; }
-
     }
 }

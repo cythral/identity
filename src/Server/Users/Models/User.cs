@@ -12,7 +12,6 @@ namespace Brighid.Identity.Users
 {
     public class User : IdentityUser<Guid>
     {
-
         public User()
         {
             Id = Guid.NewGuid();
@@ -49,7 +48,7 @@ namespace Brighid.Identity.Users
         public virtual ICollection<UserClaim> Claims { get; set; } = new List<UserClaim>();
 
         /// <summary>
-        /// Gets the roles this user is allowed to use.
+        /// Gets or sets the roles this user is allowed to use.
         /// </summary>
         /// <returns>The roles this user is allowed to use.</returns>
         public virtual ICollection<Role> Roles { get; set; } = new List<Role>();

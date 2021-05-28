@@ -20,9 +20,9 @@ namespace Brighid.Identity.Users
             IdentityErrorDescriber errors,
             IServiceProvider services,
             ILogger<UserManager<User>> logger
-        ) : base(store, optionsAccessor, passwordHasher, userValidators, passwordValidators, keyNormalizer, errors, services, logger)
+        )
+            : base(store, optionsAccessor, passwordHasher, userValidators, passwordValidators, keyNormalizer, errors, services, logger)
         {
-
         }
 
         public override Task<string> GetUserIdAsync(User user)

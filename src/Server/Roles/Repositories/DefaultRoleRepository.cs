@@ -11,7 +11,10 @@ namespace Brighid.Identity.Roles
 {
     public class DefaultRoleRepository : Repository<Role, Guid>, IRoleRepository
     {
-        public DefaultRoleRepository(DatabaseContext context) : base(context) { }
+        public DefaultRoleRepository(DatabaseContext context)
+            : base(context)
+        {
+        }
 
         public Task<Role?> FindByName(string name, CancellationToken cancellationToken = default)
         {

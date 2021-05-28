@@ -7,66 +7,68 @@ namespace Brighid.Identity.Sns
     /// <summary>
     /// An SNS message record.
     /// </summary>
-    public class SnsMessage<T> where T : notnull
+    /// <typeparam name="T">Type of the message.</typeparam>
+    public class SnsMessage<T>
+        where T : notnull
     {
         /// <summary>
-        /// The message.
+        /// Gets the message.
         /// </summary>
         [JsonConverter(typeof(SnsMessageConverterFactory))]
         public T? Message { get; init; }
 
         /// <summary>
-        /// The attributes associated with the message.
+        /// Gets the attributes associated with the message.
         /// </summary>
-        public IDictionary<string, MessageAttribute> MessageAttributes { get; init; }
+        public IDictionary<string, SnsMessageAttribute> MessageAttributes { get; init; }
 
         /// <summary>
-        /// The message id.
+        /// Gets the message id.
         /// </summary>
         public string MessageId { get; init; }
 
         /// <summary>
-        /// The message signature.
+        /// Gets the message signature.
         /// </summary>
         public string Signature { get; init; }
 
         /// <summary>
-        /// The signature version used to sign the message.
+        /// Gets the signature version used to sign the message.
         /// </summary>
         public string SignatureVersion { get; init; }
 
         /// <summary>
-        /// The URL for the signing certificate.
+        /// Gets the URL for the signing certificate.
         /// </summary>
         public Uri SigningCertUrl { get; init; }
 
         /// <summary>
-        /// The subject for the message.
+        /// Gets the subject for the message.
         /// </summary>
         public string Subject { get; init; }
 
         /// <summary>
-        /// The message time stamp.
+        /// Gets the message time stamp.
         /// </summary>
         public DateTime Timestamp { get; init; }
 
         /// <summary>
-        /// The topic ARN.
+        /// Gets the topic ARN.
         /// </summary>
         public string TopicArn { get; init; }
 
         /// <summary>
-        /// The message type.
+        /// Gets the message type.
         /// </summary>
         public string Type { get; init; }
 
         /// <summary>
-        /// The message subscribe URL.
+        /// Gets the message subscribe URL.
         /// </summary>
         public Uri SubscribeURL { get; init; }
 
         /// <summary>
-        /// The message unsubscribe URL.
+        /// Gets the message unsubscribe URL.
         /// </summary>
         public Uri UnsubscribeURL { get; init; }
     }

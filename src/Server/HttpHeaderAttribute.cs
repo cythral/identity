@@ -8,15 +8,17 @@ namespace Brighid.Identity
     [AttributeUsage(AttributeTargets.Method)]
     public class HttpHeaderAttribute : Attribute, IActionConstraint
     {
-        public int Order => 0;
-        private string Header { get; }
-        private string Value { get; }
-
         public HttpHeaderAttribute(string header, string value)
         {
             Header = header;
             Value = value;
         }
+
+        public int Order => 0;
+
+        private string Header { get; }
+
+        private string Value { get; }
 
         public bool Accept(ActionConstraintContext context)
         {

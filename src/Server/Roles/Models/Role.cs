@@ -18,7 +18,7 @@ namespace Brighid.Identity.Roles
         }
 
         /// <summary>
-        /// Gets or sets the unique identifier for this role.
+        /// Gets the unique identifier for this role.
         /// </summary>
         /// <value>The role's unique identifier.</value>
         [Key]
@@ -33,7 +33,7 @@ namespace Brighid.Identity.Roles
         /// </summary>
         /// <value>The roles' normalized name.</value>
         [JsonIgnore]
-        public override string NormalizedName { get; set; } = "";
+        public override string NormalizedName { get; set; } = string.Empty;
 
         /// <summary>
         /// Gets or sets the concurrency stamp for this entity.
@@ -46,7 +46,7 @@ namespace Brighid.Identity.Roles
         /// Gets or sets the description of the role.
         /// </summary>
         /// <value>The description of the role.</value>
-        public string Description { get; set; } = "";
+        public string Description { get; set; } = string.Empty;
 
         public virtual ICollection<RoleClaim> Claims { get; set; } = new List<RoleClaim>();
 

@@ -32,7 +32,8 @@ namespace Brighid.Identity.Auth
         [Category("Unit")]
         public class ClientExchange
         {
-            [Test, Auto]
+            [Test]
+            [Auto]
             public async Task ShouldThrowIfNotClientGrantType(
                 OpenIddictRequest request,
                 [Target] DefaultAuthService authService
@@ -44,7 +45,8 @@ namespace Brighid.Identity.Auth
                 await func.Should().ThrowAsync<InvalidOperationException>();
             }
 
-            [Test, Auto]
+            [Test]
+            [Auto]
             public async Task ShouldCreateClaimsIdentity(
                 Guid id,
                 OpenIddictRequest request,
@@ -61,7 +63,8 @@ namespace Brighid.Identity.Auth
                 await authUtils.Received().CreateClaimsIdentityForApplication(Is(id), Is(cancellationToken));
             }
 
-            [Test, Auto]
+            [Test]
+            [Auto]
             public async Task ShouldCreateAuthTicket(
                 Guid id,
                 OpenIddictRequest request,
@@ -87,7 +90,8 @@ namespace Brighid.Identity.Auth
                 ));
             }
 
-            [Test, Auto]
+            [Test]
+            [Auto]
             public async Task ShouldCreateAuthTicket_WithScope(
                 Guid id,
                 string[] scopes,
@@ -120,7 +124,8 @@ namespace Brighid.Identity.Auth
         [Category("Unit")]
         public class PasswordExchange
         {
-            [Test, Auto]
+            [Test]
+            [Auto]
             public async Task ShouldThrowIfUserNotFound(
                 string email,
                 string password,
@@ -138,7 +143,8 @@ namespace Brighid.Identity.Auth
                 await userManager.Received().FindByEmailAsync(Is(email));
             }
 
-            [Test, Auto]
+            [Test]
+            [Auto]
             public async Task ShouldThrowIfPasswordIsInvalid(
                 string email,
                 string password,
@@ -157,7 +163,8 @@ namespace Brighid.Identity.Auth
                 await userManager.Received().CheckPasswordAsync(Is(user), Is(password));
             }
 
-            [Test, Auto]
+            [Test]
+            [Auto]
             public async Task ShouldCreateClaimsIdentityForUser(
                 string email,
                 string password,
@@ -176,7 +183,8 @@ namespace Brighid.Identity.Auth
                 await authUtils.Received().CreateClaimsIdentityForUser(Is(user), Is(cancellationToken));
             }
 
-            [Test, Auto]
+            [Test]
+            [Auto]
             public async Task ShouldCreateAndReturnAuthTicket(
                 string email,
                 string password,
@@ -197,7 +205,8 @@ namespace Brighid.Identity.Auth
                 authUtils.Received().CreateAuthTicket(Is(claimsIdentity), Is<string[]>(scopes => scopes.Contains("openid")), Is(redirectUri), Is(IdentityConstants.ApplicationScheme));
             }
 
-            [Test, Auto]
+            [Test]
+            [Auto]
             public async Task AuthTicketShouldHaveAccessTokenJwt(
                 string email,
                 string password,

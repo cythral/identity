@@ -13,18 +13,14 @@ using NUnit.Framework;
 [assembly: Parallelizable(ParallelScope.Fixtures)]
 [assembly: LevelOfParallelism(8)]
 
+#pragma warning disable IDE0078, SA1414
+
 [SetUpFixture]
 public class MySqlContainer
 {
     public const string DbName = "identity";
     public const string DbUser = "identity";
     public const string DbPassword = "password";
-
-    private static string? ContainerId { get; set; }
-
-    private static string? ServerIp { get; set; }
-
-    private static DockerClientConfiguration? Configuration { get; set; }
 
     public static Uri LocalDockerUri
     {
@@ -35,16 +31,11 @@ public class MySqlContainer
         }
     }
 
-    [OneTimeTearDown]
-    public async Task TearDown()
-    {
-        if (ContainerId != null && Configuration != null)
-        {
-            var client = Configuration.CreateClient();
-            await client.Containers.StopContainerAsync(ContainerId, new ContainerStopParameters());
-            await client.Containers.RemoveContainerAsync(ContainerId, new ContainerRemoveParameters());
-        }
-    }
+    private static string? ContainerId { get; set; }
+
+    private static string? ServerIp { get; set; }
+
+    private static DockerClientConfiguration? Configuration { get; set; }
 
     public static async Task<string> GetMysqlServerAddress()
     {
@@ -58,6 +49,17 @@ public class MySqlContainer
         }
 
         return ServerIp;
+    }
+
+    [OneTimeTearDown]
+    public async Task TearDown()
+    {
+        if (ContainerId != null && Configuration != null)
+        {
+            var client = Configuration.CreateClient();
+            await client.Containers.StopContainerAsync(ContainerId, new ContainerStopParameters());
+            await client.Containers.RemoveContainerAsync(ContainerId, new ContainerRemoveParameters());
+        }
     }
 
     private static async Task<(string, string)> StartMysqlContainer()
@@ -83,13 +85,13 @@ public class MySqlContainer
             {
                 PortBindings = new Dictionary<string, IList<PortBinding>>
                 {
-                    ["3306"] = new List<PortBinding> { new PortBinding { HostPort = "3306" } }
-                }
+                    ["3306"] = new List<PortBinding> { new PortBinding { HostPort = "3306" } },
+                },
             },
             ExposedPorts = new Dictionary<string, EmptyStruct>
             {
-                ["3306"] = new EmptyStruct()
-            }
+                ["3306"] = default,
+            },
         });
 
         await client.Containers.StartContainerAsync(createContainerResponse.ID, null);
@@ -116,7 +118,9 @@ public class MySqlContainer
                 await Task.Delay(100);
                 up = true;
             }
-            catch (MySqlException) { }
+            catch (MySqlException)
+            {
+            }
         }
     }
 }

@@ -27,7 +27,7 @@ namespace Brighid.Identity.Common.Database.Migrations
                 table: "UserLogins",
                 type: "varchar(95) CHARACTER SET utf8mb4",
                 nullable: false,
-                defaultValue: "",
+                defaultValue: string.Empty,
                 oldClrType: typeof(string),
                 oldType: "longtext CHARACTER SET utf8mb4",
                 oldNullable: true);

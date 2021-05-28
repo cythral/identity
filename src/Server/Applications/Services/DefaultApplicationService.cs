@@ -40,8 +40,8 @@ namespace Brighid.Identity.Applications
                 {
                     OpenIddictConstants.Permissions.Endpoints.Token,
                     OpenIddictConstants.Permissions.GrantTypes.ClientCredentials,
-                    OpenIddictConstants.Permissions.Scopes.Roles
-                }
+                    OpenIddictConstants.Permissions.Scopes.Roles,
+                },
             };
 
             application.EncryptedSecret = await encryptionService.Encrypt(secret);

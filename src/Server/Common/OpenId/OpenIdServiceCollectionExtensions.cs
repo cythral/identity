@@ -83,7 +83,7 @@ namespace Microsoft.Extensions.DependencyInjection
                     {
                         await Task.CompletedTask;
                         Console.WriteLine(er.Exception.Message);
-                    }
+                    },
                 };
                 options.SaveToken = true;
                 options.RefreshOnIssuerKeyNotFound = true;

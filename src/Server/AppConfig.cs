@@ -7,7 +7,6 @@ namespace Brighid.Identity
         /// </summary>
         public string CookieDomain { get; set; } = string.Empty;
 
-
         /// <summary>
         /// Gets or sets the name of the session cookie.
         /// </summary>

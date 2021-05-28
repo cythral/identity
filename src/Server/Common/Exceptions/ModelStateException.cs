@@ -10,7 +10,8 @@ namespace Brighid.Identity
 {
     public class ModelStateException : Exception
     {
-        public ModelStateException(ModelStateDictionary modelState) : base("One or more errors occurred.")
+        public ModelStateException(ModelStateDictionary modelState)
+            : base("One or more errors occurred.")
         {
             Errors = from value in modelState.Values
                      from error in value.Errors

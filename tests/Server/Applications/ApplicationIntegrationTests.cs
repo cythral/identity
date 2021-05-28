@@ -15,17 +15,19 @@ using Microsoft.Extensions.DependencyInjection;
 
 using NUnit.Framework;
 
-#pragma warning disable CA1031, CA1303
+#pragma warning disable CA1031, CA1303, SA1117
 
 namespace Brighid.Identity.Applications
 {
     [Category("Integration")]
-    public class ApplicationsIntegrationTests
+    public class ApplicationIntegrationTests
     {
-        [TestFixture, Category("Integration")]
+        [TestFixture]
+        [Category("Integration")]
         public class CloudFormationCustomResourceTests
         {
-            [Test, Auto]
+            [Test]
+            [Auto]
             public async Task CreateThenUpdateThenDelete(
                 string createRequestId,
                 string updateRequestId,
@@ -44,8 +46,6 @@ namespace Brighid.Identity.Applications
                 var options = new JsonSerializerOptions { DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull };
                 var client = app.CreateClient();
                 client.DefaultRequestHeaders.Add("x-amz-sns-message-type", "Notification");
-
-                #region Create Application
                 {
                     var response = await client.PostAsJsonAsync(ApplicationController.BasePath, new SnsMessage<CloudFormationRequest<ApplicationRequest>>
                     {
@@ -59,17 +59,16 @@ namespace Brighid.Identity.Applications
                                 Name = name,
                                 Description = description,
                                 Serial = serial,
-                                Roles = new[] { nameof(BuiltInRole.Basic) }
-                            }
-                        }
+                                Roles = new[] { nameof(BuiltInRole.Basic) },
+                            },
+                        },
                     },
-                        options);
+                    options
+                );
 
                     response.EnsureSuccessStatusCode();
                 }
-                #endregion
 
-                #region Ensure Successful Response Received
                 {
                     var calls = app.Services.GetRequiredService<MockControllerCalls>();
 
@@ -79,9 +78,7 @@ namespace Brighid.Identity.Applications
                     );
                     calls.Clear();
                 }
-                #endregion
 
-                #region Ensure Application Exists in Database
                 {
                     using var scope = app.Services.CreateScope();
                     var databaseContext = scope.ServiceProvider.GetRequiredService<DatabaseContext>();
@@ -93,9 +90,7 @@ namespace Brighid.Identity.Applications
 
                     encryptedSecret.Should().NotBeNull();
                 }
-                #endregion
 
-                #region Update Application Serial
                 {
                     var response = await client.PostAsJsonAsync(ApplicationController.BasePath, new SnsMessage<CloudFormationRequest<ApplicationRequest>>
                     {
@@ -110,17 +105,15 @@ namespace Brighid.Identity.Applications
                                 Name = name,
                                 Description = description,
                                 Serial = ++serial,
-                                Roles = new[] { nameof(BuiltInRole.Basic) }
-                            }
+                                Roles = new[] { nameof(BuiltInRole.Basic) },
+                            },
                         },
                     },
                     options);
 
                     response.EnsureSuccessStatusCode();
                 }
-                #endregion
 
-                #region Ensure Successful Response Received
                 {
                     var calls = app.Services.GetRequiredService<MockControllerCalls>();
 
@@ -130,9 +123,7 @@ namespace Brighid.Identity.Applications
                     );
                     calls.Clear();
                 }
-                #endregion
 
-                #region Ensure Application Serial and Encrypted Secret Changed
                 {
                     using var scope = app.Services.CreateScope();
                     var databaseContext = scope.ServiceProvider.GetRequiredService<DatabaseContext>();
@@ -142,9 +133,7 @@ namespace Brighid.Identity.Applications
                     result.EncryptedSecret.Should().NotBe(encryptedSecret);
                     result.Serial.Should().Be(serial);
                 }
-                #endregion
 
-                #region Delete Application
                 {
                     var response = await client.PostAsJsonAsync(ApplicationController.BasePath, new SnsMessage<CloudFormationRequest<ApplicationRequest>>
                     {
@@ -159,16 +148,14 @@ namespace Brighid.Identity.Applications
                                 Name = name,
                                 Description = description,
                                 Serial = serial,
-                                Roles = new[] { nameof(BuiltInRole.Basic) }
-                            }
-                        }
+                                Roles = new[] { nameof(BuiltInRole.Basic) },
+                            },
+                        },
                     }, options);
 
                     response.EnsureSuccessStatusCode();
                 }
-                #endregion
 
-                #region Ensure Successful Response Received
                 {
                     var calls = app.Services.GetRequiredService<MockControllerCalls>();
 
@@ -178,9 +165,7 @@ namespace Brighid.Identity.Applications
                     );
                     calls.Clear();
                 }
-                #endregion
 
-                #region Ensure Application Does Not Exist in Database
                 {
                     using var scope = app.Services.CreateScope();
                     var databaseContext = scope.ServiceProvider.GetRequiredService<DatabaseContext>();
@@ -189,10 +174,10 @@ namespace Brighid.Identity.Applications
 
                     exists.Should().Be(false);
                 }
-                #endregion
             }
 
-            [Test, Auto]
+            [Test]
+            [Auto]
             public async Task CreateWithUnknownRoleFails(
                 string createRequestId,
                 string name,
@@ -207,8 +192,6 @@ namespace Brighid.Identity.Applications
                 var options = new JsonSerializerOptions { DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull };
                 var client = app.CreateClient();
                 client.DefaultRequestHeaders.Add("x-amz-sns-message-type", "Notification");
-
-                #region Attempt to Create Application
                 {
                     var response = await client.PostAsJsonAsync(ApplicationController.BasePath, new SnsMessage<CloudFormationRequest<ApplicationRequest>>
                     {
@@ -223,15 +206,13 @@ namespace Brighid.Identity.Applications
                                 Description = description,
                                 Serial = serial,
                                 Roles = new[] { randomRoleName },
-                            }
-                        }
+                            },
+                        },
                     }, options);
 
                     response.StatusCode.Should().Be(400);
                 }
-                #endregion
 
-                #region Ensure Failure Response was Received
                 {
                     var calls = app.Services.GetRequiredService<MockControllerCalls>();
 
@@ -241,7 +222,6 @@ namespace Brighid.Identity.Applications
                     );
                     calls.Clear();
                 }
-                #endregion
             }
 
             private async Task EnsureValidAwsCredentials(AppFactory app)

@@ -22,13 +22,16 @@ using static NSubstitute.Arg;
 
 namespace Brighid.Identity.Roles
 {
-    [TestFixture, Category("Unit")]
+    [TestFixture]
+    [Category("Unit")]
     public class DefaultRoleServiceTests
     {
-        [TestFixture, Category("Unit")]
+        [TestFixture]
+        [Category("Unit")]
         public class GetPrimaryKeyTests
         {
-            [Test, Auto]
+            [Test]
+            [Auto]
             public void ShouldReturnId(
                 Role role,
                 [Target] DefaultRoleService service
@@ -40,10 +43,12 @@ namespace Brighid.Identity.Roles
             }
         }
 
-        [TestFixture, Category("Unit")]
+        [TestFixture]
+        [Category("Unit")]
         public class CreateTests
         {
-            [Test, Auto]
+            [Test]
+            [Auto]
             public async Task ShouldAddToTheRepository(
                 Role role,
                 Role expected,
@@ -63,7 +68,8 @@ namespace Brighid.Identity.Roles
                 ));
             }
 
-            [Test, Auto]
+            [Test]
+            [Auto]
             public async Task ShouldThrowRoleAlreadyExistsException_IfRoleAlreadyExists(
                 Role role,
                 Role expected,
@@ -72,8 +78,8 @@ namespace Brighid.Identity.Roles
             )
             {
                 var errorCode = MySqlErrorCode.DuplicateKeyEntry;
-                var exception = (MySqlException)Activator.CreateInstance(typeof(MySqlException), BindingFlags.Instance | BindingFlags.NonPublic, null, new object[] { errorCode, "" }, null, null)!;
-                repository.Add(Any<Role>()).Returns<Role>(x => throw new DbUpdateException("", exception));
+                var exception = (MySqlException)Activator.CreateInstance(typeof(MySqlException), BindingFlags.Instance | BindingFlags.NonPublic, null, new object[] { errorCode, string.Empty }, null, null)!;
+                repository.Add(Any<Role>()).Returns<Role>(x => throw new DbUpdateException(string.Empty, exception));
 
                 Func<Task> func = () => service.Create(role);
 
@@ -81,10 +87,12 @@ namespace Brighid.Identity.Roles
             }
         }
 
-        [TestFixture, Category("Unit")]
+        [TestFixture]
+        [Category("Unit")]
         public class UpdateByIdTests
         {
-            [Test, Auto]
+            [Test]
+            [Auto]
             public async Task ShouldThrowExceptionIfRoleNotFound(
                 Guid id,
                 Role updatedRoleInfo,
@@ -99,7 +107,8 @@ namespace Brighid.Identity.Roles
                 await func.Should().ThrowAsync<EntityNotFoundException>();
             }
 
-            [Test, Auto]
+            [Test]
+            [Auto]
             public async Task ShouldThrowExceptionIfNameChanged(
                 Guid id,
                 Role updatedRoleInfo,
@@ -115,7 +124,8 @@ namespace Brighid.Identity.Roles
                 await func.Should().ThrowAsync<NotSupportedException>();
             }
 
-            [Test, Auto]
+            [Test]
+            [Auto]
             public async Task ShouldSavetoTheDatabaseWithUpdatedInfo(
                 Guid id,
                 Role updatedRoleInfo,
@@ -137,10 +147,12 @@ namespace Brighid.Identity.Roles
             }
         }
 
-        [TestFixture, Category("Unit")]
+        [TestFixture]
+        [Category("Unit")]
         public class DeleteByIdTests
         {
-            [Test, Auto]
+            [Test]
+            [Auto]
             public async Task ShouldThrowIfRoleIsAttachedToAPrincipal(
                 Guid id,
                 [Frozen, Substitute] IRoleRepository repository,
@@ -154,7 +166,8 @@ namespace Brighid.Identity.Roles
                 await func.Should().ThrowAsync<NotSupportedException>();
             }
 
-            [Test, Auto]
+            [Test]
+            [Auto]
             public async Task ShouldDeleteTheRoleFromTheRepository(
                 Guid id,
                 Role role,

@@ -49,6 +49,16 @@ namespace Brighid.Identity.Roles
             return await UpdateCore(existingRole, updatedRoleInfo);
         }
 
+        public async Task<Role> DeleteById(Guid id)
+        {
+            if (await repository.IsAttachedToAPrincipal(id))
+            {
+                throw new NotSupportedException("Cannot delete a role that is attached to either an application or user.");
+            }
+
+            return await repository.Remove(id);
+        }
+
         private async Task<Role> UpdateCore(Role existingRole, Role updatedRoleInfo)
         {
             if (existingRole.Name != updatedRoleInfo.Name)
@@ -58,16 +68,6 @@ namespace Brighid.Identity.Roles
 
             existingRole.Description = updatedRoleInfo.Description;
             return await repository.Save(existingRole);
-        }
-
-        public async Task<Role> DeleteById(Guid id)
-        {
-            if (await repository.IsAttachedToAPrincipal(id))
-            {
-                throw new NotSupportedException("Cannot delete a role that is attached to either an application or user.");
-            }
-
-            return await repository.Remove(id);
         }
     }
 }

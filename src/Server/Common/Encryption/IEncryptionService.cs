@@ -15,6 +15,7 @@ namespace Brighid.Identity
         /// Encrypts a value.
         /// </summary>
         /// <param name="plaintext">The value to be encrypted.</param>
+        /// <param name="cancellationToken">Token used to cancel the operation.</param>
         /// <returns>The encrypted value.</returns>
         Task<string> Encrypt(string plaintext, CancellationToken cancellationToken = default);
     }

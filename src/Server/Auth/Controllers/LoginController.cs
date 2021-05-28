@@ -13,7 +13,7 @@ namespace Brighid.Identity.Auth
     [Route("/login")]
     public class LoginController : Controller
     {
-        private const string defaultRedirectUri = "/";
+        private const string DefaultRedirectUri = "/";
 
         private readonly SignInManager<User> signinManager;
         private readonly IAuthService authService;
@@ -25,15 +25,15 @@ namespace Brighid.Identity.Auth
         }
 
         [HttpGet]
-        public IActionResult Render([FromQuery(Name = "redirect_uri")] string? destination = defaultRedirectUri)
+        public IActionResult Render([FromQuery(Name = "redirect_uri")] string? destination = DefaultRedirectUri)
         {
-            destination ??= defaultRedirectUri;
+            destination ??= DefaultRedirectUri;
 
             return signinManager.IsSignedIn(User)
                 ? LocalRedirect(destination)
                 : View("~/Auth/Views/Login.cshtml", new LoginRequest
                 {
-                    RedirectUri = new Uri(destination, UriKind.Relative)
+                    RedirectUri = new Uri(destination, UriKind.Relative),
                 });
         }
 
@@ -50,7 +50,6 @@ namespace Brighid.Identity.Auth
                 }
 
                 var ticket = await authService.PasswordExchange(request.Email, request.Password, request.RedirectUri, HttpContext.RequestAborted);
-                Console.WriteLine(ticket.Properties.RedirectUri);
                 return SignIn(ticket.Principal, ticket.Properties, ticket.AuthenticationScheme);
             }
             catch (LoginException e)

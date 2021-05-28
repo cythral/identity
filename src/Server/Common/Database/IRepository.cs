@@ -4,7 +4,8 @@ using System.Threading.Tasks;
 
 namespace Brighid.Identity
 {
-    public interface IRepository<TEntity, TPrimaryKeyType> where TEntity : class
+    public interface IRepository<TEntity, TPrimaryKeyType>
+        where TEntity : class
     {
         IQueryable<TEntity> All { get; }
 

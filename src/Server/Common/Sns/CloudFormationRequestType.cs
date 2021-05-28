@@ -4,6 +4,6 @@ namespace Brighid.Identity.Sns
     {
         Create,
         Update,
-        Delete
+        Delete,
     }
 }

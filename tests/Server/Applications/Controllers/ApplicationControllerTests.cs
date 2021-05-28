@@ -23,10 +23,10 @@ using static NSubstitute.Arg;
 
 namespace Brighid.Identity.Applications
 {
-    [TestFixture, Category("Unit")]
+    [TestFixture]
+    [Category("Unit")]
     public class ApplicationControllerTests
     {
-
         public static HttpContext SetupHttpContext(Controller controller, IdentityRequestSource source = IdentityRequestSource.Direct)
         {
             var itemDictionary = new Dictionary<object, object?>();
@@ -38,11 +38,12 @@ namespace Brighid.Identity.Applications
             return httpContext;
         }
 
-        [TestFixture, Category("Unit")]
+        [TestFixture]
+        [Category("Unit")]
         public class CreateTests
         {
-
-            [Test, Auto]
+            [Test]
+            [Auto]
             public async Task ShouldRemoveUnencryptedSecretFromResult_IfRequestSourceIsSns(
                 Guid id,
                 string secret,
@@ -70,7 +71,8 @@ namespace Brighid.Identity.Applications
                 resultValue.Secret.Should().BeNull();
             }
 
-            [Test, Auto]
+            [Test]
+            [Auto]
             public async Task ShouldNotRemoveUnencryptedSecretFromResult_IfRequestSourceIsDirect(
                 Guid id,
                 string secret,
@@ -97,11 +99,12 @@ namespace Brighid.Identity.Applications
             }
         }
 
-        [TestFixture, Category("Unit")]
+        [TestFixture]
+        [Category("Unit")]
         public class UpdateByIdTests
         {
-
-            [Test, Auto]
+            [Test]
+            [Auto]
             public async Task ShouldRemoveUnencryptedSecretFromResult_IfRequestSourceIsSns(
                 Guid id,
                 string secret,
@@ -129,7 +132,8 @@ namespace Brighid.Identity.Applications
                 resultValue.Secret.Should().BeNull();
             }
 
-            [Test, Auto]
+            [Test]
+            [Auto]
             public async Task ShouldNotRemoveUnencryptedSecretFromResult_IfRequestSourceIsDirect(
                 Guid id,
                 string secret,
@@ -157,4 +161,3 @@ namespace Brighid.Identity.Applications
         }
     }
 }
-

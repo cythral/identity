@@ -9,16 +9,16 @@ using AutoFixture.AutoNSubstitute;
 using AutoFixture.NUnit3;
 
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.Extensions.Options;
-
-using NSubstitute;
 
 using PuppeteerSharp;
 
 internal class AutoAttribute : AutoDataAttribute
 {
-    public AutoAttribute() : base(Create) { }
+    public AutoAttribute()
+        : base(Create)
+    {
+    }
 
     public static IFixture Create()
     {
@@ -29,7 +29,7 @@ internal class AutoAttribute : AutoDataAttribute
             Stores = new StoreOptions
             {
                 ProtectPersonalData = false,
-            }
+            },
         }));
         fixture.Register(() =>
         {
@@ -45,7 +45,7 @@ internal class AutoAttribute : AutoDataAttribute
 
                         BrowserSetup.Browser = Puppeteer.LaunchAsync(new LaunchOptions
                         {
-                            Args = args
+                            Args = args,
                         }).GetAwaiter().GetResult();
                     }
                     catch (FileNotFoundException)
@@ -72,5 +72,4 @@ internal class AutoAttribute : AutoDataAttribute
         fixture.Behaviors.Add(new OmitOnRecursionBehavior());
         return fixture;
     }
-
 }

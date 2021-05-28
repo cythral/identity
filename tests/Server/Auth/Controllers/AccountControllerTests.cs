@@ -19,10 +19,12 @@ namespace Brighid.Identity.Auth
 {
     public class AccountControllerTests
     {
-        [TestFixture, Category("Unit")]
+        [TestFixture]
+        [Category("Unit")]
         public class RedirectToLinkStartUrlTests
         {
-            [Test, Auto]
+            [Test]
+            [Auto]
             public async Task ShouldRedirectToStartUrlIfFound(
                 string url,
                 string provider,
@@ -41,7 +43,8 @@ namespace Brighid.Identity.Auth
                 await service.Received().GetLinkStartUrlForProvider(Is(provider), Is(httpContext.RequestAborted));
             }
 
-            [Test, Auto]
+            [Test]
+            [Auto]
             public async Task ShouldReturnNotFoundResultIfLinkNotFound(
                 string provider,
                 HttpContext httpContext,

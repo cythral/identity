@@ -11,10 +11,9 @@ using MySqlConnector;
 
 namespace Brighid.Identity.Users
 {
-#pragma warning disable IDE0059
     public class DefaultUserService : IUserService
     {
-        private const string defaultRole = nameof(BuiltInRole.Basic);
+        private const string DefaultRole = nameof(BuiltInRole.Basic);
         private readonly UserManager<User> userManager;
         private readonly IRoleRepository roleRepository;
         private readonly IUserLoginRepository loginRepository;
@@ -42,7 +41,8 @@ namespace Brighid.Identity.Users
                     throw new CreateUserException(innerExceptions);
                 }
             }
-            roleName ??= defaultRole;
+
+            roleName ??= DefaultRole;
 
             var role = await roleRepository.FindByName(roleName);
             if (role == null)

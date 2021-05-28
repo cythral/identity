@@ -32,7 +32,8 @@ namespace Brighid.Identity.Auth
         [Category("Unit")]
         public class Render
         {
-            [Test, Auto]
+            [Test]
+            [Auto]
             public void ShouldRedirect_IfAlreadySignedIn(
                 [Frozen, Substitute] SignInManager<User> signinManager,
                 [Target] LoginController loginController
@@ -46,7 +47,8 @@ namespace Brighid.Identity.Auth
                 result!.Url.Should().Be("/");
             }
 
-            [Test, Auto]
+            [Test]
+            [Auto]
             public void ShouldRedirectToGivenUrl_IfAlreadySignedIn(
                 string destination,
                 [Frozen, Substitute] SignInManager<User> signinManager,
@@ -61,7 +63,8 @@ namespace Brighid.Identity.Auth
                 result!.Url.Should().Be(destination);
             }
 
-            [Test, Auto]
+            [Test]
+            [Auto]
             public void ShouldRenderLogin_WithDefaultDestination_IfAlreadySignedIn(
                 [Frozen, Substitute] SignInManager<User> signinManager,
                 [Target] LoginController loginController
@@ -76,7 +79,8 @@ namespace Brighid.Identity.Auth
                 result!.Model.As<LoginRequest>().RedirectUri.Should().Be("/");
             }
 
-            [Test, Auto]
+            [Test]
+            [Auto]
             public void ShouldRenderLogin_WithGivenRedirectUri(
                 string destination,
                 [Frozen, Substitute] SignInManager<User> signinManager,
@@ -96,7 +100,8 @@ namespace Brighid.Identity.Auth
         [Category("Unit")]
         public class Login
         {
-            [Test, Auto]
+            [Test]
+            [Auto]
             public async Task ShouldRender_IfModelStateIsInvalid(
                 string destination,
                 LoginRequest request,
@@ -115,7 +120,8 @@ namespace Brighid.Identity.Auth
                 result!.Model.As<LoginRequest>().RedirectUri.Should().Be(destination);
             }
 
-            [Test, Auto]
+            [Test]
+            [Auto]
             public async Task ShouldAddModelError_IfSigninFails(
                 string destination,
                 LoginRequest request,
@@ -142,7 +148,8 @@ namespace Brighid.Identity.Auth
                 errors.Should().Contain(error => error.ErrorMessage == "Username and/or password were incorrect.");
             }
 
-            [Test, Auto]
+            [Test]
+            [Auto]
             public async Task ShouldReturnASignInResultOnSuccess(
                 string destination,
                 LoginRequest request,

@@ -2,6 +2,8 @@ using System;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
+#pragma warning disable SA1313
+
 namespace Brighid.Identity.Sns
 {
     public class SnsMessageConverterFactory : JsonConverterFactory

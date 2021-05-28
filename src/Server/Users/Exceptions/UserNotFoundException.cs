@@ -6,7 +6,8 @@ namespace Brighid.Identity.Users
 {
     public class UserNotFoundException : Exception
     {
-        public UserNotFoundException(Guid id) : base($"User with ID {id} was not found.")
+        public UserNotFoundException(Guid id)
+            : base($"User with ID {id} was not found.")
         {
             UserId = id;
         }

@@ -21,10 +21,8 @@ using Microsoft.Extensions.Hosting;
 
 public class AppFactory : WebApplicationFactory<Startup>
 {
-    public static string? ContainerId { get; private set; }
-    public static string? ServerIp { get; private set; }
-    public Uri RootUri { get; set; }
     private readonly string databaseServerAddress;
+
     private readonly IHost host;
 
     public AppFactory(string databaseServerAddress)
@@ -51,10 +49,11 @@ public class AppFactory : WebApplicationFactory<Startup>
         RootUri = new Uri($"http://{endpoint}");
     }
 
-    private async Task Start()
-    {
-        await host.StartAsync();
-    }
+    public static string? ContainerId { get; private set; }
+
+    public static string? ServerIp { get; private set; }
+
+    public Uri RootUri { get; set; }
 
     public override IServiceProvider Services => host.Services;
 
@@ -94,6 +93,11 @@ public class AppFactory : WebApplicationFactory<Startup>
             .AddAuthentication("Test")
             .AddScheme<AuthenticationSchemeOptions, TestAuthHandler>("Test", options => { });
         });
+    }
+
+    private async Task Start()
+    {
+        await host.StartAsync();
     }
 
     private void SetContentRoot(IWebHostBuilder builder)

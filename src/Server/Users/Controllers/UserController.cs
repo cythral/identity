@@ -17,7 +17,7 @@ namespace Brighid.Identity.Users
     })]
     public class UserController : Controller
     {
-        private readonly string[] Embeds = new[] { "Roles", "Logins" };
+        private readonly string[] embeds = new[] { "Roles", "Logins" };
 
         private readonly IUserRepository repository;
         private readonly IUserService service;
@@ -31,18 +31,10 @@ namespace Brighid.Identity.Users
             this.service = service;
         }
 
-        private void ThrowIfModelStateIsInvalid()
-        {
-            if (!ModelState.IsValid)
-            {
-                throw new ModelStateException(ModelState);
-            }
-        }
-
         [HttpGet("{userId}")]
         public async Task<ActionResult<User>> Get(Guid userId)
         {
-            var result = await repository.FindById(userId, Embeds);
+            var result = await repository.FindById(userId, embeds);
             return result == null ? NotFound() : Ok(result);
         }
 
@@ -58,9 +50,26 @@ namespace Brighid.Identity.Users
                 var result = await service.CreateLogin(userId, loginInfo);
                 return Ok(result);
             }
-            catch (UserNotFoundException e) { return NotFound(new { e.Message }); }
-            catch (UserLoginAlreadyExistsException e) { return Conflict(new { e.Message }); }
-            catch (ModelStateException e) { return BadRequest(new { e.Message, e.Errors }); }
+            catch (UserNotFoundException e)
+            {
+                return NotFound(new { e.Message });
+            }
+            catch (UserLoginAlreadyExistsException e)
+            {
+                return Conflict(new { e.Message });
+            }
+            catch (ModelStateException e)
+            {
+                return BadRequest(new { e.Message, e.Errors });
+            }
+        }
+
+        private void ThrowIfModelStateIsInvalid()
+        {
+            if (!ModelState.IsValid)
+            {
+                throw new ModelStateException(ModelState);
+            }
         }
     }
 }

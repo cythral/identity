@@ -15,6 +15,8 @@ using Microsoft.Extensions.Primitives;
 using static Brighid.Identity.Sns.CloudFormationRequestType;
 using static OpenIddict.Abstractions.OpenIddictConstants;
 
+#pragma warning disable SA1119
+
 namespace Brighid.Identity.Sns
 {
     public class SnsMiddleware
@@ -159,5 +161,3 @@ namespace Brighid.Identity.Sns
         }
     }
 }
-
-

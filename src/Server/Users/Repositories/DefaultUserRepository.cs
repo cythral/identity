@@ -12,7 +12,10 @@ namespace Brighid.Identity.Users
 {
     public class DefaultUserRepository : Repository<User, Guid>, IUserRepository
     {
-        public DefaultUserRepository(DatabaseContext context) : base(context) { }
+        public DefaultUserRepository(DatabaseContext context)
+            : base(context)
+        {
+        }
 
         public async Task<User?> FindByLogin(string loginProvider, string providerKey, params string[] embeds)
         {

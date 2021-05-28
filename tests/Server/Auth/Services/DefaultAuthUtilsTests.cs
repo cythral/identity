@@ -9,7 +9,6 @@ using System.Threading.Tasks;
 using AutoFixture.AutoNSubstitute;
 using AutoFixture.NUnit3;
 
-using Brighid.Identity.Applications;
 using Brighid.Identity.Roles;
 using Brighid.Identity.Users;
 
@@ -34,7 +33,8 @@ namespace Brighid.Identity.Auth
         [Category("Unit")]
         public class CreateClaimsIdentityForApplication
         {
-            [Test, Auto]
+            [Test]
+            [Auto]
             public async Task ShouldSetNameClaim(
                 Guid id,
                 [Target] DefaultAuthUtils authUtils
@@ -46,7 +46,8 @@ namespace Brighid.Identity.Auth
                 nameClaim.Should().Be(id.ToString());
             }
 
-            [Test, Auto]
+            [Test]
+            [Auto]
             public async Task Name_ShouldHaveAccessTokenDestination(
                 Guid id,
                 [Target] DefaultAuthUtils authUtils
@@ -59,7 +60,8 @@ namespace Brighid.Identity.Auth
                 destinations.Should().Contain(Destinations.AccessToken);
             }
 
-            [Test, Auto]
+            [Test]
+            [Auto]
             public async Task Name_ShouldHaveIdentityTokenDestination(
                 Guid id,
                 [Target] DefaultAuthUtils authUtils
@@ -72,7 +74,8 @@ namespace Brighid.Identity.Auth
                 destinations.Should().Contain(Destinations.IdentityToken);
             }
 
-            [Test, Auto]
+            [Test]
+            [Auto]
             public async Task ShouldSetSubjectClaim(
                 Guid id,
                 [Target] DefaultAuthUtils authUtils
@@ -84,7 +87,8 @@ namespace Brighid.Identity.Auth
                 subjectClaim.Should().Be(id.ToString());
             }
 
-            [Test, Auto]
+            [Test]
+            [Auto]
             public async Task Subject_ShouldHaveAccessTokenDestination(
                 Guid id,
                 [Target] DefaultAuthUtils authUtils
@@ -97,7 +101,8 @@ namespace Brighid.Identity.Auth
                 destinations.Should().Contain(Destinations.AccessToken);
             }
 
-            [Test, Auto]
+            [Test]
+            [Auto]
             public async Task Subject_ShouldHaveIdentityTokenDestination(
                 Guid id,
                 [Target] DefaultAuthUtils authUtils
@@ -110,7 +115,8 @@ namespace Brighid.Identity.Auth
                 destinations.Should().Contain(Destinations.IdentityToken);
             }
 
-            [Test, Auto]
+            [Test]
+            [Auto]
             public async Task Role_ShouldBeJsonArray(
                 Guid id,
                 [Target] DefaultAuthUtils authUtils
@@ -122,7 +128,8 @@ namespace Brighid.Identity.Auth
                 roleClaim.ValueType.Should().Be(JsonClaimValueTypes.JsonArray);
             }
 
-            [Test, Auto]
+            [Test]
+            [Auto]
             public async Task Role_ShouldHaveAccessTokenDestination(
                 Guid id,
                 [Target] DefaultAuthUtils authUtils
@@ -135,7 +142,8 @@ namespace Brighid.Identity.Auth
                 destinations.Should().Contain(Destinations.AccessToken);
             }
 
-            [Test, Auto]
+            [Test]
+            [Auto]
             public async Task Role_ShouldHaveIdentityTokenDestination(
                 Guid id,
                 [Target] DefaultAuthUtils authUtils
@@ -148,7 +156,8 @@ namespace Brighid.Identity.Auth
                 destinations.Should().Contain(Destinations.IdentityToken);
             }
 
-            [Test, Auto]
+            [Test]
+            [Auto]
             public async Task AuthenticationScheme_ShouldBeSetToDefault(
                 Guid id,
                 [Target] DefaultAuthUtils authUtils
@@ -160,7 +169,8 @@ namespace Brighid.Identity.Auth
                 scheme.Should().Be(OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);
             }
 
-            [Test, Auto]
+            [Test]
+            [Auto]
             public async Task NameClaimType_ShouldBeSet(
                 Guid id,
                 [Target] DefaultAuthUtils authUtils
@@ -172,7 +182,8 @@ namespace Brighid.Identity.Auth
                 nameClaimType.Should().Be(Claims.Name);
             }
 
-            [Test, Auto]
+            [Test]
+            [Auto]
             public async Task RoleType_ShouldBeSet(
                 Guid id,
                 [Target] DefaultAuthUtils authUtils
@@ -188,7 +199,8 @@ namespace Brighid.Identity.Auth
         [Category("Unit")]
         public class CreateClaimsIdentityForUser
         {
-            [Test, Auto]
+            [Test]
+            [Auto]
             public async Task ShouldSetNameClaim(
                 User user,
                 [Target] DefaultAuthUtils authUtils
@@ -200,7 +212,8 @@ namespace Brighid.Identity.Auth
                 nameClaim.Should().Be(user.Email.ToString());
             }
 
-            [Test, Auto]
+            [Test]
+            [Auto]
             public async Task Name_ShouldHaveAccessTokenDestination(
                 User user,
                 [Target] DefaultAuthUtils authUtils
@@ -213,7 +226,8 @@ namespace Brighid.Identity.Auth
                 destinations.Should().Contain(Destinations.AccessToken);
             }
 
-            [Test, Auto]
+            [Test]
+            [Auto]
             public async Task Name_ShouldHaveIdentityTokenDestination(
                 User user,
                 [Target] DefaultAuthUtils authUtils
@@ -226,7 +240,8 @@ namespace Brighid.Identity.Auth
                 destinations.Should().Contain(Destinations.IdentityToken);
             }
 
-            [Test, Auto]
+            [Test]
+            [Auto]
             public async Task ShouldSetSubjectClaim(
                 User user,
                 [Target] DefaultAuthUtils authUtils
@@ -238,7 +253,8 @@ namespace Brighid.Identity.Auth
                 nameClaim.Should().Be(user.Id.ToString());
             }
 
-            [Test, Auto]
+            [Test]
+            [Auto]
             public async Task Subject_ShouldHaveAccessTokenDestination(
                 User user,
                 [Target] DefaultAuthUtils authUtils
@@ -251,7 +267,8 @@ namespace Brighid.Identity.Auth
                 destinations.Should().Contain(Destinations.AccessToken);
             }
 
-            [Test, Auto]
+            [Test]
+            [Auto]
             public async Task Subject_ShouldHaveIdentityTokenDestination(
                 User user,
                 [Target] DefaultAuthUtils authUtils
@@ -264,7 +281,8 @@ namespace Brighid.Identity.Auth
                 destinations.Should().Contain(Destinations.IdentityToken);
             }
 
-            [Test, Auto]
+            [Test]
+            [Auto]
             public async Task Role_ShouldBeJsonArray(
                 User user,
                 [Target] DefaultAuthUtils authUtils
@@ -276,7 +294,8 @@ namespace Brighid.Identity.Auth
                 roleClaim.ValueType.Should().Be(JsonClaimValueTypes.JsonArray);
             }
 
-            [Test, Auto]
+            [Test]
+            [Auto]
             public async Task Role_ShouldHaveAccessTokenDestination(
                 User user,
                 [Target] DefaultAuthUtils authUtils
@@ -289,7 +308,8 @@ namespace Brighid.Identity.Auth
                 destinations.Should().Contain(Destinations.AccessToken);
             }
 
-            [Test, Auto]
+            [Test]
+            [Auto]
             public async Task Role_ShouldHaveIdentityTokenDestination(
                 User user,
                 [Target] DefaultAuthUtils authUtils
@@ -302,7 +322,8 @@ namespace Brighid.Identity.Auth
                 destinations.Should().Contain(Destinations.IdentityToken);
             }
 
-            [Test, Auto]
+            [Test]
+            [Auto]
             public async Task Role_ShouldContainAllTheUsersRoles(
                 User user,
                 Role role1,
@@ -327,7 +348,8 @@ namespace Brighid.Identity.Auth
         [Category("Unit")]
         public class CreateAuthTicket
         {
-            [Test, Auto]
+            [Test]
+            [Auto]
             public void Principal_ShouldContainClaimsIdentity(
                 ClaimsIdentity claimsIdentity,
                 [Target] DefaultAuthUtils authUtils
@@ -339,7 +361,8 @@ namespace Brighid.Identity.Auth
                 identities.Should().Contain(claimsIdentity);
             }
 
-            [Test, Auto]
+            [Test]
+            [Auto]
             public void Properties_ShouldHaveRedirectUri(
                 ClaimsIdentity claimsIdentity,
                 Uri redirectUri,
@@ -351,7 +374,8 @@ namespace Brighid.Identity.Auth
                 result.Properties.RedirectUri.Should().Be(redirectUri.ToString());
             }
 
-            [Test, Auto]
+            [Test]
+            [Auto]
             public void AuthenticationScheme_ShouldBeSet(
                 ClaimsIdentity claimsIdentity,
                 [Target] DefaultAuthUtils authUtils
@@ -363,7 +387,8 @@ namespace Brighid.Identity.Auth
                 scheme.Should().Be(OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);
             }
 
-            [Test, Auto]
+            [Test]
+            [Auto]
             public void AuthenticationScheme_ShouldBeSetToGivenScheme(
                 string givenScheme,
                 ClaimsIdentity claimsIdentity,
@@ -376,7 +401,8 @@ namespace Brighid.Identity.Auth
                 scheme.Should().Be(givenScheme);
             }
 
-            [Test, Auto]
+            [Test]
+            [Auto]
             public void Resources_ShouldContainDomain(
                 ClaimsIdentity claimsIdentity,
                 [Target] DefaultAuthUtils authUtils
@@ -388,7 +414,8 @@ namespace Brighid.Identity.Auth
                 resources.Should().Contain("identity.brigh.id");
             }
 
-            [Test, Auto]
+            [Test]
+            [Auto]
             public void Scopes_ShouldBeSet(
                 string[] scopes,
                 ClaimsIdentity claimsIdentity,

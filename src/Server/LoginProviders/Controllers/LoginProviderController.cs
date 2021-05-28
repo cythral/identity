@@ -17,7 +17,7 @@ namespace Brighid.Identity.LoginProviders
     })]
     public class LoginProviderController : Controller
     {
-        private readonly string[] UserEmbeds = new[] { "Roles", "Logins" };
+        private readonly string[] userEmbeds = new[] { "Roles", "Logins" };
 
         private readonly IUserRepository repository;
 
@@ -31,7 +31,7 @@ namespace Brighid.Identity.LoginProviders
         [HttpGet("{loginProvider}/{providerKey}", Name = "LoginProviders:GetUserByLoginProviderKey")]
         public async Task<ActionResult<User>> GetUserByLoginProviderKey(string loginProvider, string providerKey)
         {
-            var result = await repository.FindByLogin(loginProvider, providerKey, UserEmbeds);
+            var result = await repository.FindByLogin(loginProvider, providerKey, userEmbeds);
             return result == null ? NotFound() : Ok(result);
         }
     }

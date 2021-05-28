@@ -3,15 +3,15 @@ namespace Brighid.Identity.Sns
     /// <summary>
     /// An SNS message attribute.
     /// </summary>
-    public class MessageAttribute
+    public class SnsMessageAttribute
     {
         /// <summary>
-        /// The attribute type.
+        /// Gets the attribute type.
         /// </summary>
         public string Type { get; init; }
 
         /// <summary>
-        /// The attribute value.
+        /// Gets the attribute value.
         /// </summary>
         public string Value { get; init; }
     }

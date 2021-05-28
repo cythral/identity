@@ -19,6 +19,7 @@ using NUnit.Framework;
 using static NSubstitute.Arg;
 
 using SignInResult = Microsoft.AspNetCore.Identity.SignInResult;
+
 namespace Brighid.Identity.Auth
 {
     [Category("Unit")]
@@ -27,7 +28,8 @@ namespace Brighid.Identity.Auth
         [Category("Unit")]
         public class Render
         {
-            [Test, Auto]
+            [Test]
+            [Auto]
             public void ShouldRedirect_IfAlreadySignedIn(
                 [Frozen, Substitute] SignInManager<User> signinManager,
                 [Target] SignupController signupController
@@ -41,7 +43,8 @@ namespace Brighid.Identity.Auth
                 result!.Url.Should().Be("/");
             }
 
-            [Test, Auto]
+            [Test]
+            [Auto]
             public void ShouldRedirectToGivenUrl_IfAlreadySignedIn(
                 string destination,
                 [Frozen, Substitute] SignInManager<User> signinManager,
@@ -56,7 +59,8 @@ namespace Brighid.Identity.Auth
                 result!.Url.Should().Be(destination);
             }
 
-            [Test, Auto]
+            [Test]
+            [Auto]
             public void ShouldRenderSignup_WithDefaultDestination_IfAlreadySignedIn(
                 [Frozen, Substitute] SignInManager<User> signinManager,
                 [Target] SignupController signupController
@@ -71,7 +75,8 @@ namespace Brighid.Identity.Auth
                 result!.Model.As<SignupRequest>().RedirectUri.Should().Be("/");
             }
 
-            [Test, Auto]
+            [Test]
+            [Auto]
             public void ShouldRenderSignup_WithGivenRedirectUri(
                 string destination,
                 [Frozen, Substitute] SignInManager<User> signinManager,
@@ -91,7 +96,8 @@ namespace Brighid.Identity.Auth
         [Category("Unit")]
         public class Signup
         {
-            [Test, Auto]
+            [Test]
+            [Auto]
             public async Task ShouldRender_IfModelStateIsInvalid(
                 string password,
                 string destination,
@@ -114,7 +120,8 @@ namespace Brighid.Identity.Auth
                 result!.Model.As<SignupRequest>().RedirectUri.Should().Be(destination);
             }
 
-            [Test, Auto]
+            [Test]
+            [Auto]
             public async Task ShouldAddModelErrors_IfUserCreationFails(
                 string password,
                 string message1,
@@ -143,7 +150,8 @@ namespace Brighid.Identity.Auth
                 errors.Should().Contain(error => error.ErrorMessage == message2);
             }
 
-            [Test, Auto]
+            [Test]
+            [Auto]
             public async Task ShouldNotIncludeDuplicateUserNameModelError(
                 string email,
                 string password,
@@ -184,7 +192,8 @@ namespace Brighid.Identity.Auth
                 );
             }
 
-            [Test, Auto]
+            [Test]
+            [Auto]
             public async Task ShouldAddModelError_IfPasswordsDontMatch(
                 string password1,
                 string password2,
@@ -211,8 +220,8 @@ namespace Brighid.Identity.Auth
                 errors.Should().Contain(error => error.ErrorMessage == "Passwords do not match.");
             }
 
-
-            [Test, Auto]
+            [Test]
+            [Auto]
             public async Task ShouldAddModelError_IfUserSigninFails(
                 string password,
                 string destination,
@@ -239,7 +248,8 @@ namespace Brighid.Identity.Auth
                 errors.Should().Contain(error => error.ErrorMessage == "Unable to sign in.");
             }
 
-            [Test, Auto]
+            [Test]
+            [Auto]
             public async Task ShouldRedirectToDestination_IfSignupSucceeds(
                 string password,
                 string destination,

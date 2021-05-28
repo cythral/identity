@@ -15,7 +15,6 @@ namespace Brighid.Identity.Auth
 
         public Task OnRedirectToAccessDeniedHandler(RedirectContext<CookieAuthenticationOptions> context)
         {
-
             if (context.Request.Path.StartsWithSegments("/api"))
             {
                 context.Response.StatusCode = 403;
@@ -24,6 +23,7 @@ namespace Brighid.Identity.Auth
             {
                 context.Response.Redirect(context.RedirectUri);
             }
+
             return Task.FromResult(0);
         }
 
@@ -37,6 +37,7 @@ namespace Brighid.Identity.Auth
             {
                 context.Response.Redirect(context.RedirectUri);
             }
+
             return Task.FromResult(0);
         }
     }

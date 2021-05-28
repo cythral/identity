@@ -24,7 +24,8 @@ namespace Brighid.Identity.Applications
         [TestFixture]
         public class MapRequestToEntity
         {
-            [Test, Auto]
+            [Test]
+            [Auto]
             public async Task ShouldFindAllRolesByName(
                 ApplicationRequest request,
                 [Frozen, Substitute] IRoleRepository roleRepository,
@@ -42,7 +43,8 @@ namespace Brighid.Identity.Applications
                 await roleRepository.Received().FindAllByName(Is(request.Roles), Is(cancellationToken));
             }
 
-            [Test, Auto]
+            [Test]
+            [Auto]
             public async Task ShouldThrowIfAnyRolesWereNotFound(
                 ApplicationRequest request,
                 [Frozen, Substitute] IRoleRepository roleRepository,
