@@ -2,23 +2,27 @@ Description: Brighid Identity
 Parameters:
   Image:
     Type: String
-    Description: Docker Image uri to pull
+    Description: Docker Image uri to pull.
 
   DomainName:
     Type: String
-    Description: Domain name to use
+    Description: Domain name to use.
 
   DatabaseName:
     Type: String
-    Description: The name of the database to use
+    Description: The name of the database to use.
 
   DatabaseUser:
     Type: String
-    Description: The name of the database user to use
+    Description: The name of the database user to use.
 
   DatabasePassword:
     Type: String
-    Description: The encrypted database password
+    Description: The encrypted database password.
+
+  CookieDomain:
+    Type: String
+    Description: The domain name to use for the session cookie.
 
 Resources:
   ServiceRegistryRecord:
@@ -140,6 +144,8 @@ Resources:
               Value: !Ref DomainName
             - Name: Network__InternalIpv4Cidr
               Value: !ImportValue cfn-utilities:Ipv4NetworkCidr
+            - Name: App__CookieDomain
+              Value: !Ref CookieDomain
 
   ApplicationTopic:
     Type: AWS::SNS::Topic

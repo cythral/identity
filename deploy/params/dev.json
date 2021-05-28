@@ -1,5 +1,6 @@
 {
   "DomainName": "identity.dev.brigh.id",
+  "CookieDomain": "dev.brigh.id",
   "DatabaseName": "identity",
   "DatabaseUser": "identity",
   "DatabasePassword": "AQICAHjCPp/4JJqnSjdP1A4JZ+E3yC2Gqmk9GshiMiqu57jujwH9ROD+MleLvYJKKFe0cXrwAAAAcjBwBgkqhkiG9w0BBwagYzBhAgEAMFwGCSqGSIb3DQEHATAeBglghkgBZQMEAS4wEQQMMy+r0QrGB+/IRVaUAgEQgC8AaJ+noi1H+inOWfLLfQdXxN7KFh97jYeuZA6+atUVjq+vcikQ4PV/3Qj/RxzNVA=="
