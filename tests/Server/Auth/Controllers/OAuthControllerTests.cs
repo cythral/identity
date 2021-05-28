@@ -28,7 +28,8 @@ namespace Brighid.Identity.Auth
         [Category("Unit")]
         public class Exchange
         {
-            [Test, Auto]
+            [Test]
+            [Auto]
             public async Task ShouldGetOpenIdConnectRequest(
                 OpenIddictRequest request,
                 [Frozen, Substitute] HttpContext httpContext,
@@ -45,7 +46,8 @@ namespace Brighid.Identity.Auth
                 getOpenIdConnectRequest.Received()(Is(authController));
             }
 
-            [Test, Auto]
+            [Test]
+            [Auto]
             public async Task ShouldPerformClientExchange_AndSetPrincipal(
                 OpenIddictRequest request,
                 AuthenticationTicket ticket,
@@ -71,7 +73,8 @@ namespace Brighid.Identity.Auth
                 await authService.Received().ClientExchange(Is(request), Is(requestAborted));
             }
 
-            [Test, Auto]
+            [Test]
+            [Auto]
             public async Task ShouldPerformClientExchange_AndSetProperties(
                 OpenIddictRequest request,
                 AuthenticationTicket ticket,
@@ -97,7 +100,8 @@ namespace Brighid.Identity.Auth
                 await authService.Received().ClientExchange(Is(request), Is(requestAborted));
             }
 
-            [Test, Auto]
+            [Test]
+            [Auto]
             public async Task ShouldPerformClientExchange_AndSetScheme(
                 OpenIddictRequest request,
                 AuthenticationTicket ticket,
@@ -123,7 +127,8 @@ namespace Brighid.Identity.Auth
                 await authService.Received().ClientExchange(Is(request), Is(requestAborted));
             }
 
-            [Test, Auto]
+            [Test]
+            [Auto]
             public async Task ShouldThrowForUnknownGrantType(
                 OpenIddictRequest request,
                 AuthenticationTicket ticket,

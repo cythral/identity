@@ -21,6 +21,7 @@ services:
       Database__Password: ${DB_PASSWORD}
       EncryptionOptions__KmsKeyId: ${ENCRYPTION_KEY_ID}
       AWS_REGION: us-east-1
+      App__CookieDomain: localhost
 
   db:
     image: mariadb/server:10.4

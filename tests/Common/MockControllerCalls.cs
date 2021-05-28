@@ -6,5 +6,8 @@ using Brighid.Identity.Sns;
 
 public class MockControllerCalls : ConcurrentBag<CloudFormationResponse>
 {
-    public MockControllerCalls() : base() { }
+    public MockControllerCalls()
+        : base()
+    {
+    }
 }

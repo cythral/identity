@@ -7,10 +7,12 @@ namespace Brighid.Identity
     public class RestrictedToSelfPolicyRequirement : IAuthorizationRequirement
     {
         /// <summary>
-        /// Restricts an action which manipulates a user to the logged-in user only, unless the logged-in user is an Administrator.
+        /// Initializes a new instance of the <see cref="RestrictedToSelfPolicyRequirement" /> class. Restricts an action which manipulates a user to the logged-in user only, unless the logged-in user is an Administrator.
         /// This is done by matching a claim value to a route parameter value.
         /// </summary>
-        /// <param name="routeParameter"></param>
+        /// <param name="routeParameter">Route parameter to use.</param>
+        /// <param name="claimType">Type of claim to use.</param>
+        /// <param name="parse">Parse function to use.</param>
         public RestrictedToSelfPolicyRequirement(string routeParameter, string claimType, Func<string?, object?> parse)
         {
             RouteParameter = routeParameter;

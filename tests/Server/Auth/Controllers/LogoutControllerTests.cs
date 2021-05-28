@@ -1,5 +1,3 @@
-using System;
-using System.Security.Claims;
 using System.Threading.Tasks;
 
 using AutoFixture.AutoNSubstitute;
@@ -16,17 +14,20 @@ using NSubstitute;
 
 using NUnit.Framework;
 
-using static NSubstitute.Arg;
+#pragma warning disable SA1313
 
 namespace Brighid.Identity.Auth
 {
-    [TestFixture, Category("Unit")]
+    [TestFixture]
+    [Category("Unit")]
     public class LogoutControllerTests
     {
-        [TestFixture, Category("Unit")]
+        [TestFixture]
+        [Category("Unit")]
         public class LogoutTests
         {
-            [Test, Auto]
+            [Test]
+            [Auto]
             public async Task ShouldSignOut(
                 [Frozen, Substitute] SignInManager<User> signInManager,
                 [Target] LogoutController controller
@@ -36,7 +37,8 @@ namespace Brighid.Identity.Auth
                 await signInManager.Received().SignOutAsync();
             }
 
-            [Test, Auto]
+            [Test]
+            [Auto]
             public async Task ShouldRedirectToLogin(
                 [Frozen, Substitute] SignInManager<User> _,
                 [Target] LogoutController controller

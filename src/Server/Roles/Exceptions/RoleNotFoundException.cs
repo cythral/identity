@@ -6,7 +6,8 @@ namespace Brighid.Identity.Roles
 {
     public class RoleNotFoundException : Exception
     {
-        public RoleNotFoundException(string name) : base($"Role {name} was not found.")
+        public RoleNotFoundException(string name)
+            : base($"Role {name} was not found.")
         {
             RoleName = name;
         }

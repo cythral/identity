@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 
 using static OpenIddict.Abstractions.OpenIddictConstants;
+
 namespace Brighid.Identity.Auth
 {
     [Route("/oauth2/")]
@@ -35,4 +36,3 @@ namespace Brighid.Identity.Auth
         }
     }
 }
-

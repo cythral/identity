@@ -10,7 +10,7 @@ namespace Brighid.Identity.Roles
     [Roles(new[]
     {
         nameof(BuiltInRole.RoleManager),
-        nameof(BuiltInRole.Administrator)
+        nameof(BuiltInRole.Administrator),
     })]
     public class RoleController : EntityController<Role, Role, Guid, IRoleRepository, IRoleMapper, IRoleService>
     {
@@ -20,7 +20,8 @@ namespace Brighid.Identity.Roles
             IRoleMapper mapper,
             IRoleService service,
             IRoleRepository repository
-        ) : base(BasePath, mapper, service, repository)
+        )
+            : base(BasePath, mapper, service, repository)
         {
         }
 

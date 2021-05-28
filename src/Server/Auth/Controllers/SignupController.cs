@@ -12,7 +12,7 @@ namespace Brighid.Identity.Auth
     [Route("/signup")]
     public class SignupController : Controller
     {
-        private const string defaultRedirectUri = "/";
+        private const string DefaultRedirectUri = "/";
         private readonly SignInManager<User> signinManager;
         private readonly UserManager<User> userManager;
         private readonly IUserService userService;
@@ -29,14 +29,14 @@ namespace Brighid.Identity.Auth
         }
 
         [HttpGet]
-        public IActionResult Render([FromQuery(Name = "redirect_uri")] string? destination = defaultRedirectUri)
+        public IActionResult Render([FromQuery(Name = "redirect_uri")] string? destination = DefaultRedirectUri)
         {
-            destination ??= defaultRedirectUri;
+            destination ??= DefaultRedirectUri;
             return signinManager.IsSignedIn(User)
                 ? LocalRedirect(destination)
                 : View("~/Auth/Views/Signup.cshtml", new SignupRequest
                 {
-                    RedirectUri = new Uri(destination, UriKind.Relative)
+                    RedirectUri = new Uri(destination, UriKind.Relative),
                 });
         }
 
@@ -51,14 +51,23 @@ namespace Brighid.Identity.Auth
 
             try
             {
-                if (!ModelState.IsValid) { throw new SignupException(); }
+                if (!ModelState.IsValid)
+                {
+                    throw new SignupException();
+                }
 
-                if (request.Password != request.ConfirmPassword) { throw new SignupException("Passwords do not match."); }
+                if (request.Password != request.ConfirmPassword)
+                {
+                    throw new SignupException("Passwords do not match.");
+                }
 
                 var user = await userService.Create(request.Email, request.Password);
                 var signinResult = await signinManager.PasswordSignInAsync(user, request.Password, false, false);
 
-                if (!signinResult.Succeeded) { throw new SignupException("Unable to sign in."); }
+                if (!signinResult.Succeeded)
+                {
+                    throw new SignupException("Unable to sign in.");
+                }
 
                 return LocalRedirect(redirectUri);
             }

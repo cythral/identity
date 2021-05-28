@@ -20,11 +20,11 @@ namespace Brighid.Identity.LoginProviders
     [Category("Unit")]
     public class LoginProviderControllerTests
     {
-
         [Category("Unit")]
         public class GetUserByLoginProviderTests
         {
-            [Test, Auto]
+            [Test]
+            [Auto]
             public async Task ShouldReturnNotFound_IfUserDoesntExist(
                 string loginProvider,
                 string providerKey,
@@ -41,7 +41,8 @@ namespace Brighid.Identity.LoginProviders
                 await repository.Received().FindByLogin(Is(loginProvider), Is(providerKey), Any<string[]>());
             }
 
-            [Test, Auto]
+            [Test]
+            [Auto]
             public async Task ShouldReturnOk_IfUserExists(
                 string loginProvider,
                 string providerKey,

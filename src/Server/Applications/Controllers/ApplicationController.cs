@@ -24,14 +24,9 @@ namespace Brighid.Identity.Applications
             IApplicationMapper appMapper,
             IApplicationService appService,
             IApplicationRepository appRepository
-        ) : base(BasePath, appMapper, appService, appRepository)
+        )
+            : base(BasePath, appMapper, appService, appRepository)
         {
-        }
-
-        protected override void SetSnsContextItems(Guid id, Application data)
-        {
-            data.Secret = null;
-            base.SetSnsContextItems(id, data);
         }
 
         public override async Task<ActionResult<Application>> Create([FromBody] ApplicationRequest request)
@@ -40,7 +35,10 @@ namespace Brighid.Identity.Applications
             {
                 return await base.Create(request);
             }
-            catch (RoleNotFoundException e) { return BadRequest(new { e.Message }); }
+            catch (RoleNotFoundException e)
+            {
+                return BadRequest(new { e.Message });
+            }
             catch (AggregateException e)
             {
                 return BadRequest(new
@@ -49,6 +47,12 @@ namespace Brighid.Identity.Applications
                     ValidationErrors = from innerException in e.InnerExceptions select innerException.Message,
                 });
             }
+        }
+
+        protected override void SetSnsContextItems(Guid id, Application data)
+        {
+            data.Secret = null;
+            base.SetSnsContextItems(id, data);
         }
     }
 }

@@ -4,7 +4,6 @@ namespace Brighid.Identity.Sns
 {
     public interface ICloudFormationRequest<out T>
     {
-
         CloudFormationRequestType RequestType { get; }
 
         Uri ResponseURL { get; }

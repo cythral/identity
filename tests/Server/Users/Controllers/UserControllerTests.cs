@@ -24,7 +24,8 @@ namespace Brighid.Identity.Users
         [Category("Unit")]
         public class GetTests
         {
-            [Test, Auto]
+            [Test]
+            [Auto]
             public async Task ShouldReturnNotFound_IfUserDoesntExist(
                 Guid id,
                 [Frozen, Substitute] IUserRepository repository,
@@ -40,7 +41,8 @@ namespace Brighid.Identity.Users
                 await repository.Received().FindById(Is(id), Any<string[]>());
             }
 
-            [Test, Auto]
+            [Test]
+            [Auto]
             public async Task ShouldReturnOk_IfUserExists(
                 Guid id,
                 User user,
@@ -82,7 +84,8 @@ namespace Brighid.Identity.Users
                 attribute!.Template.Should().Be("{userId}/logins");
             }
 
-            [Test, Auto]
+            [Test]
+            [Auto]
             public async Task ShouldReturnNotFoundIfUserDoesntExist(
                 Guid id,
                 UserLogin loginInfo,
@@ -99,7 +102,8 @@ namespace Brighid.Identity.Users
                 await userService.Received().CreateLogin(Is(id), Is(loginInfo));
             }
 
-            [Test, Auto]
+            [Test]
+            [Auto]
             public async Task ShouldReturnConflictIfLoginAlreadyExists(
                 Guid id,
                 UserLogin loginInfo,
@@ -116,7 +120,8 @@ namespace Brighid.Identity.Users
                 await userService.Received().CreateLogin(Is(id), Is(loginInfo));
             }
 
-            [Test, Auto]
+            [Test]
+            [Auto]
             public async Task ShouldReturnBadRequestIfModelStateIsInvalid(
                 string error1,
                 string error2,
@@ -126,7 +131,6 @@ namespace Brighid.Identity.Users
                 [Target] UserController controller
             )
             {
-
                 userService.CreateLogin(Any<Guid>(), Any<UserLogin>()).Returns(loginInfo);
 
                 var controllerContext = new ControllerContext();
@@ -145,7 +149,8 @@ namespace Brighid.Identity.Users
                 errors.Should().Contain(error2);
             }
 
-            [Test, Auto]
+            [Test]
+            [Auto]
             public async Task ShouldRemoveUserPropertyModelStateErrors(
                 string nonUserError,
                 string userError,
@@ -173,7 +178,8 @@ namespace Brighid.Identity.Users
                 errors.Should().NotContain(userError);
             }
 
-            [Test, Auto]
+            [Test]
+            [Auto]
             public async Task ShouldReturnOkIfUserUserExists(
                 Guid id,
                 UserLogin requestedLoginInfo,

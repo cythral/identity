@@ -10,7 +10,6 @@ namespace Brighid.Identity
 {
     public class RestrictedToSelfPolicyHandler : AuthorizationHandler<RestrictedToSelfPolicyRequirement>
     {
-
 #pragma warning disable IDE0083, IDE0078
         protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, RestrictedToSelfPolicyRequirement requirement)
         {

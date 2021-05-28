@@ -19,18 +19,31 @@ using NUnit.Framework;
 
 using static NSubstitute.Arg;
 
-#pragma warning disable CA1040
+#pragma warning disable CA1040, SA1649, SA1649, SA1402
 
 namespace Brighid.Identity
 {
+    public interface IItemRepository : IRepository<Item, Guid>
+    {
+    }
 
-    public class Item { public Guid Id { get; set; } }
-    public class ItemRequest { public string Name { get; set; } }
+    public interface IItemMapper : IRequestToEntityMapper<ItemRequest, Item>
+    {
+    }
 
-    public interface IItemRepository : IRepository<Item, Guid> { }
-    public interface IItemMapper : IRequestToEntityMapper<ItemRequest, Item> { }
+    public interface IItemService : IEntityService<Item, Guid>
+    {
+    }
 
-    public interface IItemService : IEntityService<Item, Guid> { }
+    public class Item
+    {
+        public Guid Id { get; set; }
+    }
+
+    public class ItemRequest
+    {
+        public string Name { get; set; }
+    }
 
     public class ItemController : EntityController<Item, ItemRequest, Guid, IItemRepository, IItemMapper, IItemService>
     {
@@ -40,13 +53,14 @@ namespace Brighid.Identity
             IItemMapper mapper,
             IItemService service,
             IItemRepository repository
-        ) : base(BasePath, mapper, service, repository)
+        )
+            : base(BasePath, mapper, service, repository)
         {
         }
-
     }
 
-    [TestFixture, Category("Unit")]
+    [TestFixture]
+    [Category("Unit")]
     public class ApplicationControllerTests
     {
         public static HttpContext SetupHttpContext(Controller controller, IdentityRequestSource source = IdentityRequestSource.Direct)
@@ -60,10 +74,12 @@ namespace Brighid.Identity
             return httpContext;
         }
 
-        [TestFixture, Category("Unit")]
+        [TestFixture]
+        [Category("Unit")]
         public class CreateTests
         {
-            [Test, Auto]
+            [Test]
+            [Auto]
             public async Task ShouldMapCreateAndReturnItem(
                 ItemRequest request,
                 Item item,
@@ -84,7 +100,8 @@ namespace Brighid.Identity
                 await itemService.Received().Create(Is(item));
             }
 
-            [Test, Auto]
+            [Test]
+            [Auto]
             public async Task ShouldRedirectToApplicationPage(
                 Guid id,
                 ItemRequest request,
@@ -106,7 +123,8 @@ namespace Brighid.Identity
                 result.As<CreatedResult>().Location.Should().Be($"/api/items/{id}");
             }
 
-            [Test, Auto]
+            [Test]
+            [Auto]
             public async Task ShouldSetIdItemInHttpContext_IfRequestSourceIsSns(
                 Guid id,
                 ItemRequest request,
@@ -127,7 +145,8 @@ namespace Brighid.Identity
                 httpContext.Items[CloudFormationConstants.Id].Should().Be(id);
             }
 
-            [Test, Auto]
+            [Test]
+            [Auto]
             public async Task ShouldNotSetIdItemInHttpContext_IfRequestSourceIsDirect(
                 Guid id,
                 ItemRequest request,
@@ -148,7 +167,8 @@ namespace Brighid.Identity
                 httpContext.Items.Should().NotContainKey(CloudFormationConstants.Id);
             }
 
-            [Test, Auto]
+            [Test]
+            [Auto]
             public async Task ShouldSetDataItemInHttpContext_IfRequestSourceIsSns(
                 Guid id,
                 ItemRequest request,
@@ -170,7 +190,8 @@ namespace Brighid.Identity
                 httpContext.Items[CloudFormationConstants.Data].Should().Be(resultingItem);
             }
 
-            [Test, Auto]
+            [Test]
+            [Auto]
             public async Task ShouldNotSetDataItemInHttpContext_IfRequestSourceIsDirect(
                 Guid id,
                 Item item,
@@ -192,10 +213,12 @@ namespace Brighid.Identity
             }
         }
 
-        [TestFixture, Category("Unit")]
+        [TestFixture]
+        [Category("Unit")]
         public class GetByIdTests
         {
-            [Test, Auto]
+            [Test]
+            [Auto]
             public async Task ShouldReturnEntityIfItExists(
                 Guid id,
                 Item item,
@@ -213,7 +236,8 @@ namespace Brighid.Identity
                 await repository.Received().FindById(Is(id));
             }
 
-            [Test, Auto]
+            [Test]
+            [Auto]
             public async Task ShouldReturnNotFoundIfNotExists(
                 Guid id,
                 [Frozen, Substitute] IItemRepository repository,
@@ -230,10 +254,12 @@ namespace Brighid.Identity
             }
         }
 
-        [TestFixture, Category("Unit")]
+        [TestFixture]
+        [Category("Unit")]
         public class UpdateByIdTests
         {
-            [Test, Auto]
+            [Test]
+            [Auto]
             public async Task ShouldMapUpdateAndReturnApplication(
                 Guid id,
                 Item item,
@@ -256,7 +282,8 @@ namespace Brighid.Identity
                 await itemService.Received().UpdateById(Is(id), Is(item));
             }
 
-            [Test, Auto]
+            [Test]
+            [Auto]
             public async Task ShouldSetIdItemInHttpContext_IfRequestSourceIsSns(
                 Guid id,
                 Item item,
@@ -276,7 +303,8 @@ namespace Brighid.Identity
                 httpContext.Items[CloudFormationConstants.Id].Should().Be(id);
             }
 
-            [Test, Auto]
+            [Test]
+            [Auto]
             public async Task ShouldNotSetIdItemInHttpContext_IfRequestSourceIsDirect(
                 Guid id,
                 Item item,
@@ -296,7 +324,8 @@ namespace Brighid.Identity
                 httpContext.Items.Should().NotContainKey(CloudFormationConstants.Id);
             }
 
-            [Test, Auto]
+            [Test]
+            [Auto]
             public async Task ShouldSetDataItemInHttpContext_IfRequestSourceIsSns(
                 Guid id,
                 Item item,
@@ -317,7 +346,8 @@ namespace Brighid.Identity
                 httpContext.Items[CloudFormationConstants.Data].Should().Be(item);
             }
 
-            [Test, Auto]
+            [Test]
+            [Auto]
             public async Task ShouldNotSetDataItemInHttpContext_IfRequestSourceIsDirect(
                 Guid id,
                 Item item,
@@ -339,10 +369,12 @@ namespace Brighid.Identity
             }
         }
 
-        [TestFixture, Category("Unit")]
+        [TestFixture]
+        [Category("Unit")]
         public class DeleteByIdTests
         {
-            [Test, Auto]
+            [Test]
+            [Auto]
             public async Task ShouldUpdateAndReturnApplication(
                 Guid id,
                 Item item,
@@ -361,7 +393,8 @@ namespace Brighid.Identity
                 await itemService.Received().DeleteById(Is(id));
             }
 
-            [Test, Auto]
+            [Test]
+            [Auto]
             public async Task ShouldSetIdItemInHttpContext_IfRequestSourceIsSns(
                 Guid id,
                 Item item,
@@ -378,7 +411,8 @@ namespace Brighid.Identity
                 httpContext.Items[CloudFormationConstants.Id].Should().Be(id);
             }
 
-            [Test, Auto]
+            [Test]
+            [Auto]
             public async Task ShouldNotSetIdItemInHttpContext_IfRequestSourceIsDirect(
                 Guid id,
                 Item item,
@@ -395,7 +429,8 @@ namespace Brighid.Identity
                 httpContext.Items.Should().NotContainKey(CloudFormationConstants.Id);
             }
 
-            [Test, Auto]
+            [Test]
+            [Auto]
             public async Task ShouldSetDataItemInHttpContext_IfRequestSourceIsSns(
                 Guid id,
                 Item item,
@@ -413,7 +448,8 @@ namespace Brighid.Identity
                 httpContext.Items[CloudFormationConstants.Data].Should().Be(item);
             }
 
-            [Test, Auto]
+            [Test]
+            [Auto]
             public async Task ShouldNotSetDataItemInHttpContext_IfRequestSourceIsDirect(
                 Guid id,
                 Item item,

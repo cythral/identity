@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
+using System.Threading;
 
 using AutoFixture;
 using AutoFixture.AutoNSubstitute;
@@ -14,7 +15,10 @@ using PuppeteerSharp;
 
 internal class AutoAttribute : AutoDataAttribute
 {
-    public AutoAttribute() : base(Create) { }
+    public AutoAttribute()
+        : base(Create)
+    {
+    }
 
     public static IFixture Create()
     {
@@ -25,7 +29,7 @@ internal class AutoAttribute : AutoDataAttribute
             Stores = new StoreOptions
             {
                 ProtectPersonalData = false,
-            }
+            },
         }));
         fixture.Register(() =>
         {
@@ -41,7 +45,7 @@ internal class AutoAttribute : AutoDataAttribute
 
                         BrowserSetup.Browser = Puppeteer.LaunchAsync(new LaunchOptions
                         {
-                            Args = args
+                            Args = args,
                         }).GetAwaiter().GetResult();
                     }
                     catch (FileNotFoundException)
@@ -54,7 +58,9 @@ internal class AutoAttribute : AutoDataAttribute
 
             return BrowserSetup.Browser;
         });
+
         fixture.Register(() => AppFactory.Create().GetAwaiter().GetResult());
+        fixture.Inject(new CancellationToken(false));
         fixture.Customize(new AutoNSubstituteCustomization { ConfigureMembers = true });
         fixture.Customizations.Add(new TypeOmitter<JsonElement>());
         fixture.Customizations.Insert(-1, new TargetRelay());
@@ -66,5 +72,4 @@ internal class AutoAttribute : AutoDataAttribute
         fixture.Behaviors.Add(new OmitOnRecursionBehavior());
         return fixture;
     }
-
 }

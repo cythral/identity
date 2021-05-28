@@ -11,13 +11,10 @@ using EFEntityState = Microsoft.EntityFrameworkCore.EntityState;
 
 namespace Brighid.Identity
 {
-    public abstract class Repository<TEntity, TPrimaryKeyType> : IRepository<TEntity, TPrimaryKeyType> where TEntity : class where TPrimaryKeyType : notnull
+    public abstract class Repository<TEntity, TPrimaryKeyType> : IRepository<TEntity, TPrimaryKeyType>
+        where TEntity : class
+        where TPrimaryKeyType : notnull
     {
-        protected DatabaseContext Context { get; private set; }
-        protected DbSet<TEntity> Set { get; private set; }
-        protected static string? PrimaryKeyName { get; private set; }
-        protected static Action<TEntity, TPrimaryKeyType>? SetPrimaryKey { get; private set; } = null!;
-
         public Repository(DatabaseContext context)
         {
             Context = context;
@@ -39,6 +36,14 @@ namespace Brighid.Identity
         }
 
         public virtual IQueryable<TEntity> All => Set.AsQueryable();
+
+        protected static string? PrimaryKeyName { get; private set; }
+
+        protected static Action<TEntity, TPrimaryKeyType>? SetPrimaryKey { get; private set; } = null!;
+
+        protected DatabaseContext Context { get; private set; }
+
+        protected DbSet<TEntity> Set { get; private set; }
 
         public virtual async Task<IEnumerable<TEntity>> List()
         {
@@ -78,7 +83,10 @@ namespace Brighid.Identity
                 return await Add(entity);
             }
 #pragma warning disable CA1031
-            catch (Exception) { return null; }
+            catch (Exception)
+            {
+                return null;
+            }
 #pragma warning restore CA1031
         }
 

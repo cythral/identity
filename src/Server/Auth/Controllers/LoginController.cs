@@ -13,25 +13,27 @@ namespace Brighid.Identity.Auth
     [Route("/login")]
     public class LoginController : Controller
     {
-        private const string defaultRedirectUri = "/";
+        private const string DefaultRedirectUri = "/";
 
         private readonly SignInManager<User> signinManager;
+        private readonly IAuthService authService;
 
-        public LoginController(SignInManager<User> signinManager)
+        public LoginController(SignInManager<User> signinManager, IAuthService authService)
         {
             this.signinManager = signinManager;
+            this.authService = authService;
         }
 
         [HttpGet]
-        public IActionResult Render([FromQuery(Name = "redirect_uri")] string? destination = defaultRedirectUri)
+        public IActionResult Render([FromQuery(Name = "redirect_uri")] string? destination = DefaultRedirectUri)
         {
-            destination ??= defaultRedirectUri;
+            destination ??= DefaultRedirectUri;
 
             return signinManager.IsSignedIn(User)
                 ? LocalRedirect(destination)
                 : View("~/Auth/Views/Login.cshtml", new LoginRequest
                 {
-                    RedirectUri = new Uri(destination, UriKind.Relative)
+                    RedirectUri = new Uri(destination, UriKind.Relative),
                 });
         }
 
@@ -47,13 +49,8 @@ namespace Brighid.Identity.Auth
                     throw new LoginException();
                 }
 
-                var result = await signinManager.PasswordSignInAsync(request.Email, request.Password, false, false);
-                if (!result.Succeeded)
-                {
-                    throw new LoginException("Username and/or password were incorrect.");
-                }
-
-                return LocalRedirect(redirectUri);
+                var ticket = await authService.PasswordExchange(request.Email, request.Password, request.RedirectUri, HttpContext.RequestAborted);
+                return SignIn(ticket.Principal, ticket.Properties, ticket.AuthenticationScheme);
             }
             catch (LoginException e)
             {

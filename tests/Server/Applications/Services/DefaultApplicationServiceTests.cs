@@ -16,7 +16,7 @@ using OpenIddict.EntityFrameworkCore.Models;
 
 using static NSubstitute.Arg;
 
-#pragma warning disable IDE0060, CA1801
+#pragma warning disable IDE0060, CA1801, SA1313
 
 namespace Brighid.Identity.Applications
 {
@@ -26,7 +26,8 @@ namespace Brighid.Identity.Applications
         [Category("Unit")]
         public class CreateTests
         {
-            [Test, Auto]
+            [Test]
+            [Auto]
             public async Task ShouldCreateANewApplication(
                 Application application,
                 [Frozen, Substitute] IApplicationRepository applicationRepository,
@@ -38,7 +39,8 @@ namespace Brighid.Identity.Applications
                 await applicationRepository.Received().Add(application);
             }
 
-            [Test, Auto]
+            [Test]
+            [Auto]
             public async Task ShouldSaveApplicationDetailsToTheDatabaseAndReturnWithSecret(
                 string clientSecret,
                 Application application,
@@ -67,7 +69,8 @@ namespace Brighid.Identity.Applications
                 generateRandomString.Received()(Is(128));
             }
 
-            [Test, Auto]
+            [Test]
+            [Auto]
             public async Task ShouldCreateAnOpenIdDictApplication(
                 string clientSecret,
                 Application application,
@@ -96,7 +99,8 @@ namespace Brighid.Identity.Applications
         [Category("Unit")]
         public class UpdateTests
         {
-            [Test, Auto]
+            [Test]
+            [Auto]
             public async Task ShouldFetchExistingAppWithRoleEmbedded(
                 Guid id,
                 Application application,
@@ -112,7 +116,8 @@ namespace Brighid.Identity.Applications
                 await repository.Received().FindById(Is(id), Is("Roles"));
             }
 
-            [Test, Auto]
+            [Test]
+            [Auto]
             public async Task ShouldThrowIfEntityDoesntExist(
                 Guid id,
                 Application application,
@@ -127,7 +132,8 @@ namespace Brighid.Identity.Applications
                 await func.Should().ThrowAsync<UpdateApplicationException>();
             }
 
-            [Test, Auto]
+            [Test]
+            [Auto]
             public async Task ShouldSaveAppWithUpdatedName(
                 ulong serial,
                 Guid id,
@@ -147,7 +153,8 @@ namespace Brighid.Identity.Applications
                 ));
             }
 
-            [Test, Auto]
+            [Test]
+            [Auto]
             public async Task ShouldSaveAppWithUpdatedDescription(
                 ulong serial,
                 Guid id,
@@ -167,7 +174,8 @@ namespace Brighid.Identity.Applications
                 ));
             }
 
-            [Test, Auto]
+            [Test]
+            [Auto]
             public async Task ShouldSaveAppWithUpdatedSerial(
                 Guid id,
                 Application existingApp,
@@ -190,7 +198,8 @@ namespace Brighid.Identity.Applications
                 ));
             }
 
-            [Test, Auto]
+            [Test]
+            [Auto]
             public async Task ShouldSaveAppWithUpdatedEncryptedSecret_IfSerialChanged(
                 string secret,
                 string encryptedSecret,
@@ -222,7 +231,8 @@ namespace Brighid.Identity.Applications
                 ));
             }
 
-            [Test, Auto]
+            [Test]
+            [Auto]
             public async Task ShouldNotSaveAppWithUpdatedEncryptedSecret_IfSerialDidNotChange(
                 string secret,
                 string encryptedSecret,
@@ -250,7 +260,8 @@ namespace Brighid.Identity.Applications
                 ));
             }
 
-            [Test, Auto]
+            [Test]
+            [Auto]
             public async Task ShouldReturnAppWithUpdatedSecret_IfSerialChanged(
                 string secret,
                 string encryptedSecret,
@@ -278,7 +289,8 @@ namespace Brighid.Identity.Applications
                 result.Secret.Should().Be(secret);
             }
 
-            [Test, Auto]
+            [Test]
+            [Auto]
             public async Task ShouldNotReturnAppWithUpdatedSecret_IfSerialDidNotChange(
                 string secret,
                 string encryptedSecret,
@@ -302,7 +314,8 @@ namespace Brighid.Identity.Applications
                 result.Secret.Should().NotBe(secret);
             }
 
-            [Test, Auto]
+            [Test]
+            [Auto]
             public async Task ShouldUpdateOpenIdAppClientSecret_IfSerialChanged(
                 string secret,
                 Guid id,
@@ -334,7 +347,8 @@ namespace Brighid.Identity.Applications
         [Category("Unit")]
         public class DeleteTests
         {
-            [Test, Auto]
+            [Test]
+            [Auto]
             public async Task ShouldDeleteTheApplication(
                 Guid id,
                 [Frozen, Substitute] OpenIddictApplicationManager<OpenIddictEntityFrameworkCoreApplication> applicationManager,
@@ -350,7 +364,8 @@ namespace Brighid.Identity.Applications
                 await repository.Received().Remove(Is(id));
             }
 
-            [Test, Auto]
+            [Test]
+            [Auto]
             public async Task ShouldDeleteTheApplicationCredentials(
                 Guid id,
                 [Frozen, Substitute] OpenIddictApplicationManager<OpenIddictEntityFrameworkCoreApplication> applicationManager,
@@ -366,7 +381,8 @@ namespace Brighid.Identity.Applications
                 await applicationManager.Received().DeleteAsync(Is(openIddictApplication));
             }
 
-            [Test, Auto]
+            [Test]
+            [Auto]
             public async Task ShouldReturnTheApplication(
                 Guid id,
                 Application application,

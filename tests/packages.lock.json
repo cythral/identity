@@ -61,9 +61,9 @@
       },
       "Microsoft.CodeAnalysis.CSharp.CodeStyle": {
         "type": "Direct",
-        "requested": "[3.8.0-5.final, )",
-        "resolved": "3.8.0-5.final",
-        "contentHash": "fc0GooFJCJUbAXuatlAhKJw3Uv3ZL9p3zVVn+Ew4U8q0jZY+aTa1fRtn1IrjeZx7rbzNrrQbJX8S90VZhOwJ/g=="
+        "requested": "[3.9.0, )",
+        "resolved": "3.9.0",
+        "contentHash": "g6W0Qsdt28XGWRvxlb91//Jk0+9XsndLh+A8c0wpFUOXxJ+tTy0PPX9NcjJN1H/n3nFlv5nCK6j7bykElbNcJg=="
       },
       "Microsoft.NET.Test.Sdk": {
         "type": "Direct",
@@ -131,6 +131,15 @@
         "resolved": "6.0.0",
         "contentHash": "bStGNqIX/MGYtML7K3EzdsE/k5HGVAcg7XgN23TQXGXqxNC9fvYFR94fA0sGM5hAT36R+BBGet6ZDQxXL/IPxg=="
       },
+      "StyleCop.Analyzers": {
+        "type": "Direct",
+        "requested": "[1.2.0-beta.333, )",
+        "resolved": "1.2.0-beta.333",
+        "contentHash": "o2r6o6TVTb6VdTtWEYT88/SgixcujjZ3gXMktvI/aNkA3y0CxUSVZEL23OjFe4/sDiTvldkdhKEyAQP9Z8r5wA==",
+        "dependencies": {
+          "StyleCop.Analyzers.Unstable": "1.2.0.333"
+        }
+      },
       "AspNetCore.ServiceRegistration.Dynamic": {
         "type": "Transitive",
         "resolved": "1.2.0",
@@ -150,15 +159,23 @@
       },
       "AWSSDK.Core": {
         "type": "Transitive",
-        "resolved": "3.5.1.41",
-        "contentHash": "l+XvNGhWIeIIht4T+hmuif1IJ2ChNjwUu0YIeDUjCtW2vm0GT3k8o3W5/vBl9cwS7S4PBly1Mo9vrOaG7AIrXw=="
+        "resolved": "3.7.0.29",
+        "contentHash": "RXeNNVehUDF/hTdeOfbHjjMyt9UciPifhtcrOScKHN+04sENBGdahZjvQHb+uw7XNJuzeFWdGgvibNNRfXYyDA=="
       },
       "AWSSDK.KeyManagementService": {
         "type": "Transitive",
-        "resolved": "3.5.0.41",
-        "contentHash": "2bp0KqzvCNJsmoUZtwf0Ae0TyZWLKQi3WVqEQd17H49lUejGxK46IVcqtMmJSHqZzmORTQNeX7oZaldO1cW8Vw==",
+        "resolved": "3.7.0",
+        "contentHash": "EUX4o+fAVj/Nxq1/Z0gG0vbJRS/lelkRSj5MXUqVUifGyVUngTC0fVHusPU7Q593fjdgLsJwT/KUow6m8/72nw==",
         "dependencies": {
-          "AWSSDK.Core": "[3.5.1.41, 3.6.0)"
+          "AWSSDK.Core": "[3.7.0, 3.8.0)"
+        }
+      },
+      "AWSSDK.SimpleSystemsManagement": {
+        "type": "Transitive",
+        "resolved": "3.7.3.10",
+        "contentHash": "sK4EWfH3Q/TCNnYOGbWejbNMTIqOn7lFa34/pzYIHQpNTG18368+zHZk2cuID+AT+7QWJ+CzE5zr4GsXnW9u8Q==",
+        "dependencies": {
+          "AWSSDK.Core": "[3.7.0.29, 4.0.0)"
         }
       },
       "Castle.Core": {
@@ -1095,6 +1112,11 @@
         "type": "Transitive",
         "resolved": "4.3.2",
         "contentHash": "leXiwfiIkW7Gmn7cgnNcdtNAU70SjmKW3jxGj1iKHOvdn0zRWsgv/l2OJUO5zdGdiv2VRFnAsxxhDgMzofPdWg=="
+      },
+      "StyleCop.Analyzers.Unstable": {
+        "type": "Transitive",
+        "resolved": "1.2.0.333",
+        "contentHash": "7mwxcwa3xZnyU71OTqSgntCDpsZ5gkc4saXhuJeyg5Xc+3xiQxzyhy26uG8rVF8Z7GKpXCsHCL3rd5ZomA+a/A=="
       },
       "Swashbuckle.AspNetCore": {
         "type": "Transitive",
@@ -2033,7 +2055,8 @@
       "server": {
         "type": "Project",
         "dependencies": {
-          "AWSSDK.KeyManagementService": "3.5.0.41",
+          "AWSSDK.KeyManagementService": "3.7.0",
+          "AWSSDK.SimpleSystemsManagement": "3.7.3.10",
           "AspNetCore.ServiceRegistration.Dynamic": "1.2.0",
           "Flurl": "3.0.0",
           "Flurl.Http": "3.0.0",

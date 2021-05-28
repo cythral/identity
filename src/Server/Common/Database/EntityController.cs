@@ -13,11 +13,6 @@ namespace Brighid.Identity
         where TRepository : IRepository<TEntity, TPrimaryKey>
         where TService : IEntityService<TEntity, TPrimaryKey>
     {
-        protected string BaseAddress { get; }
-        protected TService Service { get; }
-        protected TRepository Repository { get; }
-        protected TMapper Mapper { get; }
-
         public EntityController(
             string baseAddress,
             TMapper mapper,
@@ -31,20 +26,13 @@ namespace Brighid.Identity
             Repository = repository;
         }
 
-        private void TrySetSnsContextItems(TPrimaryKey id, TEntity data)
-        {
-            var requestType = HttpContext.Items[Constants.RequestSource] as IdentityRequestSource?;
-            if (requestType == IdentityRequestSource.Sns)
-            {
-                SetSnsContextItems(id, data);
-            }
-        }
+        protected string BaseAddress { get; }
 
-        protected virtual void SetSnsContextItems(TPrimaryKey id, TEntity data)
-        {
-            HttpContext.Items[CloudFormationConstants.Id] = id;
-            HttpContext.Items[CloudFormationConstants.Data] = data;
-        }
+        protected TService Service { get; }
+
+        protected TRepository Repository { get; }
+
+        protected TMapper Mapper { get; }
 
         [HttpPost]
         public virtual async Task<ActionResult<TEntity>> Create([FromBody] TEntityRequest request)
@@ -79,6 +67,21 @@ namespace Brighid.Identity
             var result = await Service.DeleteById(id);
             TrySetSnsContextItems(id, result);
             return Ok(result);
+        }
+
+        protected virtual void SetSnsContextItems(TPrimaryKey id, TEntity data)
+        {
+            HttpContext.Items[CloudFormationConstants.Id] = id;
+            HttpContext.Items[CloudFormationConstants.Data] = data;
+        }
+
+        private void TrySetSnsContextItems(TPrimaryKey id, TEntity data)
+        {
+            var requestType = HttpContext.Items[Constants.RequestSource] as IdentityRequestSource?;
+            if (requestType == IdentityRequestSource.Sns)
+            {
+                SetSnsContextItems(id, data);
+            }
         }
     }
 }

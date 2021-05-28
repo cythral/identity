@@ -23,6 +23,7 @@ namespace Brighid.Identity
         /// Initializes a new instance of the <see cref="DefaultEncryptionService" /> class.
         /// </summary>
         /// <param name="kmsClient">The KMS Client to use when decrypting values.</param>
+        /// <param name="encryptionOptions">Options to use when encrypting strings.</param>
         public DefaultEncryptionService(IAmazonKeyManagementService kmsClient, IOptions<EncryptionOptions> encryptionOptions)
         {
             this.kmsClient = kmsClient;
@@ -33,6 +34,7 @@ namespace Brighid.Identity
         /// Decrypts a value and returns it as a plaintext string.
         /// </summary>
         /// <param name="plaintext">The plaintext to encrypt.</param>
+        /// <param name="cancellationToken">Token used to cancel the operation.</param>
         /// <returns>The plaintext encrypted value.</returns>
         public virtual async Task<string> Encrypt(string plaintext, CancellationToken cancellationToken)
         {

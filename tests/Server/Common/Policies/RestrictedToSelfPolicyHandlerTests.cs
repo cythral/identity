@@ -18,6 +18,8 @@ using NUnit.Framework;
 
 using static NSubstitute.Arg;
 
+#pragma warning disable SA1402, SA1649
+
 namespace Brighid.Identity
 {
     public static class RestrictedToSelfPolicyHandlerExtensions
@@ -34,8 +36,8 @@ namespace Brighid.Identity
     [Category("Unit")]
     public class RestrictedToSelfPolicyHandlerTests
     {
-
-        [Test, Auto]
+        [Test]
+        [Auto]
         public async Task ShouldSucceed_IfResourceIsNotHttpContext(
             object resource,
             RestrictedToSelfPolicyRequirement requirement,
@@ -51,7 +53,8 @@ namespace Brighid.Identity
             context.DidNotReceive().Fail();
         }
 
-        [Test, Auto]
+        [Test]
+        [Auto]
         public async Task ShouldFail_IfResourceIsEndpoint_AndClaimDoesntMatchValueFromRoute(
             string routeUserId,
             string loggedInUserId,
@@ -78,7 +81,8 @@ namespace Brighid.Identity
             context.DidNotReceive().Succeed(Any<IAuthorizationRequirement>());
         }
 
-        [Test, Auto]
+        [Test]
+        [Auto]
         public async Task ShouldFail_IfResourceIsEndpoint_AndRouteValueIsNull(
             [Substitute, Frozen] Func<string?, object?> parse,
             RestrictedToSelfPolicyRequirement requirement,
@@ -101,7 +105,8 @@ namespace Brighid.Identity
             context.DidNotReceive().Succeed(Any<IAuthorizationRequirement>());
         }
 
-        [Test, Auto]
+        [Test]
+        [Auto]
         public async Task ShouldSucceed_IfResourceIsEndpoint_AndClaimMatchesValueFromRoute(
             string userId,
             string parsedUserId,
@@ -129,7 +134,8 @@ namespace Brighid.Identity
             context.DidNotReceive().Fail();
         }
 
-        [Test, Auto]
+        [Test]
+        [Auto]
         public async Task ShouldSucceed_IfResourceIsEndpoint_IfIdsAreMismatched_ButUserIsAdministrator(
             string userId,
             string mismatchedUserId,
