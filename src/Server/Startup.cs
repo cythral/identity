@@ -1,13 +1,15 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
-using System.Net;
+using System.Security.Cryptography.X509Certificates;
 using System.Security.Principal;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 using Amazon.KeyManagementService;
+using Amazon.SimpleSystemsManagement;
 
 using AspNetCore.ServiceRegistration.Dynamic.Attributes;
 using AspNetCore.ServiceRegistration.Dynamic.Extensions;
@@ -19,7 +21,6 @@ using Brighid.Identity.Users;
 
 using Flurl.Http;
 
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -29,6 +30,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 
 using static OpenIddict.Abstractions.OpenIddictConstants;
@@ -46,6 +48,7 @@ namespace Brighid.Identity
             DatabaseConfig = Configuration.GetSection("Database").Get<DatabaseConfig>() ?? new DatabaseConfig();
             OpenIdConfig = Configuration.GetSection("OpenId").Get<OpenIdConfig>() ?? new OpenIdConfig();
             NetworkConfig = Configuration.GetSection("Network").Get<NetworkConfig>() ?? new NetworkConfig();
+            AppConfig = Configuration.GetSection("App").Get<AppConfig>() ?? new AppConfig();
         }
 
         public IWebHostEnvironment Environment { get; }
@@ -53,9 +56,38 @@ namespace Brighid.Identity
         public DatabaseConfig DatabaseConfig { get; }
         public OpenIdConfig OpenIdConfig { get; }
         public NetworkConfig NetworkConfig { get; }
+        public AppConfig AppConfig { get; }
 
         public void ConfigureServices(IServiceCollection services)
         {
+            var tokenValidationParameters = new TokenValidationParameters
+            {
+                RequireSignedTokens = true,
+                ValidateIssuerSigningKey = true,
+                RequireExpirationTime = true,
+                ValidateAudience = false,
+                ValidateIssuer = true,
+                RoleClaimType = Claims.Role,
+                ValidIssuers = new string[] { $"https://{OpenIdConfig.DomainName}/", $"http://{OpenIdConfig.DomainName}/" },
+                ClockSkew = TimeSpan.FromMinutes(5),
+            };
+
+            if (Directory.Exists(OpenIdConfig.CertificatesDirectory))
+            {
+                var issuerSigningKeys = new List<SecurityKey>();
+                foreach (var file in Directory.GetFiles(OpenIdConfig.CertificatesDirectory))
+                {
+                    var certificate = new X509Certificate2(file);
+                    issuerSigningKeys.Add(new X509SecurityKey(certificate));
+                }
+
+                tokenValidationParameters.IssuerSigningKeys = issuerSigningKeys;
+            }
+            else
+            {
+                tokenValidationParameters.IssuerSigningKeys = new[] { Utils.GenerateDevelopmentSecurityKey() };
+            }
+
             services
             .AddControllers()
             .AddJsonOptions(options =>
@@ -64,9 +96,12 @@ namespace Brighid.Identity
                 options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
             });
 
+            services.Configure<OpenIdConfig>(Configuration.GetSection("OpenId"));
             services.Configure<EncryptionOptions>(Configuration.GetSection("EncryptionOptions"));
             services.AddHealthChecks();
+            services.AddSingleton(tokenValidationParameters);
             services.AddSingleton<IAmazonKeyManagementService, AmazonKeyManagementServiceClient>();
+            services.AddSingleton<IAmazonSimpleSystemsManagement, AmazonSimpleSystemsManagementClient>();
             services.AddServicesWithAttributeOfType<ScopedServiceAttribute>();
             services.AddServicesWithAttributeOfType<SingletonServiceAttribute>();
             services.AddDbContextPool<DatabaseContext>(ConfigureDatabaseOptions);
@@ -92,10 +127,6 @@ namespace Brighid.Identity
             services.Remove(oldUserManagerDescriptor);
             services.AddScoped<UserManager<User>, DefaultUserManager>();
 
-            var oldSignInManagerDescriptor = services.First(descriptor => descriptor.ServiceType == typeof(SignInManager<User>));
-            services.Remove(oldSignInManagerDescriptor);
-            services.AddScoped<SignInManager<User>, DefaultSignInManager>();
-
             services.AddTransient(provider =>
             {
                 var user = provider.GetService<IHttpContextAccessor>()?.HttpContext?.User;
@@ -112,36 +143,14 @@ namespace Brighid.Identity
             services.ConfigureApplicationCookie(options =>
             {
                 options.LoginPath = "/login";
-                options.Events = new CookieAuthenticationEvents
-                {
-                    OnRedirectToAccessDenied = context =>
-                    {
-                        if (context.Request.Path.StartsWithSegments("/api"))
-                        {
-                            context.Response.StatusCode = 403;
-                        }
-                        else
-                        {
-                            context.Response.Redirect(context.RedirectUri);
-                        }
-                        return Task.FromResult(0);
-                    },
-                    OnRedirectToLogin = context =>
-                    {
-                        if (context.Request.Path.StartsWithSegments("/api"))
-                        {
-                            context.Response.StatusCode = 401;
-                        }
-                        else
-                        {
-                            context.Response.Redirect(context.RedirectUri);
-                        }
-                        return Task.FromResult(0);
-                    }
-                };
+                options.Cookie.Domain = AppConfig.CookieDomain;
+                options.Cookie.Name = AppConfig.CookieName;
+                options.ReturnUrlParameter = AppConfig.RedirectUriParameter;
+                options.TicketDataFormat = new AuthTicketFormat(tokenValidationParameters);
+                options.Events = new IdentityCookieAuthenticationEvents();
             });
 
-            services.AddOpenId(OpenIdConfig);
+            services.AddOpenId(OpenIdConfig, tokenValidationParameters);
             services.AddAuthorization(options =>
             {
                 options.AddPolicy(nameof(IdentityPolicy.RestrictedToSelfByUserId), policy =>

@@ -1,5 +1,6 @@
 using System;
 using System.Security.Claims;
+using System.Threading;
 using System.Threading.Tasks;
 
 using AutoFixture.AutoNSubstitute;
@@ -9,16 +10,19 @@ using Brighid.Identity.Users;
 
 using FluentAssertions;
 
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 
 using NSubstitute;
+using NSubstitute.ExceptionExtensions;
 
 using NUnit.Framework;
 
 using static NSubstitute.Arg;
 
-using SignInResult = Microsoft.AspNetCore.Identity.SignInResult;
+using SignInResult = Microsoft.AspNetCore.Mvc.SignInResult;
 
 namespace Brighid.Identity.Auth
 {
@@ -103,7 +107,6 @@ namespace Brighid.Identity.Auth
                 request.RedirectUri = new Uri(destination, UriKind.Relative);
                 loginController.ModelState.AddModelError("loginError", "Invalid Model State");
                 signInManager.IsSignedIn(Any<ClaimsPrincipal>()).Returns(false);
-                signInManager.PasswordSignInAsync(Any<string>(), Any<string>(), Any<bool>(), Any<bool>()).Returns(SignInResult.Success);
 
                 var result = await loginController.Login(request) as ViewResult;
 
@@ -116,40 +119,42 @@ namespace Brighid.Identity.Auth
             public async Task ShouldAddModelError_IfSigninFails(
                 string destination,
                 LoginRequest request,
+                [Frozen] HttpContext httpContext,
                 [Frozen, Substitute] SignInManager<User> signInManager,
+                [Frozen, Substitute] IAuthService authService,
                 [Target] LoginController loginController
             )
             {
                 request.RedirectUri = new Uri(destination, UriKind.Relative);
+                authService.PasswordExchange(Any<string>(), Any<string>(), Any<Uri>(), Any<CancellationToken>()).Throws<InvalidCredentialsException>();
                 signInManager.IsSignedIn(Any<ClaimsPrincipal>()).Returns(false);
-                signInManager.PasswordSignInAsync(Any<string>(), Any<string>(), Any<bool>(), Any<bool>()).Returns(SignInResult.Failed);
+                var tempDataProvider = Substitute.For<ITempDataProvider>();
+                var tempDataDictionaryFactory = new TempDataDictionaryFactory(tempDataProvider);
+                var tempData = tempDataDictionaryFactory.GetTempData(new DefaultHttpContext());
 
+                loginController.TempData = tempData;
+                loginController.ControllerContext = new ControllerContext { HttpContext = httpContext };
                 var result = await loginController.Login(request) as ViewResult;
 
-                await signInManager.Received().PasswordSignInAsync(Is(request.Email), Is(request.Password), Is(false), Is(false));
                 var errors = loginController.ModelState["loginErrors"].Errors;
-
                 result!.Should().NotBeNull();
                 result!.ViewName.Should().Be("~/Auth/Views/Login.cshtml");
                 errors.Should().Contain(error => error.ErrorMessage == "Username and/or password were incorrect.");
             }
 
             [Test, Auto]
-            public async Task ShouldRedirectToDestination_IfLoginSucceeds(
+            public async Task ShouldReturnASignInResultOnSuccess(
                 string destination,
                 LoginRequest request,
-                [Frozen, Substitute] SignInManager<User> signInManager,
+                [Frozen, Substitute] HttpContext httpContext,
                 [Target] LoginController loginController
             )
             {
+                loginController.ControllerContext = new ControllerContext { HttpContext = httpContext };
                 request.RedirectUri = new Uri(destination, UriKind.Relative);
 
-                signInManager.IsSignedIn(Any<ClaimsPrincipal>()).Returns(false);
-                signInManager.PasswordSignInAsync(Any<string>(), Any<string>(), Any<bool>(), Any<bool>()).Returns(SignInResult.Success);
-
-                var result = await loginController.Login(request) as LocalRedirectResult;
-                result!.Should().NotBeNull();
-                result!.Url.Should().Be(destination);
+                var result = await loginController.Login(request);
+                result!.Should().BeOfType<SignInResult>();
             }
         }
     }

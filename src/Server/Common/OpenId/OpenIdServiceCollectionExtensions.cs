@@ -1,9 +1,6 @@
 using System;
-using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
-using System.IO;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 
 using Brighid.Identity;
@@ -18,9 +15,7 @@ namespace Microsoft.Extensions.DependencyInjection
 {
     public static class OpenIdServiceCollectionExtensions
     {
-        private static readonly HashSet<IServiceCollection> servicesWithDevelopmentCertificates = new();
-
-        public static void AddOpenId(this IServiceCollection services, OpenIdConfig openIdOptions)
+        public static void AddOpenId(this IServiceCollection services, OpenIdConfig openIdOptions, TokenValidationParameters tokenValidationParameters)
         {
             services
             .AddOpenIddict()
@@ -50,17 +45,9 @@ namespace Microsoft.Extensions.DependencyInjection
                 options.DisableAccessTokenEncryption();
                 options.AddEphemeralEncryptionKey();
 
-                if (!Directory.Exists(openIdOptions.CertificatesDirectory) && !servicesWithDevelopmentCertificates.Contains(services))
+                foreach (var signingKey in tokenValidationParameters.IssuerSigningKeys)
                 {
-                    options.AddDevelopmentSigningCertificate();
-                    servicesWithDevelopmentCertificates.Add(services);
-                    return;
-                }
-
-                foreach (var file in Directory.GetFiles(openIdOptions.CertificatesDirectory))
-                {
-                    var certificate = new X509Certificate2(file);
-                    options.AddSigningCertificate(certificate);
+                    options.AddSigningKey(signingKey);
                 }
             })
             .AddValidation(options =>
@@ -102,17 +89,7 @@ namespace Microsoft.Extensions.DependencyInjection
                 options.RefreshOnIssuerKeyNotFound = true;
                 options.RequireHttpsMetadata = false;
                 options.MetadataAddress = $"http://localhost/.well-known/openid-configuration";
-                options.TokenValidationParameters = new TokenValidationParameters
-                {
-                    RequireSignedTokens = true,
-                    ValidateIssuerSigningKey = true,
-                    RequireExpirationTime = true,
-                    ValidateAudience = false,
-                    ValidateIssuer = true,
-                    RoleClaimType = Claims.Role,
-                    ValidIssuers = new string[] { $"https://{openIdOptions.DomainName}/", $"http://{openIdOptions.DomainName}/" },
-                    ClockSkew = TimeSpan.FromMinutes(5),
-                };
+                options.TokenValidationParameters = tokenValidationParameters;
             });
         }
     }

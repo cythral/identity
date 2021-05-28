@@ -2,13 +2,17 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
+using System.Threading;
 
 using AutoFixture;
 using AutoFixture.AutoNSubstitute;
 using AutoFixture.NUnit3;
 
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.Extensions.Options;
+
+using NSubstitute;
 
 using PuppeteerSharp;
 
@@ -54,7 +58,9 @@ internal class AutoAttribute : AutoDataAttribute
 
             return BrowserSetup.Browser;
         });
+
         fixture.Register(() => AppFactory.Create().GetAwaiter().GetResult());
+        fixture.Inject(new CancellationToken(false));
         fixture.Customize(new AutoNSubstituteCustomization { ConfigureMembers = true });
         fixture.Customizations.Add(new TypeOmitter<JsonElement>());
         fixture.Customizations.Insert(-1, new TargetRelay());

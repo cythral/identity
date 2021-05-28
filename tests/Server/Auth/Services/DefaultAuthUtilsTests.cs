@@ -2,12 +2,16 @@ using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
+using System.Text.Json;
+using System.Threading;
 using System.Threading.Tasks;
 
+using AutoFixture.AutoNSubstitute;
 using AutoFixture.NUnit3;
 
 using Brighid.Identity.Applications;
 using Brighid.Identity.Roles;
+using Brighid.Identity.Users;
 
 using FluentAssertions;
 
@@ -21,13 +25,14 @@ using OpenIddict.Server.AspNetCore;
 using static NSubstitute.Arg;
 using static OpenIddict.Abstractions.OpenIddictConstants;
 
+#pragma warning disable IDE0120
 namespace Brighid.Identity.Auth
 {
     [Category("Unit")]
     public class DefaultAuthUtilsTests
     {
         [Category("Unit")]
-        public class CreateClaimsIdentity
+        public class CreateClaimsIdentityForApplication
         {
             [Test, Auto]
             public async Task ShouldSetNameClaim(
@@ -35,7 +40,7 @@ namespace Brighid.Identity.Auth
                 [Target] DefaultAuthUtils authUtils
             )
             {
-                var result = await authUtils.CreateClaimsIdentity(id);
+                var result = await authUtils.CreateClaimsIdentityForApplication(id);
 
                 var nameClaim = result.GetClaim(Claims.Name);
                 nameClaim.Should().Be(id.ToString());
@@ -47,7 +52,7 @@ namespace Brighid.Identity.Auth
                 [Target] DefaultAuthUtils authUtils
             )
             {
-                var result = await authUtils.CreateClaimsIdentity(id);
+                var result = await authUtils.CreateClaimsIdentityForApplication(id);
                 var nameClaim = result.Claims.Where(claim => claim.Type == Claims.Name).First();
                 var destinations = nameClaim.GetDestinations();
 
@@ -60,7 +65,7 @@ namespace Brighid.Identity.Auth
                 [Target] DefaultAuthUtils authUtils
             )
             {
-                var result = await authUtils.CreateClaimsIdentity(id);
+                var result = await authUtils.CreateClaimsIdentityForApplication(id);
                 var nameClaim = result.Claims.Where(claim => claim.Type == Claims.Name).First();
                 var destinations = nameClaim.GetDestinations();
 
@@ -73,7 +78,7 @@ namespace Brighid.Identity.Auth
                 [Target] DefaultAuthUtils authUtils
             )
             {
-                var result = await authUtils.CreateClaimsIdentity(id);
+                var result = await authUtils.CreateClaimsIdentityForApplication(id);
 
                 var subjectClaim = result.GetClaim(Claims.Subject);
                 subjectClaim.Should().Be(id.ToString());
@@ -85,7 +90,7 @@ namespace Brighid.Identity.Auth
                 [Target] DefaultAuthUtils authUtils
             )
             {
-                var result = await authUtils.CreateClaimsIdentity(id);
+                var result = await authUtils.CreateClaimsIdentityForApplication(id);
                 var subjectClaim = result.Claims.Where(claim => claim.Type == Claims.Subject).First();
                 var destinations = subjectClaim.GetDestinations();
 
@@ -98,7 +103,7 @@ namespace Brighid.Identity.Auth
                 [Target] DefaultAuthUtils authUtils
             )
             {
-                var result = await authUtils.CreateClaimsIdentity(id);
+                var result = await authUtils.CreateClaimsIdentityForApplication(id);
                 var subjectClaim = result.Claims.Where(claim => claim.Type == Claims.Subject).First();
                 var destinations = subjectClaim.GetDestinations();
 
@@ -111,7 +116,7 @@ namespace Brighid.Identity.Auth
                 [Target] DefaultAuthUtils authUtils
             )
             {
-                var result = await authUtils.CreateClaimsIdentity(id);
+                var result = await authUtils.CreateClaimsIdentityForApplication(id);
                 var roleClaim = result.Claims.Where(claim => claim.Type == Claims.Role).First();
 
                 roleClaim.ValueType.Should().Be(JsonClaimValueTypes.JsonArray);
@@ -123,7 +128,7 @@ namespace Brighid.Identity.Auth
                 [Target] DefaultAuthUtils authUtils
             )
             {
-                var result = await authUtils.CreateClaimsIdentity(id);
+                var result = await authUtils.CreateClaimsIdentityForApplication(id);
                 var roleClaim = result.Claims.Where(claim => claim.Type == Claims.Role).First();
                 var destinations = roleClaim.GetDestinations();
 
@@ -136,7 +141,7 @@ namespace Brighid.Identity.Auth
                 [Target] DefaultAuthUtils authUtils
             )
             {
-                var result = await authUtils.CreateClaimsIdentity(id);
+                var result = await authUtils.CreateClaimsIdentityForApplication(id);
                 var roleClaim = result.Claims.Where(claim => claim.Type == Claims.Role).First();
                 var destinations = roleClaim.GetDestinations();
 
@@ -149,7 +154,7 @@ namespace Brighid.Identity.Auth
                 [Target] DefaultAuthUtils authUtils
             )
             {
-                var result = await authUtils.CreateClaimsIdentity(id);
+                var result = await authUtils.CreateClaimsIdentityForApplication(id);
                 var scheme = result.AuthenticationType;
 
                 scheme.Should().Be(OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);
@@ -161,7 +166,7 @@ namespace Brighid.Identity.Auth
                 [Target] DefaultAuthUtils authUtils
             )
             {
-                var result = await authUtils.CreateClaimsIdentity(id);
+                var result = await authUtils.CreateClaimsIdentityForApplication(id);
                 var nameClaimType = result.NameClaimType;
 
                 nameClaimType.Should().Be(Claims.Name);
@@ -173,10 +178,149 @@ namespace Brighid.Identity.Auth
                 [Target] DefaultAuthUtils authUtils
             )
             {
-                var result = await authUtils.CreateClaimsIdentity(id);
+                var result = await authUtils.CreateClaimsIdentityForApplication(id);
                 var roleClaimType = result.RoleClaimType;
 
                 roleClaimType.Should().Be(Claims.Role);
+            }
+        }
+
+        [Category("Unit")]
+        public class CreateClaimsIdentityForUser
+        {
+            [Test, Auto]
+            public async Task ShouldSetNameClaim(
+                User user,
+                [Target] DefaultAuthUtils authUtils
+            )
+            {
+                var result = await authUtils.CreateClaimsIdentityForUser(user);
+
+                var nameClaim = result.GetClaim(Claims.Name);
+                nameClaim.Should().Be(user.Email.ToString());
+            }
+
+            [Test, Auto]
+            public async Task Name_ShouldHaveAccessTokenDestination(
+                User user,
+                [Target] DefaultAuthUtils authUtils
+            )
+            {
+                var result = await authUtils.CreateClaimsIdentityForUser(user);
+                var nameClaim = result.Claims.Where(claim => claim.Type == Claims.Name).First();
+                var destinations = nameClaim.GetDestinations();
+
+                destinations.Should().Contain(Destinations.AccessToken);
+            }
+
+            [Test, Auto]
+            public async Task Name_ShouldHaveIdentityTokenDestination(
+                User user,
+                [Target] DefaultAuthUtils authUtils
+            )
+            {
+                var result = await authUtils.CreateClaimsIdentityForUser(user);
+                var nameClaim = result.Claims.Where(claim => claim.Type == Claims.Name).First();
+                var destinations = nameClaim.GetDestinations();
+
+                destinations.Should().Contain(Destinations.IdentityToken);
+            }
+
+            [Test, Auto]
+            public async Task ShouldSetSubjectClaim(
+                User user,
+                [Target] DefaultAuthUtils authUtils
+            )
+            {
+                var result = await authUtils.CreateClaimsIdentityForUser(user);
+
+                var nameClaim = result.GetClaim(Claims.Subject);
+                nameClaim.Should().Be(user.Id.ToString());
+            }
+
+            [Test, Auto]
+            public async Task Subject_ShouldHaveAccessTokenDestination(
+                User user,
+                [Target] DefaultAuthUtils authUtils
+            )
+            {
+                var result = await authUtils.CreateClaimsIdentityForUser(user);
+                var nameClaim = result.Claims.Where(claim => claim.Type == Claims.Subject).First();
+                var destinations = nameClaim.GetDestinations();
+
+                destinations.Should().Contain(Destinations.AccessToken);
+            }
+
+            [Test, Auto]
+            public async Task Subject_ShouldHaveIdentityTokenDestination(
+                User user,
+                [Target] DefaultAuthUtils authUtils
+            )
+            {
+                var result = await authUtils.CreateClaimsIdentityForUser(user);
+                var nameClaim = result.Claims.Where(claim => claim.Type == Claims.Subject).First();
+                var destinations = nameClaim.GetDestinations();
+
+                destinations.Should().Contain(Destinations.IdentityToken);
+            }
+
+            [Test, Auto]
+            public async Task Role_ShouldBeJsonArray(
+                User user,
+                [Target] DefaultAuthUtils authUtils
+            )
+            {
+                var result = await authUtils.CreateClaimsIdentityForUser(user);
+                var roleClaim = result.Claims.Where(claim => claim.Type == Claims.Role).First();
+
+                roleClaim.ValueType.Should().Be(JsonClaimValueTypes.JsonArray);
+            }
+
+            [Test, Auto]
+            public async Task Role_ShouldHaveAccessTokenDestination(
+                User user,
+                [Target] DefaultAuthUtils authUtils
+            )
+            {
+                var result = await authUtils.CreateClaimsIdentityForUser(user);
+                var roleClaim = result.Claims.Where(claim => claim.Type == Claims.Role).First();
+                var destinations = roleClaim.GetDestinations();
+
+                destinations.Should().Contain(Destinations.AccessToken);
+            }
+
+            [Test, Auto]
+            public async Task Role_ShouldHaveIdentityTokenDestination(
+                User user,
+                [Target] DefaultAuthUtils authUtils
+            )
+            {
+                var result = await authUtils.CreateClaimsIdentityForUser(user);
+                var roleClaim = result.Claims.Where(claim => claim.Type == Claims.Role).First();
+                var destinations = roleClaim.GetDestinations();
+
+                destinations.Should().Contain(Destinations.IdentityToken);
+            }
+
+            [Test, Auto]
+            public async Task Role_ShouldContainAllTheUsersRoles(
+                User user,
+                Role role1,
+                Role role2,
+                [Frozen, Substitute] IUserRepository repository,
+                [Target] DefaultAuthUtils authUtils,
+                CancellationToken cancellationToken
+            )
+            {
+                repository.FindRolesById(Any<Guid>(), Any<CancellationToken>()).Returns(new[] { role1, role2 });
+                var result = await authUtils.CreateClaimsIdentityForUser(user, cancellationToken);
+                var roleClaim = result.Claims.Where(claim => claim.Type == Claims.Role).First();
+                var roleNames = JsonSerializer.Deserialize<string[]>(roleClaim.Value);
+
+                roleNames.Should().Contain(role1.Name);
+                roleNames.Should().Contain(role2.Name);
+
+                await repository.Received().FindRolesById(Is(user.Id), Is(cancellationToken));
             }
         }
 
@@ -196,6 +340,18 @@ namespace Brighid.Identity.Auth
             }
 
             [Test, Auto]
+            public void Properties_ShouldHaveRedirectUri(
+                ClaimsIdentity claimsIdentity,
+                Uri redirectUri,
+                [Target] DefaultAuthUtils authUtils
+            )
+            {
+                var result = authUtils.CreateAuthTicket(claimsIdentity, redirectUri: redirectUri);
+
+                result.Properties.RedirectUri.Should().Be(redirectUri.ToString());
+            }
+
+            [Test, Auto]
             public void AuthenticationScheme_ShouldBeSet(
                 ClaimsIdentity claimsIdentity,
                 [Target] DefaultAuthUtils authUtils
@@ -205,6 +361,19 @@ namespace Brighid.Identity.Auth
                 var scheme = result.AuthenticationScheme;
 
                 scheme.Should().Be(OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);
+            }
+
+            [Test, Auto]
+            public void AuthenticationScheme_ShouldBeSetToGivenScheme(
+                string givenScheme,
+                ClaimsIdentity claimsIdentity,
+                [Target] DefaultAuthUtils authUtils
+            )
+            {
+                var result = authUtils.CreateAuthTicket(claimsIdentity, authenticationScheme: givenScheme);
+                var scheme = result.AuthenticationScheme;
+
+                scheme.Should().Be(givenScheme);
             }
 
             [Test, Auto]

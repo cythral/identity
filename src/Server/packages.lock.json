@@ -13,11 +13,20 @@
       },
       "AWSSDK.KeyManagementService": {
         "type": "Direct",
-        "requested": "[3.5.0.41, )",
-        "resolved": "3.5.0.41",
-        "contentHash": "2bp0KqzvCNJsmoUZtwf0Ae0TyZWLKQi3WVqEQd17H49lUejGxK46IVcqtMmJSHqZzmORTQNeX7oZaldO1cW8Vw==",
+        "requested": "[3.7.0, )",
+        "resolved": "3.7.0",
+        "contentHash": "EUX4o+fAVj/Nxq1/Z0gG0vbJRS/lelkRSj5MXUqVUifGyVUngTC0fVHusPU7Q593fjdgLsJwT/KUow6m8/72nw==",
         "dependencies": {
-          "AWSSDK.Core": "[3.5.1.41, 3.6.0)"
+          "AWSSDK.Core": "[3.7.0, 3.8.0)"
+        }
+      },
+      "AWSSDK.SimpleSystemsManagement": {
+        "type": "Direct",
+        "requested": "[3.7.3.10, )",
+        "resolved": "3.7.3.10",
+        "contentHash": "sK4EWfH3Q/TCNnYOGbWejbNMTIqOn7lFa34/pzYIHQpNTG18368+zHZk2cuID+AT+7QWJ+CzE5zr4GsXnW9u8Q==",
+        "dependencies": {
+          "AWSSDK.Core": "[3.7.0.29, 4.0.0)"
         }
       },
       "Flurl": {
@@ -222,8 +231,8 @@
       },
       "AWSSDK.Core": {
         "type": "Transitive",
-        "resolved": "3.5.1.41",
-        "contentHash": "l+XvNGhWIeIIht4T+hmuif1IJ2ChNjwUu0YIeDUjCtW2vm0GT3k8o3W5/vBl9cwS7S4PBly1Mo9vrOaG7AIrXw=="
+        "resolved": "3.7.0.29",
+        "contentHash": "RXeNNVehUDF/hTdeOfbHjjMyt9UciPifhtcrOScKHN+04sENBGdahZjvQHb+uw7XNJuzeFWdGgvibNNRfXYyDA=="
       },
       "Humanizer.Core": {
         "type": "Transitive",

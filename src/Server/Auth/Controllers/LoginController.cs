@@ -16,10 +16,12 @@ namespace Brighid.Identity.Auth
         private const string defaultRedirectUri = "/";
 
         private readonly SignInManager<User> signinManager;
+        private readonly IAuthService authService;
 
-        public LoginController(SignInManager<User> signinManager)
+        public LoginController(SignInManager<User> signinManager, IAuthService authService)
         {
             this.signinManager = signinManager;
+            this.authService = authService;
         }
 
         [HttpGet]
@@ -47,13 +49,9 @@ namespace Brighid.Identity.Auth
                     throw new LoginException();
                 }
 
-                var result = await signinManager.PasswordSignInAsync(request.Email, request.Password, false, false);
-                if (!result.Succeeded)
-                {
-                    throw new LoginException("Username and/or password were incorrect.");
-                }
-
-                return LocalRedirect(redirectUri);
+                var ticket = await authService.PasswordExchange(request.Email, request.Password, request.RedirectUri, HttpContext.RequestAborted);
+                Console.WriteLine(ticket.Properties.RedirectUri);
+                return SignIn(ticket.Principal, ticket.Properties, ticket.AuthenticationScheme);
             }
             catch (LoginException e)
             {
