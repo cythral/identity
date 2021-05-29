@@ -91,10 +91,25 @@ namespace Brighid.Identity.Auth
 
         public string GenerateAccessToken(AuthenticationTicket authenticationTicket)
         {
+            var claims = authenticationTicket.Principal.Claims.Where(claim => claim.HasDestination(Destinations.AccessToken));
             var jwt = new JwtSecurityToken(
                 issuer: $"https://{openIdConfig.DomainName}/",
                 audience: "identity",
-                claims: authenticationTicket.Principal.Claims,
+                claims: claims,
+                notBefore: DateTime.UtcNow,
+                expires: DateTime.UtcNow.Add(TimeSpan.FromHours(1)),
+                signingCredentials: openIddictServerOptions.SigningCredentials.First()
+            );
+
+            return new JwtSecurityTokenHandler().WriteToken(jwt);
+        }
+
+        public string GenerateIdToken(AuthenticationTicket authenticationTicket, User user)
+        {
+            var claims = authenticationTicket.Principal.Claims.Where(claim => claim.HasDestination(Destinations.IdentityToken));
+            var jwt = new JwtSecurityToken(
+                issuer: $"https://{openIdConfig.DomainName}/",
+                claims: claims,
                 notBefore: DateTime.UtcNow,
                 expires: DateTime.UtcNow.Add(TimeSpan.FromHours(1)),
                 signingCredentials: openIddictServerOptions.SigningCredentials.First()

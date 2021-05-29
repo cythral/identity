@@ -57,7 +57,7 @@ namespace Brighid.Identity.Auth
 
         public string Protect(AuthenticationTicket data, string? purpose)
         {
-            return data.Properties.GetTokenValue("jwt")!;
+            return data.Properties.GetTokenValue("access_token")!;
         }
     }
 }

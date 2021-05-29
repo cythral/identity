@@ -10,7 +10,7 @@ namespace Brighid.Identity
         /// <summary>
         /// Gets or sets the name of the session cookie.
         /// </summary>
-        public string CookieName { get; set; } = ".Brighid.Token";
+        public string CookieName { get; set; } = ".Brighid.AccessToken";
 
         /// <summary>
         /// Gets or sets the redirect uri parameter.

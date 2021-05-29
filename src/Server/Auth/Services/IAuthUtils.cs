@@ -29,5 +29,13 @@ namespace Brighid.Identity.Auth
         /// <param name="authenticationTicket">The ticket to generate an access token for.</param>
         /// <returns>The resulting access token.</returns>
         string GenerateAccessToken(AuthenticationTicket authenticationTicket);
+
+        /// <summary>
+        /// Generates an id token for an authentication ticket.
+        /// </summary>
+        /// <param name="authenticationTicket">The ticket to generate an id token for.</param>
+        /// <param name="user">The user to generate an ID token for.</param>
+        /// <returns>The resulting id token.</returns>
+        string GenerateIdToken(AuthenticationTicket authenticationTicket, User user);
     }
 }

@@ -60,9 +60,9 @@ namespace Brighid.Identity.Auth
 
             var identity = await authUtils.CreateClaimsIdentityForUser(user, cancellationToken);
             var ticket = authUtils.CreateAuthTicket(identity, DefaultScopes, redirectUri, IdentityConstants.ApplicationScheme);
-            var accessToken = authUtils.GenerateAccessToken(ticket);
-            var jwtAccessToken = new AuthenticationToken { Name = "jwt", Value = accessToken };
-            ticket.Properties.StoreTokens(new[] { jwtAccessToken });
+            var accessToken = new AuthenticationToken { Name = "access_token", Value = authUtils.GenerateAccessToken(ticket) };
+            var idToken = new AuthenticationToken { Name = "id_token", Value = authUtils.GenerateIdToken(ticket, user) };
+            ticket.Properties.StoreTokens(new[] { accessToken, idToken });
             return ticket;
         }
     }

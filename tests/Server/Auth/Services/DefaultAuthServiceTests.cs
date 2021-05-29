@@ -223,7 +223,32 @@ namespace Brighid.Identity.Auth
 
                 var result = await service.PasswordExchange(email, password, redirectUri, cancellationToken);
 
-                result.Properties.GetTokens().Should().Contain(token => token.Name == "jwt" && token.Value == accessToken);
+                result.Properties.GetTokens().Should().Contain(token => token.Name == "access_token" && token.Value == accessToken);
+            }
+
+            [Test]
+            [Auto]
+            public async Task AuthTicketShouldHaveIdTokenJwt(
+                string email,
+                string password,
+                string idToken,
+                Uri redirectUri,
+                [Frozen] User user,
+                [Frozen] AuthenticationTicket ticket,
+                [Frozen, Substitute] UserManager<User> userManager,
+                [Frozen, Substitute] IAuthUtils authUtils,
+                [Target] DefaultAuthService service,
+                CancellationToken cancellationToken
+            )
+            {
+                userManager.CheckPasswordAsync(Any<User>(), Any<string>()).Returns(true);
+                authUtils.GenerateIdToken(Any<AuthenticationTicket>(), Any<User>()).Returns(idToken);
+
+                var result = await service.PasswordExchange(email, password, redirectUri, cancellationToken);
+
+                result.Properties.GetTokens().Should().Contain(token => token.Name == "id_token" && token.Value == idToken);
+
+                authUtils.Received().GenerateIdToken(Is(ticket), Is(user));
             }
         }
     }
