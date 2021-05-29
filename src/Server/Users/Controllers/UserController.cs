@@ -38,7 +38,7 @@ namespace Brighid.Identity.Users
             return result == null ? NotFound() : Ok(result);
         }
 
-        [HttpPost("{userId}/logins")]
+        [HttpPost("{userId}/logins", Name = "Users:CreateLogin")]
         [Policies(new[] { nameof(IdentityPolicy.RestrictedToSelfByUserId) })]
         public async Task<ActionResult<UserLogin>> CreateLogin(Guid userId, [FromBody] UserLogin loginInfo)
         {
