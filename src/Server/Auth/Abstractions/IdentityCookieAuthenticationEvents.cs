@@ -3,16 +3,20 @@ using System.Threading.Tasks;
 
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Http;
 
 namespace Brighid.Identity.Auth
 {
     public class IdentityCookieAuthenticationEvents : CookieAuthenticationEvents
     {
-        public IdentityCookieAuthenticationEvents()
+        private readonly CookieOptions cookieOptions;
+
+        public IdentityCookieAuthenticationEvents(AppConfig appConfig)
         {
             OnRedirectToAccessDenied = OnRedirectToAccessDeniedHandler;
             OnRedirectToLogin = OnRedirectToLoginHandler;
             OnSigningIn = OnSigningInHandler;
+            cookieOptions = new CookieOptions { Domain = appConfig.CookieDomain };
         }
 
         public Task OnRedirectToAccessDeniedHandler(RedirectContext<CookieAuthenticationOptions> context)
@@ -49,7 +53,7 @@ namespace Brighid.Identity.Auth
                          where authToken.Name == "id_token"
                          select authToken.Value).First();
 
-            context.HttpContext.Response.Cookies.Append(".Brighid.IdentityToken", token);
+            context.HttpContext.Response.Cookies.Append(".Brighid.IdentityToken", token, cookieOptions);
             return Task.FromResult(0);
         }
     }
