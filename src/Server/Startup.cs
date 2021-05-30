@@ -152,7 +152,7 @@ namespace Brighid.Identity
                 options.Cookie.Name = AppConfig.CookieName;
                 options.ReturnUrlParameter = AppConfig.RedirectUriParameter;
                 options.TicketDataFormat = new AuthTicketFormat(tokenValidationParameters);
-                options.Events = new IdentityCookieAuthenticationEvents();
+                options.Events = new IdentityCookieAuthenticationEvents(AppConfig);
             });
 
             services.AddOpenId(OpenIdConfig, tokenValidationParameters);
