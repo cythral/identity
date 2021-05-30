@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
@@ -18,6 +19,7 @@ namespace Brighid.Identity.Users
         [JsonIgnore]
         public override Guid UserId { get; set; }
 
+        [DefaultValue(true)]
         public bool Enabled { get; set; } = true;
 
         [ForeignKey("UserId")]

@@ -88,36 +88,36 @@ namespace Brighid.Identity.Users
             [Auto]
             public async Task ShouldReturnNotFoundIfUserDoesntExist(
                 Guid id,
-                UserLogin loginInfo,
+                CreateUserLoginRequest request,
                 [Frozen, Substitute] IUserService userService,
                 [Target] UserController controller
             )
             {
                 userService.CreateLogin(Any<Guid>(), Any<UserLogin>()).Returns<UserLogin>(x => throw new UserNotFoundException(id));
 
-                var response = await controller.CreateLogin(id, loginInfo);
+                var response = await controller.CreateLogin(id, request);
                 var result = response.Result;
 
                 result.Should().BeOfType<NotFoundObjectResult>();
-                await userService.Received().CreateLogin(Is(id), Is(loginInfo));
+                await userService.Received().CreateLogin(Is(id), Is(request));
             }
 
             [Test]
             [Auto]
             public async Task ShouldReturnConflictIfLoginAlreadyExists(
                 Guid id,
-                UserLogin loginInfo,
+                CreateUserLoginRequest request,
                 [Frozen, Substitute] IUserService userService,
                 [Target] UserController controller
             )
             {
-                userService.CreateLogin(Any<Guid>(), Any<UserLogin>()).Returns<UserLogin>(x => throw new UserLoginAlreadyExistsException(loginInfo));
+                userService.CreateLogin(Any<Guid>(), Any<UserLogin>()).Returns<UserLogin>(x => throw new UserLoginAlreadyExistsException(request));
 
-                var response = await controller.CreateLogin(id, loginInfo);
+                var response = await controller.CreateLogin(id, request);
                 var result = response.Result;
 
                 result.Should().BeOfType<ConflictObjectResult>();
-                await userService.Received().CreateLogin(Is(id), Is(loginInfo));
+                await userService.Received().CreateLogin(Is(id), Is(request));
             }
 
             [Test]
@@ -126,6 +126,7 @@ namespace Brighid.Identity.Users
                 string error1,
                 string error2,
                 Guid id,
+                CreateUserLoginRequest request,
                 UserLogin loginInfo,
                 [Frozen, Substitute] IUserService userService,
                 [Target] UserController controller
@@ -138,7 +139,7 @@ namespace Brighid.Identity.Users
                 controllerContext.ModelState.AddModelError(string.Empty, error2);
                 controller.ControllerContext = controllerContext;
 
-                var response = await controller.CreateLogin(id, loginInfo);
+                var response = await controller.CreateLogin(id, request);
                 var result = response.Result;
 
                 result.Should().BeOfType<BadRequestObjectResult>();
@@ -155,6 +156,7 @@ namespace Brighid.Identity.Users
                 string nonUserError,
                 string userError,
                 Guid id,
+                CreateUserLoginRequest request,
                 UserLogin loginInfo,
                 [Frozen, Substitute] IUserService userService,
                 [Target] UserController controller
@@ -167,7 +169,7 @@ namespace Brighid.Identity.Users
                 controllerContext.ModelState.AddModelError(nameof(UserLogin.User), userError);
                 controller.ControllerContext = controllerContext;
 
-                var response = await controller.CreateLogin(id, loginInfo);
+                var response = await controller.CreateLogin(id, request);
                 var result = response.Result;
 
                 result.Should().BeOfType<BadRequestObjectResult>();
@@ -182,7 +184,7 @@ namespace Brighid.Identity.Users
             [Auto]
             public async Task ShouldReturnOkIfUserUserExists(
                 Guid id,
-                UserLogin requestedLoginInfo,
+                CreateUserLoginRequest requestedLoginInfo,
                 UserLogin resultingLoginInfo,
                 [Frozen, Substitute] IUserService userService,
                 [Target] UserController controller

@@ -40,7 +40,7 @@ namespace Brighid.Identity.Users
 
         [HttpPost("{userId}/logins", Name = "Users:CreateLogin")]
         [Policies(new[] { nameof(IdentityPolicy.RestrictedToSelfByUserId) })]
-        public async Task<ActionResult<UserLogin>> CreateLogin(Guid userId, [FromBody] UserLogin loginInfo)
+        public async Task<ActionResult<UserLogin>> CreateLogin(Guid userId, [FromBody] CreateUserLoginRequest loginInfo)
         {
             try
             {
