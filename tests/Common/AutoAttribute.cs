@@ -1,8 +1,10 @@
 using System;
+using System.Collections.Immutable;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
 using System.Threading;
+using System.Threading.Tasks;
 
 using AutoFixture;
 using AutoFixture.AutoNSubstitute;
@@ -63,6 +65,7 @@ internal class AutoAttribute : AutoDataAttribute
         fixture.Inject(new CancellationToken(false));
         fixture.Customize(new AutoNSubstituteCustomization { ConfigureMembers = true });
         fixture.Customizations.Add(new TypeOmitter<JsonElement>());
+        fixture.Customizations.Add(new TypeOmitter<ValueTask<ImmutableArray<string>>>());
         fixture.Customizations.Insert(-1, new TargetRelay());
         fixture.Behaviors
         .OfType<ThrowingRecursionBehavior>()

@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 using Brighid.Identity.Sns;
@@ -37,12 +38,30 @@ namespace Brighid.Identity
         [HttpPost]
         public virtual async Task<ActionResult<TEntity>> Create([FromBody] TEntityRequest request)
         {
-            var entity = await Mapper.MapRequestToEntity(request, HttpContext.RequestAborted);
-            var result = await Service.Create(entity);
-            var primaryKey = Service.GetPrimaryKey(entity);
-            var destination = new Uri($"{BaseAddress}/{primaryKey}", UriKind.Relative);
-            TrySetSnsContextItems(primaryKey, result);
-            return Created(destination, result);
+            try
+            {
+                await Validate(request);
+                var entity = await Mapper.MapRequestToEntity(request, HttpContext.RequestAborted);
+                var result = await Service.Create(entity);
+                var primaryKey = Service.GetPrimaryKey(entity);
+                var destination = new Uri($"{BaseAddress}/{primaryKey}", UriKind.Relative);
+                TrySetSnsContextItems(primaryKey, result);
+                return Created(destination, result);
+            }
+            catch (Exception e) when (e is IValidationException)
+            {
+                return UnprocessableEntity(new { e.Message });
+            }
+            catch (AggregateException e)
+            {
+                return UnprocessableEntity(new
+                {
+                    Message = "Multiple validation errors occurred.",
+                    ValidationErrors = from innerException in e.InnerExceptions
+                                       where innerException is IValidationException
+                                       select innerException.Message,
+                });
+            }
         }
 
         [HttpGet("{id}")]
@@ -55,10 +74,28 @@ namespace Brighid.Identity
         [HttpPut("{id}")]
         public virtual async Task<ActionResult<TEntity>> UpdateById(TPrimaryKey id, [FromBody] TEntityRequest request)
         {
-            var entity = await Mapper.MapRequestToEntity(request, HttpContext.RequestAborted);
-            var result = await Service.UpdateById(id, entity);
-            TrySetSnsContextItems(id, result);
-            return Ok(result);
+            try
+            {
+                await Validate(request);
+                var entity = await Mapper.MapRequestToEntity(request, HttpContext.RequestAborted);
+                var result = await Service.UpdateById(id, entity);
+                TrySetSnsContextItems(id, result);
+                return Ok(result);
+            }
+            catch (Exception e) when (e is IValidationException)
+            {
+                return UnprocessableEntity(new { e.Message });
+            }
+            catch (AggregateException e)
+            {
+                return UnprocessableEntity(new
+                {
+                    Message = "Multiple validation errors occurred.",
+                    ValidationErrors = from innerException in e.InnerExceptions
+                                       where innerException is IValidationException
+                                       select innerException.Message,
+                });
+            }
         }
 
         [HttpDelete("{id}")]
@@ -73,6 +110,11 @@ namespace Brighid.Identity
         {
             HttpContext.Items[CloudFormationConstants.Id] = id;
             HttpContext.Items[CloudFormationConstants.Data] = data;
+        }
+
+        protected virtual Task Validate(TEntityRequest request)
+        {
+            return Task.CompletedTask;
         }
 
         private void TrySetSnsContextItems(TPrimaryKey id, TEntity data)

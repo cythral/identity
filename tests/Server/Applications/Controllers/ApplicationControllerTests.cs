@@ -1,11 +1,13 @@
 using System;
 using System.Collections.Generic;
+using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
 
 using AutoFixture.AutoNSubstitute;
 using AutoFixture.NUnit3;
 
+using Brighid.Identity.Roles;
 using Brighid.Identity.Sns;
 
 using FluentAssertions;
@@ -97,6 +99,31 @@ namespace Brighid.Identity.Applications
 
                 resultValue.Secret.Should().Be(secret);
             }
+
+            [Test]
+            [Auto]
+            public async Task ShouldReturnForbidIfRoleValidationFails(
+                Guid id,
+                ApplicationRequest request,
+                Application mappedRequest,
+                Application application,
+                [Frozen, Substitute] IRoleService roleService,
+                [Frozen, Substitute] IApplicationMapper mapper,
+                [Frozen, Substitute] IApplicationService service,
+                [Target] ApplicationController controller
+            )
+            {
+                mapper.MapRequestToEntity(Any<ApplicationRequest>(), Any<CancellationToken>()).Returns(mappedRequest);
+                service.GetPrimaryKey(Any<Application>()).Returns(id);
+                service.Create(Any<Application>()).Returns(application);
+                roleService.When(svc => svc.ValidateRoleDelegations(Any<IEnumerable<string>>(), Any<ClaimsPrincipal>())).Throw(new RoleDelegationDeniedException());
+                SetupHttpContext(controller, IdentityRequestSource.Direct);
+
+                var response = await controller.Create(request);
+                response.Result.Should().BeOfType<UnprocessableEntityObjectResult>();
+
+                roleService.Received().ValidateRoleDelegations(Is(request.Roles), Is(controller.HttpContext.User));
+            }
         }
 
         [TestFixture]
@@ -157,6 +184,31 @@ namespace Brighid.Identity.Applications
                 var resultValue = result.Value.As<Application>();
 
                 resultValue.Secret.Should().Be(secret);
+            }
+
+            [Test]
+            [Auto]
+            public async Task ShouldReturnForbidIfRoleValidationFails(
+                Guid id,
+                ApplicationRequest request,
+                Application mappedRequest,
+                Application application,
+                [Frozen, Substitute] IRoleService roleService,
+                [Frozen, Substitute] IApplicationMapper mapper,
+                [Frozen, Substitute] IApplicationService service,
+                [Target] ApplicationController controller
+            )
+            {
+                mapper.MapRequestToEntity(Any<ApplicationRequest>(), Any<CancellationToken>()).Returns(mappedRequest);
+                service.GetPrimaryKey(Any<Application>()).Returns(id);
+                service.Create(Any<Application>()).Returns(application);
+                roleService.When(svc => svc.ValidateRoleDelegations(Any<IEnumerable<string>>(), Any<ClaimsPrincipal>())).Throw(new RoleDelegationDeniedException());
+                SetupHttpContext(controller, IdentityRequestSource.Direct);
+
+                var response = await controller.UpdateById(id, request);
+                response.Result.Should().BeOfType<UnprocessableEntityObjectResult>();
+
+                roleService.Received().ValidateRoleDelegations(Is(request.Roles), Is(controller.HttpContext.User));
             }
         }
     }

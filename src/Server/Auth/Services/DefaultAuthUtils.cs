@@ -76,13 +76,15 @@ namespace Brighid.Identity.Auth
             ClaimsIdentity claimsIdentity,
             IEnumerable<string>? scopes = null,
             Uri? redirectUri = null,
-            string authenticationScheme = OpenIddictServerAspNetCoreDefaults.AuthenticationScheme
+            string authenticationScheme = OpenIddictServerAspNetCoreDefaults.AuthenticationScheme,
+            string[]? resources = null
         )
         {
+            resources ??= new[] { "identity.brigh.id" };
             scopes ??= Array.Empty<string>();
 
             var principal = new ClaimsPrincipal(claimsIdentity);
-            principal.SetResources("identity.brigh.id");
+            principal.SetResources(resources);
             principal.SetScopes(scopes);
 
             var authProps = new AuthenticationProperties() { RedirectUri = redirectUri?.ToString() };

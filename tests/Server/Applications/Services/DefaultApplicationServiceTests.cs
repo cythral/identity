@@ -139,6 +139,7 @@ namespace Brighid.Identity.Applications
                 Guid id,
                 Application existingApp,
                 Application application,
+                [Frozen, Substitute] OpenIddictApplicationManager<OpenIddictEntityFrameworkCoreApplication> applicationManager,
                 [Frozen, Substitute] IApplicationRepository repository,
                 [Target] DefaultApplicationService service
             )
@@ -161,6 +162,7 @@ namespace Brighid.Identity.Applications
                 Application existingApp,
                 Application application,
                 [Frozen, Substitute] IApplicationRepository repository,
+                [Frozen, Substitute] OpenIddictApplicationManager<OpenIddictEntityFrameworkCoreApplication> applicationManager,
                 [Target] DefaultApplicationService service
             )
             {
@@ -239,6 +241,7 @@ namespace Brighid.Identity.Applications
                 Guid id,
                 Application existingApp,
                 Application application,
+                [Frozen, Substitute] OpenIddictApplicationManager<OpenIddictEntityFrameworkCoreApplication> applicationManager,
                 [Frozen, Substitute] GenerateRandomString generateRandomString,
                 [Frozen, Substitute] IEncryptionService encryptionService,
                 [Frozen, Substitute] IApplicationRepository repository,
@@ -297,6 +300,7 @@ namespace Brighid.Identity.Applications
                 Guid id,
                 Application existingApp,
                 Application application,
+                [Frozen, Substitute] OpenIddictApplicationManager<OpenIddictEntityFrameworkCoreApplication> applicationManager,
                 [Frozen, Substitute] GenerateRandomString generateRandomString,
                 [Frozen, Substitute] IEncryptionService encryptionService,
                 [Frozen, Substitute] IApplicationRepository repository,

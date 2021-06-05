@@ -20,9 +20,12 @@ using NSubstitute;
 using NUnit.Framework;
 
 using OpenIddict.Abstractions;
+using OpenIddict.Server;
 
 using static NSubstitute.Arg;
 using static OpenIddict.Abstractions.OpenIddictConstants;
+
+using ValidateTokenRequestContext = OpenIddict.Server.OpenIddictServerEvents.ValidateTokenRequestContext;
 
 namespace Brighid.Identity.Auth
 {
@@ -34,7 +37,7 @@ namespace Brighid.Identity.Auth
         {
             [Test]
             [Auto]
-            public async Task ShouldThrowIfNotClientGrantType(
+            public async Task ShouldThrowIfNotAcceptableGrantType(
                 OpenIddictRequest request,
                 [Target] DefaultAuthService authService
             )
@@ -118,6 +121,120 @@ namespace Brighid.Identity.Auth
                     scopes.All(req.Contains) &&
                     req.Contains("openid")
                 ));
+            }
+        }
+
+        [Category("Unit")]
+        public class ImpersonateExchange
+        {
+            [Test]
+            [Auto]
+            public async Task ShouldThrowIfNotImpersonateGrantType(
+                OpenIddictRequest request,
+                [Target] DefaultAuthService service,
+                CancellationToken cancellationToken
+            )
+            {
+                request.GrantType = GrantTypes.AuthorizationCode;
+
+                Func<Task> func = () => service.ImpersonateExchange(request, cancellationToken);
+
+                await func.Should().ThrowAsync<InvalidOperationException>();
+            }
+
+            [Test]
+            [Auto]
+            public async Task ShouldNotThrowIfImpersonateGrantType(
+                OpenIddictRequest request,
+                [Target] DefaultAuthService service,
+                CancellationToken cancellationToken
+            )
+            {
+                request.GrantType = Constants.GrantTypes.Impersonate;
+
+                Func<Task> func = () => service.ImpersonateExchange(request, cancellationToken);
+
+                await func.Should().NotThrowAsync<InvalidOperationException>();
+            }
+
+            [Test]
+            [Auto]
+            public async Task ShouldThrowIfUserIdIsNull(
+                OpenIddictRequest request,
+                [Target] DefaultAuthService service,
+                CancellationToken cancellationToken
+            )
+            {
+                request.GrantType = Constants.GrantTypes.Impersonate;
+                request["user_id"] = null;
+
+                Func<Task> func = () => service.ImpersonateExchange(request, cancellationToken);
+
+                await func.Should().ThrowAsync<MissingAuthParameterException>();
+            }
+
+            [Test]
+            [Auto]
+            public async Task ShouldFindUserById(
+                Guid userId,
+                OpenIddictRequest request,
+                [Frozen, Substitute] UserManager<User> userManager,
+                [Target] DefaultAuthService service,
+                CancellationToken cancellationToken
+            )
+            {
+                request.GrantType = Constants.GrantTypes.Impersonate;
+                request["user_id"] = userId.ToString();
+
+                await service.ImpersonateExchange(request, cancellationToken);
+
+                await userManager.Received().FindByIdAsync(Is(userId.ToString()));
+            }
+
+            [Test]
+            [Auto]
+            public async Task ShouldCreateClaimsIdentityForUser(
+                Guid userId,
+                OpenIddictRequest request,
+                [Frozen] User user,
+                [Frozen, Substitute] IAuthUtils authUtils,
+                [Target] DefaultAuthService service,
+                CancellationToken cancellationToken
+            )
+            {
+                request.GrantType = Constants.GrantTypes.Impersonate;
+                request["user_id"] = userId.ToString();
+
+                await service.ImpersonateExchange(request, cancellationToken);
+
+                await authUtils.Received().CreateClaimsIdentityForUser(Is(user), Is(cancellationToken));
+            }
+
+            [Test]
+            [Auto]
+            public async Task ShouldCreateAndReturnAuthenticationTicket(
+                Guid userId,
+                OpenIddictRequest request,
+                string[] audiences,
+                [Frozen] AuthenticationTicket ticket,
+                [Frozen] ClaimsIdentity claimsIdentity,
+                [Frozen, Substitute] IAuthUtils authUtils,
+                [Target] DefaultAuthService service,
+                CancellationToken cancellationToken
+            )
+            {
+                request.GrantType = Constants.GrantTypes.Impersonate;
+                request["user_id"] = userId.ToString();
+                request.Audiences = audiences;
+
+                var result = await service.ImpersonateExchange(request, cancellationToken);
+
+                result.Should().Be(ticket);
+                authUtils.Received().CreateAuthTicket(
+                    Is(claimsIdentity),
+                    Is<string[]>(scopes => scopes.Contains("openid")),
+                    resources: Is(audiences)
+                );
             }
         }
 
@@ -249,6 +366,105 @@ namespace Brighid.Identity.Auth
                 result.Properties.GetTokens().Should().Contain(token => token.Name == "id_token" && token.Value == idToken);
 
                 authUtils.Received().GenerateIdToken(Is(ticket), Is(user));
+            }
+        }
+
+        [Category("Unit")]
+        public class ExtractPrincipalFromRequestContextTests
+        {
+            [Test]
+            [Auto]
+            public void ShouldValidateAndReturnPrincipalFromToken(
+                [Target] DefaultAuthService service
+            )
+            {
+                var token = "eyJhbGciOiAibm9uZSIsInR5cCI6ICJhdCtqd3QifQ.eyJpc3MiOiJodHRwOi8vdmFsaWQtaXNzdWVyLyIsImF1ZCI6Imh0dHA6Ly92YWxpZC1pc3N1ZXIvIiwibmFtZSI6InRlc3QtdXNlciIsImV4cCI6OTk5OTk5OTk5OX0=.";
+                var transaction = new OpenIddictServerTransaction { Options = new() };
+                var context = new ValidateTokenRequestContext(transaction)
+                {
+                    Issuer = new Uri("http://valid-issuer/"),
+                    Request = new() { AccessToken = token },
+                };
+                context.Options.TokenValidationParameters.ValidateIssuerSigningKey = false;
+                context.Options.TokenValidationParameters.ValidateTokenReplay = false;
+                context.Options.TokenValidationParameters.RequireExpirationTime = false;
+                context.Options.TokenValidationParameters.RequireSignedTokens = false;
+
+                var result = service.ExtractPrincipalFromRequestContext(context);
+
+                result.Identity!.Name.Should().Be("test-user");
+            }
+
+            [Test]
+            [Auto]
+            public void ShouldThrowInvalidAuthExceptionIfAudienceIsInvalid(
+                [Target] DefaultAuthService service
+            )
+            {
+                var token = "eyJhbGciOiAibm9uZSIsInR5cCI6ICJhdCtqd3QifQ.eyJpc3MiOiJodHRwOi8vdmFsaWQtaXNzdWVyLyIsImF1ZCI6Imh0dHA6Ly9pbnZhbGlkLWlzc3Vlci8iLCJuYW1lIjoidGVzdC11c2VyIiwiZXhwIjo5OTk5OTk5OTk5fQ==.";
+                var transaction = new OpenIddictServerTransaction { Options = new() };
+                var context = new ValidateTokenRequestContext(transaction)
+                {
+                    Issuer = new Uri("http://valid-issuer/"),
+                    Request = new() { AccessToken = token },
+                };
+                context.Options.TokenValidationParameters.ValidateAudience = true;
+                context.Options.TokenValidationParameters.ValidateIssuerSigningKey = false;
+                context.Options.TokenValidationParameters.ValidateTokenReplay = false;
+                context.Options.TokenValidationParameters.RequireExpirationTime = false;
+                context.Options.TokenValidationParameters.RequireSignedTokens = false;
+
+                Action func = () => service.ExtractPrincipalFromRequestContext(context);
+
+                func.Should().Throw<InvalidAccessTokenException>();
+            }
+
+            [Test]
+            [Auto]
+            public void ShouldThrowInvalidAuthExceptionIfIssuerIsInvalid(
+                [Target] DefaultAuthService service
+            )
+            {
+                var token = "eyJhbGciOiAibm9uZSIsInR5cCI6ICJhdCtqd3QifQ.eyJpc3MiOiJodHRwOi8vaW52YWxpZC1pc3N1ZXIvIiwiYXVkIjoiaHR0cDovL3ZhbGlkLWlzc3Vlci8iLCJuYW1lIjoidGVzdC11c2VyIiwiZXhwIjo5OTk5OTk5OTk5fQ==.";
+                var transaction = new OpenIddictServerTransaction { Options = new() };
+                var context = new ValidateTokenRequestContext(transaction)
+                {
+                    Issuer = new Uri("http://valid-issuer/"),
+                    Request = new() { AccessToken = token },
+                };
+                context.Options.TokenValidationParameters.ValidateIssuer = true;
+                context.Options.TokenValidationParameters.ValidateIssuerSigningKey = false;
+                context.Options.TokenValidationParameters.ValidateTokenReplay = false;
+                context.Options.TokenValidationParameters.RequireExpirationTime = false;
+                context.Options.TokenValidationParameters.RequireSignedTokens = false;
+
+                Action func = () => service.ExtractPrincipalFromRequestContext(context);
+
+                func.Should().Throw<InvalidAccessTokenException>();
+            }
+
+            [Test]
+            [Auto]
+            public void ShouldThrowInvalidAuthExceptionIfExpired(
+                [Target] DefaultAuthService service
+            )
+            {
+                var token = "eyJhbGciOiAibm9uZSIsInR5cCI6ICJhdCtqd3QifQ.eyJpc3MiOiJodHRwOi8vdmFsaWQtaXNzdWVyLyIsImF1ZCI6Imh0dHA6Ly92YWxpZC1pc3N1ZXIvIiwibmFtZSI6InRlc3QtdXNlciIsImV4cCI6MH0=.";
+                var transaction = new OpenIddictServerTransaction { Options = new() };
+                var context = new ValidateTokenRequestContext(transaction)
+                {
+                    Issuer = new Uri("http://valid-issuer/"),
+                    Request = new() { AccessToken = token },
+                };
+                context.Options.TokenValidationParameters.ValidateIssuer = true;
+                context.Options.TokenValidationParameters.ValidateIssuerSigningKey = false;
+                context.Options.TokenValidationParameters.ValidateTokenReplay = false;
+                context.Options.TokenValidationParameters.RequireExpirationTime = false;
+                context.Options.TokenValidationParameters.RequireSignedTokens = false;
+
+                Action func = () => service.ExtractPrincipalFromRequestContext(context);
+
+                func.Should().Throw<InvalidAccessTokenException>();
             }
         }
     }

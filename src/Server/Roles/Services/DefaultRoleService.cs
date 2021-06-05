@@ -1,5 +1,9 @@
 using System;
+using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
+using System.Reflection;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 using Microsoft.EntityFrameworkCore;
@@ -23,6 +27,43 @@ namespace Brighid.Identity.Roles
 
         public Guid GetPrimaryKey(Role role) => role.Id;
 
+        /// <inheritdoc />
+        public void ValidateRoleDelegations(IEnumerable<string> roles, ClaimsPrincipal principal)
+        {
+            foreach (var role in roles)
+            {
+                var attributes = typeof(BuiltInRole).GetField(role)?.GetCustomAttributes<DelegatingRoleAttribute>();
+
+                if (attributes == null || !attributes.Any())
+                {
+                    return;
+                }
+
+                foreach (var attribute in attributes)
+                {
+                    if (principal.IsInRole(attribute.Role))
+                    {
+                        return;
+                    }
+                }
+
+                throw new RoleDelegationDeniedException();
+            }
+        }
+
+        /// <inheritdoc />
+        public void ValidateUserHasRoles(IEnumerable<string> roles, ClaimsPrincipal principal)
+        {
+            foreach (var role in roles)
+            {
+                if (!principal.IsInRole(role))
+                {
+                    throw new RoleRequiredException(role);
+                }
+            }
+        }
+
+        /// <inheritdoc />
         public async Task<Role> Create(Role role)
         {
             try
@@ -38,6 +79,7 @@ namespace Brighid.Identity.Roles
             }
         }
 
+        /// <inheritdoc />
         public async Task<Role> UpdateById(Guid id, Role updatedRoleInfo)
         {
             var existingRole = await repository.FindById(id);
@@ -49,6 +91,7 @@ namespace Brighid.Identity.Roles
             return await UpdateCore(existingRole, updatedRoleInfo);
         }
 
+        /// <inheritdoc />
         public async Task<Role> DeleteById(Guid id)
         {
             if (await repository.IsAttachedToAPrincipal(id))

@@ -4,7 +4,7 @@ using System;
 
 namespace Brighid.Identity.Roles
 {
-    public class RoleNotFoundException : Exception
+    public class RoleNotFoundException : Exception, IValidationException
     {
         public RoleNotFoundException(string name)
             : base($"Role {name} was not found.")

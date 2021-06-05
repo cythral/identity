@@ -21,7 +21,6 @@ using Brighid.Identity.Users;
 
 using Flurl.Http;
 
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -138,35 +137,9 @@ namespace Brighid.Identity
                 return user ?? new GenericPrincipal(new GenericIdentity("Anonymous"), null);
             });
 
-            services.Configure<IdentityOptions>(options =>
-            {
-                options.ClaimsIdentity.UserNameClaimType = Claims.Name;
-                options.ClaimsIdentity.UserIdClaimType = Claims.Subject;
-                options.ClaimsIdentity.RoleClaimType = Claims.Role;
-            });
-
-            services.ConfigureApplicationCookie(options =>
-            {
-                options.LoginPath = "/login";
-                options.Cookie.Domain = AppConfig.CookieDomain;
-                options.Cookie.Name = AppConfig.CookieName;
-                options.ReturnUrlParameter = AppConfig.RedirectUriParameter;
-                options.TicketDataFormat = new AuthTicketFormat(tokenValidationParameters);
-                options.Events = new IdentityCookieAuthenticationEvents(AppConfig);
-            });
-
-            services.AddOpenId(OpenIdConfig, tokenValidationParameters);
-            services.AddAuthorization(options =>
-            {
-                options.AddPolicy(nameof(IdentityPolicy.RestrictedToSelfByUserId), policy =>
-                {
-                    static object? Parse(string? input) =>
-                        input != null ? new Guid(input).ToString() : null;
-
-                    policy.AddRequirements(new RestrictedToSelfPolicyRequirement("userId", Claims.Subject, Parse));
-                });
-            });
-            services.AddSingleton<IAuthorizationHandler, RestrictedToSelfPolicyHandler>();
+            services.AddOpenIdServer(OpenIdConfig, tokenValidationParameters);
+            services.AddOpenIdAuth(AppConfig, tokenValidationParameters);
+            services.AddAuthorizationPolicies();
 
             var jsonOptions = new JsonSerializerOptions { DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull };
             jsonOptions.Converters.Add(new JsonStringEnumConverter());
@@ -254,22 +227,23 @@ namespace Brighid.Identity
 
             var provider = app.ApplicationServices;
 
-            SeedBasicRole(provider).GetAwaiter().GetResult();
+            SeedRole(provider, nameof(BuiltInRole.Basic)).GetAwaiter().GetResult();
+            SeedRole(provider, nameof(BuiltInRole.Impersonator)).GetAwaiter().GetResult();
         }
 
-        public async Task SeedBasicRole(IServiceProvider provider)
+        public async Task SeedRole(IServiceProvider provider, string name)
         {
             using var scope = provider.CreateScope();
             var services = scope.ServiceProvider;
             var roleRepository = services.GetRequiredService<IRoleRepository>();
-            var existingRole = await roleRepository.FindByName("Basic").ConfigureAwait(false);
+            var existingRole = await roleRepository.FindByName(name).ConfigureAwait(false);
 
             if (existingRole != null)
             {
                 return;
             }
 
-            var role = new Role { Name = "Basic", NormalizedName = "BASIC" };
+            var role = new Role { Name = name, NormalizedName = name.ToUpper() };
             await roleRepository.Add(role);
         }
     }

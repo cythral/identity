@@ -59,6 +59,11 @@ public class AppFactory : WebApplicationFactory<Startup>
 
     public static async Task<AppFactory> Create()
     {
+        if (Environment.GetEnvironmentVariable("SKIP_INTEGRATION_SETUP") == "true")
+        {
+            return null!;
+        }
+
         var serverIp = await MySqlContainer.GetMysqlServerAddress();
         var app = new AppFactory(serverIp);
         await app.Start();

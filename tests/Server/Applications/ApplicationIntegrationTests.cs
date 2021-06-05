@@ -19,6 +19,7 @@ using NUnit.Framework;
 
 namespace Brighid.Identity.Applications
 {
+    [TestFixture]
     [Category("Integration")]
     public class ApplicationIntegrationTests
     {
@@ -210,7 +211,7 @@ namespace Brighid.Identity.Applications
                         },
                     }, options);
 
-                    response.StatusCode.Should().Be(400);
+                    response.StatusCode.Should().Be(422);
                 }
 
                 {

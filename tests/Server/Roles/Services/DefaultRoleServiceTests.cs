@@ -1,6 +1,7 @@
 using System;
 using System.Globalization;
 using System.Reflection;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 using AutoFixture.AutoNSubstitute;
@@ -26,6 +27,144 @@ namespace Brighid.Identity.Roles
     [Category("Unit")]
     public class DefaultRoleServiceTests
     {
+        [TestFixture]
+        [Category("Unit")]
+        public class ValidateRoleDelegationsTests
+        {
+            [Test]
+            [Auto]
+            public void ShouldThrowRoleDelegationDeniedException_IfUserIsAttemptingToDelegateImpersonator_AndIsNotAnAdmin(
+                ClaimsPrincipal principal,
+                [Target] DefaultRoleService service
+            )
+            {
+                Action func = () => service.ValidateRoleDelegations(new[] { nameof(BuiltInRole.Impersonator) }, principal);
+
+                func.Should().Throw<RoleDelegationDeniedException>();
+            }
+
+            [Test]
+            [Auto]
+            public void ShouldNotThrowRoleDelegationDeniedException_IfUserIsAttemptingToDelegateImpersonator_AndIsAnAdmin(
+                ClaimsPrincipal principal,
+                [Target] DefaultRoleService service
+            )
+            {
+                var identity = new ClaimsIdentity();
+                identity.AddClaim(new Claim(ClaimTypes.Role, nameof(BuiltInRole.Administrator)));
+                principal.AddIdentity(identity);
+
+                Action func = () => service.ValidateRoleDelegations(new[] { nameof(BuiltInRole.Impersonator) }, principal);
+
+                func.Should().NotThrow<RoleDelegationDeniedException>();
+            }
+
+            [Test]
+            [Auto]
+            public void ShouldThrowRoleDelegationDeniedException_IfUserIsAttemptingToDelegateAdmin_AndIsNotAdmin(
+                ClaimsPrincipal principal,
+                [Target] DefaultRoleService service
+            )
+            {
+                var identity = new ClaimsIdentity();
+                identity.AddClaim(new Claim(ClaimTypes.Role, nameof(BuiltInRole.Basic)));
+                principal.AddIdentity(identity);
+
+                Action func = () => service.ValidateRoleDelegations(new[] { nameof(BuiltInRole.Administrator) }, principal);
+
+                func.Should().Throw<RoleDelegationDeniedException>();
+            }
+
+            [Test]
+            [Auto]
+            public void ShouldThrowRoleDelegationDeniedException_IfUserIsAttemptingToDelegateApplicationManager_AndIsNotAdmin(
+                ClaimsPrincipal principal,
+                [Target] DefaultRoleService service
+            )
+            {
+                var identity = new ClaimsIdentity();
+                identity.AddClaim(new Claim(ClaimTypes.Role, nameof(BuiltInRole.Basic)));
+                principal.AddIdentity(identity);
+
+                Action func = () => service.ValidateRoleDelegations(new[] { nameof(BuiltInRole.ApplicationManager) }, principal);
+
+                func.Should().Throw<RoleDelegationDeniedException>();
+            }
+
+            [Test]
+            [Auto]
+            public void ShouldThrowRoleDelegationDeniedException_IfUserIsAttemptingToDelegateRoleManager_AndIsNotAdmin(
+                ClaimsPrincipal principal,
+                [Target] DefaultRoleService service
+            )
+            {
+                var identity = new ClaimsIdentity();
+                identity.AddClaim(new Claim(ClaimTypes.Role, nameof(BuiltInRole.Basic)));
+                principal.AddIdentity(identity);
+
+                Action func = () => service.ValidateRoleDelegations(new[] { nameof(BuiltInRole.RoleManager) }, principal);
+
+                func.Should().Throw<RoleDelegationDeniedException>();
+            }
+
+            [Test]
+            [Auto]
+            public void ShouldNotThrowRoleDelegationDeniedException_IfUserIsAttemptingToDelegateBasic_AndIsApplicationManager(
+                ClaimsPrincipal principal,
+                [Target] DefaultRoleService service
+            )
+            {
+                var identity = new ClaimsIdentity();
+                identity.AddClaim(new Claim(ClaimTypes.Role, nameof(BuiltInRole.ApplicationManager)));
+                principal.AddIdentity(identity);
+
+                Action func = () => service.ValidateRoleDelegations(new[] { nameof(BuiltInRole.Basic) }, principal);
+
+                func.Should().NotThrow<RoleDelegationDeniedException>();
+            }
+
+            [Test]
+            [Auto]
+            public void ShouldNotThrowRoleDelegationDeniedException_IfUserIsAttemptingToDelegateArbitraryRole_AndIsApplicationManager(
+                string role,
+                ClaimsPrincipal principal,
+                [Target] DefaultRoleService service
+            )
+            {
+                var identity = new ClaimsIdentity();
+                identity.AddClaim(new Claim(ClaimTypes.Role, nameof(BuiltInRole.ApplicationManager)));
+                principal.AddIdentity(identity);
+
+                Action func = () => service.ValidateRoleDelegations(new[] { role }, principal);
+
+                func.Should().NotThrow<RoleDelegationDeniedException>();
+            }
+        }
+
+        [TestFixture]
+        [Category("Unit")]
+        public class ValidateUserHasRolesTests
+        {
+            [Test]
+            [Auto]
+            public void ShouldThrowRoleRequiredExceptionIfPrincipalDoesntHaveAllRoles(
+                string role1,
+                string role2,
+                string role3,
+                [Target] DefaultRoleService service
+            )
+            {
+                var identity = new ClaimsIdentity();
+                var principal = new ClaimsPrincipal(identity);
+                identity.AddClaim(new Claim(ClaimTypes.Role, role1));
+                identity.AddClaim(new Claim(ClaimTypes.Role, role2));
+
+                Action func = () => service.ValidateUserHasRoles(new[] { role1, role2, role3 }, principal);
+
+                func.Should().Throw<RoleRequiredException>().And.Role.Should().Be(role3);
+            }
+        }
+
         [TestFixture]
         [Category("Unit")]
         public class GetPrimaryKeyTests

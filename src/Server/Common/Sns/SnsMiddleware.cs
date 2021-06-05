@@ -41,11 +41,12 @@ namespace Brighid.Identity.Sns
 
             context.Request.EnableBuffering();
 
-            var roleClaim = new Claim(Claims.Role, nameof(BuiltInRole.ApplicationManager));
+            var applicationManagerRoleClaim = new Claim(Claims.Role, nameof(BuiltInRole.ApplicationManager));
+            var administratorRoleClaim = new Claim(Claims.Role, nameof(BuiltInRole.Administrator));
             var claimsIdentity = new ClaimsIdentity(null, null, Claims.Role);
             var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
-            claimsIdentity.AddClaim(roleClaim);
-            Console.WriteLine("IsInRole: " + claimsPrincipal.IsInRole(nameof(BuiltInRole.ApplicationManager)));
+            claimsIdentity.AddClaim(applicationManagerRoleClaim);
+            claimsIdentity.AddClaim(administratorRoleClaim);
 
             context.User = claimsPrincipal;
             context.Items[Constants.RequestSource] = IdentityRequestSource.Sns;

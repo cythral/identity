@@ -1,4 +1,4 @@
-namespace Brighid.Identity
+namespace Brighid.Identity.Auth
 {
     public class OpenIdConfig
     {

@@ -416,6 +416,20 @@ namespace Brighid.Identity.Auth
 
             [Test]
             [Auto]
+            public void Resources_ShouldContainGivenDomains(
+                string[] givenResources,
+                ClaimsIdentity claimsIdentity,
+                [Target] DefaultAuthUtils authUtils
+            )
+            {
+                var result = authUtils.CreateAuthTicket(claimsIdentity, resources: givenResources);
+                var resources = result.Principal.GetResources();
+
+                resources.Should().Contain(givenResources);
+            }
+
+            [Test]
+            [Auto]
             public void Scopes_ShouldBeSet(
                 string[] scopes,
                 ClaimsIdentity claimsIdentity,

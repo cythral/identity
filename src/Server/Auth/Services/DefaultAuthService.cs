@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -10,6 +11,8 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 
 using OpenIddict.Abstractions;
+
+using ValidateTokenRequestContext = OpenIddict.Server.OpenIddictServerEvents.ValidateTokenRequestContext;
 
 namespace Brighid.Identity.Auth
 {
@@ -28,6 +31,7 @@ namespace Brighid.Identity.Auth
             this.userManager = userManager;
         }
 
+        /// <inheritdoc />
         public async Task<AuthenticationTicket> ClientExchange(OpenIddictRequest request, CancellationToken cancellationToken = default)
         {
             if (!request.IsClientCredentialsGrantType())
@@ -49,6 +53,22 @@ namespace Brighid.Identity.Auth
             return authUtils.CreateAuthTicket(identity, scopes);
         }
 
+        /// <inheritdoc />
+        public async Task<AuthenticationTicket> ImpersonateExchange(OpenIddictRequest request, CancellationToken cancellationToken = default)
+        {
+            if (request.GrantType != Constants.GrantTypes.Impersonate)
+            {
+                throw new InvalidOperationException("Expected impersonate grant type");
+            }
+
+            RequireAuthParameter(request, "user_id", out var userId);
+            var user = await userManager.FindByIdAsync(userId);
+            var identity = await authUtils.CreateClaimsIdentityForUser(user, cancellationToken);
+            var ticket = authUtils.CreateAuthTicket(identity, DefaultScopes, resources: request.Audiences);
+            return ticket;
+        }
+
+        /// <inheritdoc />
         public async Task<AuthenticationTicket> PasswordExchange(string email, string password, Uri redirectUri, CancellationToken cancellationToken = default)
         {
             cancellationToken.ThrowIfCancellationRequested();
@@ -64,6 +84,30 @@ namespace Brighid.Identity.Auth
             var idToken = new AuthenticationToken { Name = "id_token", Value = authUtils.GenerateIdToken(ticket, user) };
             ticket.Properties.StoreTokens(new[] { accessToken, idToken });
             return ticket;
+        }
+
+        /// <inheritdoc />
+        public ClaimsPrincipal ExtractPrincipalFromRequestContext(ValidateTokenRequestContext context)
+        {
+            var parameters = context.Options.TokenValidationParameters.Clone();
+            parameters.ValidIssuer ??= context.Issuer?.AbsoluteUri;
+            parameters.ValidAudience = context.Issuer?.AbsoluteUri;
+            parameters.ValidateLifetime = true;
+
+            var result = context.Options.JsonWebTokenHandler.ValidateToken(context.Request.AccessToken, parameters);
+            return result.IsValid
+                ? new ClaimsPrincipal(result.ClaimsIdentity)
+                : throw new InvalidAccessTokenException();
+        }
+
+        private void RequireAuthParameter(OpenIddictRequest request, string parameter, out string parameterValue)
+        {
+            if (!request.HasParameter(parameter))
+            {
+                throw new MissingAuthParameterException(parameter, request.GrantType!);
+            }
+
+            parameterValue = request[parameter]!.Value.Value!.ToString()!;
         }
     }
 }
