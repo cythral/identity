@@ -1,5 +1,4 @@
 using System;
-using System.Linq;
 using System.Threading.Tasks;
 
 using Brighid.Identity.Roles;
@@ -19,34 +18,23 @@ namespace Brighid.Identity.Applications
     public class ApplicationController : EntityController<Application, ApplicationRequest, Guid, IApplicationRepository, IApplicationMapper, IApplicationService>
     {
         public const string BasePath = "/api/applications";
+        private readonly IRoleService roleService;
 
         public ApplicationController(
             IApplicationMapper appMapper,
             IApplicationService appService,
-            IApplicationRepository appRepository
+            IApplicationRepository appRepository,
+            IRoleService roleService
         )
             : base(BasePath, appMapper, appService, appRepository)
         {
+            this.roleService = roleService;
         }
 
-        public override async Task<ActionResult<Application>> Create([FromBody] ApplicationRequest request)
+        protected override Task Validate(ApplicationRequest request)
         {
-            try
-            {
-                return await base.Create(request);
-            }
-            catch (RoleNotFoundException e)
-            {
-                return BadRequest(new { e.Message });
-            }
-            catch (AggregateException e)
-            {
-                return BadRequest(new
-                {
-                    Message = "Multiple validation errors occurred.",
-                    ValidationErrors = from innerException in e.InnerExceptions select innerException.Message,
-                });
-            }
+            roleService.ValidateRoleDelegations(request.Roles, HttpContext.User);
+            return Task.CompletedTask;
         }
 
         protected override void SetSnsContextItems(Guid id, Application data)

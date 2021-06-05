@@ -2,7 +2,7 @@ using System;
 
 namespace Brighid.Identity.Applications
 {
-    public class UpdateApplicationException : Exception
+    public class UpdateApplicationException : Exception, IValidationException
     {
         public UpdateApplicationException()
         {

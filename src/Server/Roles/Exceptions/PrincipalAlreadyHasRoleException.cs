@@ -4,7 +4,7 @@ using System;
 
 namespace Brighid.Identity.Roles
 {
-    public class PrincipalAlreadyHasRoleException : Exception
+    public class PrincipalAlreadyHasRoleException : Exception, IValidationException
     {
         public PrincipalAlreadyHasRoleException(string principalName, string roleName)
             : base($"Principal {principalName} already has role {roleName}.")

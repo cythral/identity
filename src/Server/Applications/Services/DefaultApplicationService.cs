@@ -1,5 +1,10 @@
 using System;
+using System.Collections.Generic;
+using System.Reflection;
+using System.Text.Json;
 using System.Threading.Tasks;
+
+using Brighid.Identity.Roles;
 
 using OpenIddict.Abstractions;
 using OpenIddict.Core;
@@ -36,14 +41,9 @@ namespace Brighid.Identity.Applications
             {
                 ClientId = application.Id.ToString(),
                 ClientSecret = secret,
-                Permissions =
-                {
-                    OpenIddictConstants.Permissions.Endpoints.Token,
-                    OpenIddictConstants.Permissions.GrantTypes.ClientCredentials,
-                    OpenIddictConstants.Permissions.Scopes.Roles,
-                },
             };
 
+            ComputePermissionsFromRoles(descriptor.Permissions, application.Roles);
             application.EncryptedSecret = await encryptionService.Encrypt(secret);
             application.Secret = secret;
 
@@ -67,19 +67,23 @@ namespace Brighid.Identity.Applications
             existingApp.Serial = application.Serial;
             existingApp.Roles = application.Roles;
 
+            var client = await appManager.FindByClientIdAsync(id.ToString());
+            var permissions = new HashSet<string>();
+
+            ComputePermissionsFromRoles(permissions, application.Roles);
+            client!.Permissions = JsonSerializer.Serialize(permissions);
+
             if (serialChanged)
             {
                 var secret = generateRandomString(128);
                 var encryptedSecret = await encryptionService.Encrypt(secret);
-                var client = await appManager.FindByClientIdAsync(id.ToString());
 
                 existingApp.EncryptedSecret = encryptedSecret;
                 existingApp.Secret = secret;
                 client!.ClientSecret = secret;
-
-                await appManager.UpdateAsync(client);
             }
 
+            await appManager.UpdateAsync(client!);
             await appRepository.Save(existingApp);
 
             return existingApp;
@@ -92,6 +96,26 @@ namespace Brighid.Identity.Applications
             await appManager.DeleteAsync(client!);
 
             return result;
+        }
+
+        private void ComputePermissionsFromRoles(HashSet<string> permissions, IEnumerable<Role> roles)
+        {
+            permissions.Clear();
+            permissions.Add(OpenIddictConstants.Permissions.Endpoints.Token);
+            permissions.Add(OpenIddictConstants.Permissions.GrantTypes.ClientCredentials);
+            permissions.Add(OpenIddictConstants.Permissions.Scopes.Roles);
+
+            foreach (var role in roles)
+            {
+                if (Enum.TryParse<BuiltInRole>(role.Name, out var builtInRole))
+                {
+                    var attributes = typeof(BuiltInRole).GetField(role.Name)!.GetCustomAttributes<AddsPermissionAttribute>();
+                    foreach (var attr in attributes)
+                    {
+                        permissions.Add(attr.Permission);
+                    }
+                }
+            }
         }
     }
 }

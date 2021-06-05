@@ -19,6 +19,7 @@ using NUnit.Framework;
 
 namespace Brighid.Identity.Applications
 {
+    [TestFixture]
     [Category("Integration")]
     public class ApplicationIntegrationTests
     {

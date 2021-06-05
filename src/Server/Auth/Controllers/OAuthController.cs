@@ -29,6 +29,7 @@ namespace Brighid.Identity.Auth
             var ticket = request.GrantType switch
             {
                 GrantTypes.ClientCredentials => await authService.ClientExchange(request, HttpContext.RequestAborted),
+                Constants.GrantTypes.Impersonate => await authService.ImpersonateExchange(request, HttpContext.RequestAborted),
                 _ => throw new InvalidOperationException($"Grant Type {request.GrantType} Not Supported."),
             };
 

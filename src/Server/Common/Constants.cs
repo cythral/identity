@@ -16,5 +16,10 @@ namespace Brighid.Identity
             public const string UserId = "userid";
             public const string Role = "role";
         }
+
+        public static class GrantTypes
+        {
+            public const string Impersonate = "impersonate";
+        }
     }
 }
