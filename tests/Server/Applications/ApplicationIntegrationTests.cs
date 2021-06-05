@@ -211,7 +211,7 @@ namespace Brighid.Identity.Applications
                         },
                     }, options);
 
-                    response.StatusCode.Should().Be(400);
+                    response.StatusCode.Should().Be(422);
                 }
 
                 {
