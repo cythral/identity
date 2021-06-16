@@ -197,6 +197,9 @@ Resources:
         - Name: !Ref AWS::StackName
           Essential: true
           Image: !Ref Image
+          DependsOn:
+            - ContainerName: envoy
+              Condition: HEALTHY
           PortMappings:
             - ContainerPort: 80
           LogConfiguration:
