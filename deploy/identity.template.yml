@@ -109,37 +109,10 @@ Resources:
       EncryptionRoleArn: !ImportValue cfn-secret-resource:EncryptionRoleArn
       Ciphertext: !ImportValue sso-aws:GoogleClientSecret
 
-  ListenerRule:
-    Type: AWS::ElasticLoadBalancingV2::ListenerRule
-    Properties:
-      ListenerArn: !ImportValue cfn-utilities:HttpListenerArn
-      Priority: 5
-      Actions:
-        - Type: forward
-          TargetGroupArn: !Ref TargetGroup
-      Conditions:
-        - Field: host-header
-          HostHeaderConfig:
-            Values:
-              - !Ref DomainName
-
-  TargetGroup:
-    Type: AWS::ElasticLoadBalancingV2::TargetGroup
-    Properties:
-      TargetType: ip
-      VpcId: !ImportValue cfn-utilities:VpcId
-      Protocol: HTTP
-      Port: 80
-      HealthCheckPath: /healthcheck
-      TargetGroupAttributes:
-        - Key: deregistration_delay.timeout_seconds
-          Value: "30"
-
   Service:
     Type: AWS::ECS::Service
     Properties:
       Cluster: !ImportValue brighid-infrastructure:ClusterName
-      ServiceName: !Ref AWS::StackName
       LaunchType: FARGATE
       EnableECSManagedTags: true
       PropagateTags: TASK_DEFINITION
@@ -152,10 +125,6 @@ Resources:
             - !ImportValue cfn-utilities:WebSecurityGroupId
             - !ImportValue cfn-utilities:EnvoySecurityGroupId
           AssignPublicIp: ENABLED
-      LoadBalancers:
-        - ContainerName: !Ref AWS::StackName
-          ContainerPort: 80
-          TargetGroupArn: !Ref TargetGroup
       ServiceRegistries:
         - RegistryArn: !GetAtt ServiceRegistryRecord.Arn
           Port: 80
