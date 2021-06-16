@@ -54,7 +54,7 @@ Resources:
         Listeners:
           - PortMapping:
               Port: 80
-              Protocol: http
+              Protocol: http2
             HealthCheck:
               UnhealthyThreshold: 3
               HealthyThreshold: 5
