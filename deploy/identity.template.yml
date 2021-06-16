@@ -76,7 +76,7 @@ Resources:
       VirtualGatewayName: internet
       GatewayRouteName: !Ref MeshNodeName
       Spec:
-        HttpRoute:
+        Http2Route:
           Action:
             Target:
               VirtualService:
