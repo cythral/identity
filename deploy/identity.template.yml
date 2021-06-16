@@ -150,6 +150,7 @@ Resources:
             - !ImportValue cfn-utilities:SubnetIds
           SecurityGroups:
             - !ImportValue cfn-utilities:WebSecurityGroupId
+            - !ImportValue cfn-utilities:EnvoySecurityGroupId
           AssignPublicIp: ENABLED
       LoadBalancers:
         - ContainerName: !Ref AWS::StackName
