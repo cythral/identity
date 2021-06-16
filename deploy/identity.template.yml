@@ -319,6 +319,7 @@ Resources:
   LogGroup:
     Type: AWS::Logs::LogGroup
     Properties:
+      LogGroupName: /brighid/identity
       RetentionInDays: 14
 
 Outputs:
