@@ -32,6 +32,6 @@ namespace Brighid.Identity
         /// <summary>
         /// Gets or sets the port to use for the adapter's HTTP interface.
         /// </summary>
-        public int Port { get; set; }
+        public int Port { get; set; } = 80;
     }
 }
