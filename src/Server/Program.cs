@@ -1,4 +1,7 @@
+using System.Net;
+
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Extensions.Hosting;
 
 namespace Brighid.Identity
@@ -14,9 +17,16 @@ namespace Brighid.Identity
         {
             return Host
             .CreateDefaultBuilder(args)
-            .ConfigureWebHostDefaults(webBuilder =>
+            .ConfigureWebHostDefaults(builder =>
             {
-                webBuilder.UseStartup<Startup>();
+                builder.UseStartup<Startup>();
+                builder.ConfigureKestrel(options =>
+                {
+                    options.Listen(IPAddress.Any, 80, listenOptions =>
+                    {
+                        listenOptions.Protocols = HttpProtocols.Http2;
+                    });
+                });
             });
         }
     }

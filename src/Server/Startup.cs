@@ -182,7 +182,8 @@ namespace Brighid.Identity
                 }
 
                 context.Request.Headers.TryGetValue("x-forwarded-for", out var forwardedForAddressValues);
-                if (forwardedForAddressValues.Any())
+
+                if (AppConfig.UseHttps && forwardedForAddressValues.Any())
                 {
                     context.Request.Scheme = "https";
                 }

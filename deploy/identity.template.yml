@@ -54,13 +54,13 @@ Resources:
         Listeners:
           - PortMapping:
               Port: 80
-              Protocol: http
+              Protocol: http2
             HealthCheck:
               UnhealthyThreshold: 3
               HealthyThreshold: 5
               TimeoutMillis: 30000
               Path: /healthcheck
-              Protocol: http
+              Protocol: http2
               IntervalMillis: 30000
         ServiceDiscovery:
           AWSCloudMap:

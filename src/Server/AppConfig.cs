@@ -16,5 +16,10 @@ namespace Brighid.Identity
         /// Gets or sets the redirect uri parameter.
         /// </summary>
         public string RedirectUriParameter { get; set; } = "redirect_uri";
+
+        /// <summary>
+        /// Gets or sets a value indicating whether or not to use HTTPS.
+        /// </summary>
+        public bool UseHttps { get; set; } = true;
     }
 }

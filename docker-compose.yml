@@ -1,12 +1,25 @@
 version: "3.4"
 services:
+  traefik:
+    image: traefik:v2.4
+    command:
+      - --api.insecure=true
+      - --providers.docker=true
+      - --providers.docker.exposedbydefault=false
+      - --entrypoints.web.address=:80
+    ports:
+      - 80:80
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+
   api:
     build:
       context: .
       target: development
     restart: unless-stopped
     ports:
-      - 80:80
+      - "80"
+      - "8736:8736"
     volumes:
       - ./:/app
       - ~/.aws:/root/.aws
@@ -14,6 +27,8 @@ services:
       - ~/.vsdbg:/remote_debugger:rw
     environment:
       CONFIGURATION: Debug
+      ASPNETCORE_HOSTINGSTARTUPASSEMBLIES: Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation
+      ASPNETCORE_ENVIRONMENT: Development
       OpenId__DomainName: localhost
       Database__Host: db
       Database__Name: ${DB_NAME}
@@ -22,6 +37,12 @@ services:
       EncryptionOptions__KmsKeyId: ${ENCRYPTION_KEY_ID}
       AWS_REGION: us-east-1
       App__CookieDomain: localhost
+      App__UseHttps: "false"
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.adapter.rule=Host(`localhost`)
+      - traefik.http.routers.adapter.entrypoints=web
+      - traefik.http.services.adapter.loadbalancer.server.scheme=h2c
 
   db:
     image: mariadb/server:10.4
