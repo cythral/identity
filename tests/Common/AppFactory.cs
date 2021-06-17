@@ -12,6 +12,7 @@ using Brighid.Identity;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -24,12 +25,12 @@ public class AppFactory : WebApplicationFactory<Startup>
     private readonly string databaseServerAddress;
 
     private readonly IHost host;
+    private readonly IPEndPoint endpoint;
 
     public AppFactory(string databaseServerAddress)
     {
         this.databaseServerAddress = databaseServerAddress;
 
-        IPEndPoint endpoint;
         using (var socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp))
         {
             socket.Bind(new IPEndPoint(IPAddress.Loopback, 0));
@@ -38,12 +39,10 @@ public class AppFactory : WebApplicationFactory<Startup>
         }
 
         var hostBuilder = CreateHostBuilder();
-        host = hostBuilder.ConfigureWebHost(webHostBuilder =>
+        host = hostBuilder.ConfigureWebHostDefaults(webHostBuilder =>
         {
             SetContentRoot(webHostBuilder);
             ConfigureWebHost(webHostBuilder);
-            webHostBuilder.UseKestrel();
-            webHostBuilder.UseUrls($"http://{endpoint}");
         }).Build();
 
         RootUri = new Uri($"http://{endpoint}");
@@ -73,13 +72,16 @@ public class AppFactory : WebApplicationFactory<Startup>
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
         builder.ConfigureAppConfiguration((options) =>
-            options.AddInMemoryCollection(new Dictionary<string, string>
+            options
+            .AddInMemoryCollection(new Dictionary<string, string>
             {
                 ["Database:Host"] = databaseServerAddress,
                 ["Database:Name"] = MySqlContainer.DbName,
                 ["Database:User"] = MySqlContainer.DbUser,
                 ["Database:Password"] = MySqlContainer.DbPassword,
                 ["EncryptionOptions:KmsKeyId"] = "alias/SecretsKey",
+                ["App:Port"] = endpoint.Port.ToString(),
+                ["App:Protocols"] = HttpProtocols.Http1.ToString(),
             })
         );
 
