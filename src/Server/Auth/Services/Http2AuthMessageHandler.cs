@@ -7,6 +7,11 @@ namespace Brighid.Identity.Auth
 {
     public class Http2AuthMessageHandler : DelegatingHandler
     {
+        public Http2AuthMessageHandler()
+        {
+            InnerHandler = new HttpClientHandler();
+        }
+
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
