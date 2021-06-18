@@ -119,6 +119,7 @@ namespace Microsoft.Extensions.DependencyInjection
                 options.SaveToken = true;
                 options.RefreshOnIssuerKeyNotFound = true;
                 options.RequireHttpsMetadata = false;
+                options.BackchannelHttpHandler = new Http2AuthMessageHandler();
                 options.MetadataAddress = $"http://localhost/.well-known/openid-configuration";
                 options.TokenValidationParameters = tokenValidationParameters;
             });
