@@ -16,6 +16,10 @@
     </ItemGroup>
 
     <ItemGroup>
+        <EmbeddedResource Include="ILLink.Descriptors.xml" LogicalName="ILLink.Descriptors.xml" />
+    </ItemGroup>
+
+    <ItemGroup>
         <SupportedPlatform Include="browser" />
     </ItemGroup>
 </Project>

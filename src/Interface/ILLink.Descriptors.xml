@@ -1,0 +1,14 @@
+<linker>
+    <assembly fullname="Common">
+        <type fullname="Brighid.Identity.Roles.Role" preserve="all" />
+        <type fullname="Brighid.Identity.Roles.RoleRequest" preserve="all" />
+        <type fullname="Brighid.Identity.Applications.Application" preserve="all" />
+        <type fullname="Brighid.Identity.Applications.ApplicationRequest" preserve="all" />
+        <type fullname="Brighid.Identity.Users.User" preserve="all" />
+        <type fullname="Brighid.Identity.Users.UserClaim" preserve="all" />
+        <type fullname="Brighid.Identity.Users.CreateUserLoginRequest" preserve="all" />
+        <type fullname="Brighid.Identity.Users.UserLogin" preserve="all" />
+        <type fullname="Brighid.Identity.Users.UserLoginAttribute" preserve="all" />
+        <type fullname="Brighid.Identity.Users.UserToken" preserve="all" />
+    </assembly>
+</linker>
