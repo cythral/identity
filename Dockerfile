@@ -17,6 +17,7 @@ FROM mcr.microsoft.com/dotnet/aspnet:5.0.6 AS production
 
 WORKDIR /app
 COPY --from=development /app/bin/Server/Release/net5.0/publish /app
+COPY --from=development /app/bin/Interface/Release/net5.0/publish/wwwroot /app/wwwroot
 COPY --from=development /certs /certs
 COPY entrypoint.sh /
 
