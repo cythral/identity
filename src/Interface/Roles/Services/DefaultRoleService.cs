@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Security.Claims;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -14,6 +15,7 @@ namespace Brighid.Identity.Interface.Roles
     public class DefaultRoleService : IRoleService
     {
         private readonly HttpClient httpClient;
+        private readonly JsonSerializerOptions serializerOptions;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DefaultRoleService" /> class.
@@ -22,6 +24,10 @@ namespace Brighid.Identity.Interface.Roles
         public DefaultRoleService(HttpClient httpClient)
         {
             this.httpClient = httpClient;
+            serializerOptions = new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+            };
         }
 
         /// <inheritdoc />
@@ -52,7 +58,7 @@ namespace Brighid.Identity.Interface.Roles
         public async Task<IEnumerable<Role>> List(CancellationToken cancellationToken = default)
         {
             cancellationToken.ThrowIfCancellationRequested();
-            var result = await httpClient.GetFromJsonAsync<Role[]>("/api/roles", cancellationToken);
+            var result = await httpClient.GetFromJsonAsync<Role[]>("/api/roles", serializerOptions, cancellationToken);
             return result ?? Array.Empty<Role>();
         }
 
