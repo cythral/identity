@@ -18,14 +18,14 @@ namespace Brighid.Identity.Roles
         }
 
         /// <summary>
-        /// Gets the unique identifier for this role.
+        /// Gets or sets the unique identifier for this role.
         /// </summary>
         /// <value>The role's unique identifier.</value>
         [Key]
         public new Guid Id
         {
             get => base.Id;
-            internal set => base.Id = value;
+            set => base.Id = value;
         }
 
         /// <summary>

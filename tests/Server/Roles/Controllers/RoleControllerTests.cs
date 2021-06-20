@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 
 using AutoFixture.AutoNSubstitute;
@@ -40,11 +41,12 @@ namespace Brighid.Identity.Roles
             [Auto]
             public async Task ShouldReturnListOfRoles(
                 IEnumerable<Role> roles,
-                [Frozen, Substitute] IRoleRepository repository,
+                [Frozen, Substitute] IRoleService service,
                 [Target] RoleController controller
             )
             {
-                repository.List().Returns(roles);
+                service.List(Any<CancellationToken>()).Returns(roles);
+                SetupHttpContext(controller);
 
                 var response = await controller.List();
                 var result = response.Result;
@@ -63,29 +65,29 @@ namespace Brighid.Identity.Roles
             public async Task ShouldReturnEntityIfItExists(
                 string name,
                 Role role,
-                [Frozen, Substitute] IRoleRepository repository,
+                [Frozen, Substitute] IRoleService service,
                 [Target] RoleController controller
             )
             {
-                repository.FindByName(Any<string>()).Returns(role);
+                service.GetByName(Any<string>(), Any<CancellationToken>()).Returns(role);
                 SetupHttpContext(controller);
 
                 var response = await controller.GetByName(name);
                 var result = response.Result;
 
                 result.As<OkObjectResult>().Value.Should().Be(role);
-                await repository.Received().FindByName(Is(name));
+                await service.Received().GetByName(Is(name), Any<CancellationToken>());
             }
 
             [Test]
             [Auto]
             public async Task ShouldReturnNotFoundIfNotExists(
                 string name,
-                [Frozen, Substitute] IRoleRepository repository,
+                [Frozen, Substitute] IRoleService service,
                 [Target] RoleController controller
             )
             {
-                repository.FindByName(Any<string>()).Returns((Role)null!);
+                service.GetByName(Any<string>(), Any<CancellationToken>()).Returns((Role)null!);
                 SetupHttpContext(controller);
 
                 var response = await controller.GetByName(name);

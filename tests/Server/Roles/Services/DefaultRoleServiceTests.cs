@@ -167,29 +167,12 @@ namespace Brighid.Identity.Roles
 
         [TestFixture]
         [Category("Unit")]
-        public class GetPrimaryKeyTests
-        {
-            [Test]
-            [Auto]
-            public void ShouldReturnId(
-                Role role,
-                [Target] DefaultRoleService service
-            )
-            {
-                var result = service.GetPrimaryKey(role);
-
-                result.Should().Be(role.Id);
-            }
-        }
-
-        [TestFixture]
-        [Category("Unit")]
         public class CreateTests
         {
             [Test]
             [Auto]
             public async Task ShouldAddToTheRepository(
-                Role role,
+                RoleRequest role,
                 Role expected,
                 [Frozen, Substitute] IRoleRepository repository,
                 [Target] DefaultRoleService service
@@ -210,7 +193,7 @@ namespace Brighid.Identity.Roles
             [Test]
             [Auto]
             public async Task ShouldThrowRoleAlreadyExistsException_IfRoleAlreadyExists(
-                Role role,
+                RoleRequest role,
                 Role expected,
                 [Frozen, Substitute] IRoleRepository repository,
                 [Target] DefaultRoleService service
@@ -234,7 +217,7 @@ namespace Brighid.Identity.Roles
             [Auto]
             public async Task ShouldThrowExceptionIfRoleNotFound(
                 Guid id,
-                Role updatedRoleInfo,
+                RoleRequest updatedRoleInfo,
                 [Frozen, Substitute] IRoleRepository repository,
                 [Target] DefaultRoleService service
             )
@@ -250,7 +233,7 @@ namespace Brighid.Identity.Roles
             [Auto]
             public async Task ShouldThrowExceptionIfNameChanged(
                 Guid id,
-                Role updatedRoleInfo,
+                RoleRequest updatedRoleInfo,
                 Role existingRole,
                 [Frozen, Substitute] IRoleRepository repository,
                 [Target] DefaultRoleService service
@@ -267,7 +250,7 @@ namespace Brighid.Identity.Roles
             [Auto]
             public async Task ShouldSavetoTheDatabaseWithUpdatedInfo(
                 Guid id,
-                Role updatedRoleInfo,
+                RoleRequest updatedRoleInfo,
                 Role existingRole,
                 [Frozen, Substitute] IRoleRepository repository,
                 [Target] DefaultRoleService service

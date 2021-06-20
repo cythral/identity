@@ -1,11 +1,8 @@
 using System.Threading;
 using System.Threading.Tasks;
 
-using AspNetCore.ServiceRegistration.Dynamic.Attributes;
-
 namespace Brighid.Identity.Auth
 {
-    [ScopedService]
     public interface ILinkStartUrlService
     {
         /// <summary>

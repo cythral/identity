@@ -29,7 +29,7 @@ namespace Brighid.Identity
 
                 if (prop != null && setterMethod != null)
                 {
-                    var setPrimaryKeyType = Type.GetType($"System.Action`2[{typeof(TEntity).FullName}, {typeof(TPrimaryKeyType).FullName}]")!;
+                    var setPrimaryKeyType = typeof(Action<,>).MakeGenericType(typeof(TEntity), typeof(TPrimaryKeyType));
                     SetPrimaryKey = (Action<TEntity, TPrimaryKeyType>)Delegate.CreateDelegate(setPrimaryKeyType, setterMethod);
                 }
             }

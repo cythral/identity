@@ -10,11 +10,11 @@ namespace Brighid.Identity.Applications
     public class Application
     {
         /// <summary>
-        /// Gets the ID number for this application.  This also serves as the ClientId.
+        /// Gets or sets the ID number for this application.  This also serves as the ClientId.
         /// </summary>
         /// <value>A unique id number.</value>
         [Key]
-        public virtual Guid Id { get; internal set; } = Guid.NewGuid();
+        public virtual Guid Id { get; set; } = Guid.NewGuid();
 
         /// <summary>
         /// Gets or sets the unique name for this application.

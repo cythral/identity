@@ -7,6 +7,7 @@ using Brighid.Identity.Auth;
 
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 
@@ -18,6 +19,14 @@ namespace Microsoft.Extensions.DependencyInjection
 {
     public static class AuthServiceCollectionExtensions
     {
+        public static void ConfigureAuthServices(this IServiceCollection services)
+        {
+            services.AddScoped<IAuthService, DefaultAuthService>();
+            services.AddScoped<IAuthUtils, DefaultAuthUtils>();
+            services.AddScoped<ILinkStartUrlService, SsmLinkStartUrlService>();
+            services.AddScoped<AuthenticationStateProvider, AuthContextProvider>();
+        }
+
         /// <summary>
         /// Adds the OpenIddict Server services to the service collection.
         /// </summary>

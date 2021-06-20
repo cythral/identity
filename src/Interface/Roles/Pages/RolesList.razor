@@ -1,5 +1,9 @@
+@namespace Brighid.Identity.Interface.Roles
+
+@using Brighid.Identity.Roles
+
 @page "/roles"
-@inject IRoleRepository roleRepository;
+@inject IRoleService roleService
 
 <div class="heading">
     <h1>Identity Roles</h1>
@@ -7,7 +11,7 @@
 </div>
 
 <ul>
-    @foreach (var role in roleRepository.All)
+    @foreach (var role in Roles)
     {
         <li>
             <span>@role.Name</span>
@@ -17,3 +21,13 @@
         </li>
     }
 </ul>
+
+@code
+{
+    IEnumerable<Role> Roles { get; set; } = Array.Empty<Role>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        Roles = await roleService.List();
+    }
+}

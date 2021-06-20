@@ -3,8 +3,6 @@ using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
 
-using AspNetCore.ServiceRegistration.Dynamic.Attributes;
-
 using Microsoft.AspNetCore.Authentication;
 
 using OpenIddict.Abstractions;
@@ -13,7 +11,6 @@ using ValidateTokenRequestContext = OpenIddict.Server.OpenIddictServerEvents.Val
 
 namespace Brighid.Identity.Auth
 {
-    [ScopedService]
     public interface IAuthService
     {
         /// <summary>

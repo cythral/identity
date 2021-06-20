@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Security.Claims;
+using System.Threading;
 using System.Threading.Tasks;
 
 using Microsoft.EntityFrameworkCore;
@@ -24,8 +25,6 @@ namespace Brighid.Identity.Roles
         {
             this.repository = repository;
         }
-
-        public Guid GetPrimaryKey(Role role) => role.Id;
 
         /// <inheritdoc />
         public void ValidateRoleDelegations(IEnumerable<string> roles, ClaimsPrincipal principal)
@@ -64,8 +63,10 @@ namespace Brighid.Identity.Roles
         }
 
         /// <inheritdoc />
-        public async Task<Role> Create(Role role)
+        public async Task<Role> Create(RoleRequest role, CancellationToken cancellationToken = default)
         {
+            cancellationToken.ThrowIfCancellationRequested();
+
             try
             {
                 role.NormalizedName = role.Name.ToUpper(CultureInfo.InvariantCulture);
@@ -80,30 +81,15 @@ namespace Brighid.Identity.Roles
         }
 
         /// <inheritdoc />
-        public async Task<Role> UpdateById(Guid id, Role updatedRoleInfo)
+        public async Task<Role> UpdateById(Guid id, RoleRequest updatedRoleInfo, CancellationToken cancellationToken = default)
         {
+            cancellationToken.ThrowIfCancellationRequested();
             var existingRole = await repository.FindById(id);
             if (existingRole == null)
             {
                 throw new EntityNotFoundException($"A Role with ID {id} was not found.");
             }
 
-            return await UpdateCore(existingRole, updatedRoleInfo);
-        }
-
-        /// <inheritdoc />
-        public async Task<Role> DeleteById(Guid id)
-        {
-            if (await repository.IsAttachedToAPrincipal(id))
-            {
-                throw new NotSupportedException("Cannot delete a role that is attached to either an application or user.");
-            }
-
-            return await repository.Remove(id);
-        }
-
-        private async Task<Role> UpdateCore(Role existingRole, Role updatedRoleInfo)
-        {
             if (existingRole.Name != updatedRoleInfo.Name)
             {
                 throw new NotSupportedException("Updating role names is not supported.");
@@ -111,6 +97,39 @@ namespace Brighid.Identity.Roles
 
             existingRole.Description = updatedRoleInfo.Description;
             return await repository.Save(existingRole);
+        }
+
+        /// <inheritdoc />
+        public async Task<Role> DeleteById(Guid id, CancellationToken cancellationToken = default)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            if (await repository.IsAttachedToAPrincipal(id, cancellationToken))
+            {
+                throw new NotSupportedException("Cannot delete a role that is attached to either an application or user.");
+            }
+
+            return await repository.Remove(id);
+        }
+
+        /// <inheritdoc />
+        public async Task<IEnumerable<Role>> List(CancellationToken cancellationToken = default)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            return await repository.List();
+        }
+
+        /// <inheritdoc />
+        public async Task<Role?> GetById(Guid id, CancellationToken cancellationToken = default)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            return await repository.FindById(id);
+        }
+
+        /// <inheritdoc />
+        public async Task<Role?> GetByName(string name, CancellationToken cancellationToken = default)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            return await repository.FindByName(name, cancellationToken);
         }
     }
 }

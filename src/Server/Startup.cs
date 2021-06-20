@@ -11,9 +11,6 @@ using System.Threading.Tasks;
 using Amazon.KeyManagementService;
 using Amazon.SimpleSystemsManagement;
 
-using AspNetCore.ServiceRegistration.Dynamic.Attributes;
-using AspNetCore.ServiceRegistration.Dynamic.Extensions;
-
 using Brighid.Identity.Auth;
 using Brighid.Identity.Roles;
 using Brighid.Identity.Sns;
@@ -102,20 +99,24 @@ namespace Brighid.Identity
 
             services.Configure<OpenIdConfig>(Configuration.GetSection("OpenId"));
             services.Configure<EncryptionOptions>(Configuration.GetSection("EncryptionOptions"));
+            services.ConfigureUsersServices();
+            services.ConfigureRolesServices();
+            services.ConfigureLoginProvidersServices();
+            services.ConfigureAuthServices();
+            services.ConfigureApplicationsServices();
+
             services.AddHealthChecks();
             services.AddSingleton(tokenValidationParameters);
             services.AddSingleton<IAmazonKeyManagementService, AmazonKeyManagementServiceClient>();
             services.AddSingleton<IAmazonSimpleSystemsManagement, AmazonSimpleSystemsManagementClient>();
-            services.AddServicesWithAttributeOfType<ScopedServiceAttribute>();
-            services.AddServicesWithAttributeOfType<SingletonServiceAttribute>();
+            services.AddSingleton<IEncryptionService, DefaultEncryptionService>();
             services.AddDbContextPool<DatabaseContext>(ConfigureDatabaseOptions);
-            services.AddHttpContextAccessor();
             services.AddSwaggerGen();
+            services.AddHttpContextAccessor();
 
             services
             .AddRazorPages()
             .WithRazorPagesRoot("/Common/Pages");
-            services.AddServerSideBlazor();
 
             services.AddSingleton<GenerateRandomString>(Utils.GenerateRandomString);
             services.AddSingleton<GetOpenIdConnectRequest>(Utils.GetOpenIdConnectRequest);
@@ -169,6 +170,7 @@ namespace Brighid.Identity
             if (env.IsDevelopment())
             {
                 context.Database.Migrate();
+                app.UseWebAssemblyDebugging();
             }
 
             app.Use(async (context, next) =>
@@ -213,6 +215,7 @@ namespace Brighid.Identity
                 options.SwaggerEndpoint("/swagger/v1/swagger.json", "Brighid Identity Swagger");
             });
 
+            app.UseBlazorFrameworkFiles();
             app.UseStaticFiles();
             app.UseAuthentication();
             app.UseMiddleware<SnsMiddleware>();
@@ -220,9 +223,9 @@ namespace Brighid.Identity
             app.UseAuthorization();
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapRazorPages();
                 endpoints.MapHealthChecks("/healthcheck");
                 endpoints.MapControllers();
-                endpoints.MapBlazorHub();
                 endpoints.MapFallbackToPage("/_Host");
             });
 

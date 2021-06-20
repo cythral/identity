@@ -1,14 +1,11 @@
 using System.Threading;
 using System.Threading.Tasks;
 
-using AspNetCore.ServiceRegistration.Dynamic.Attributes;
-
 namespace Brighid.Identity
 {
     /// <summary>
     /// Describes a service to encrypt values.
     /// </summary>
-    [SingletonService]
     public interface IEncryptionService
     {
         /// <summary>

@@ -19,9 +19,9 @@ namespace Brighid.Identity.Auth
         private readonly IRoleService roleService;
 
         public ValidateAccessTokenParameter(
-            IAuthService authService,
-            IRoleService roleService
-        )
+           IAuthService authService,
+           IRoleService roleService
+       )
         {
             this.authService = authService;
             this.roleService = roleService;

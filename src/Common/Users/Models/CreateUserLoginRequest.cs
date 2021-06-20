@@ -4,6 +4,6 @@ namespace Brighid.Identity.Users
 {
     public class CreateUserLoginRequest : UserLogin
     {
-        private new Guid Id { get; set; } = Guid.NewGuid();
+        protected new Guid Id { get; set; } = Guid.NewGuid();
     }
 }

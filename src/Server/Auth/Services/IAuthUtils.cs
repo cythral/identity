@@ -4,8 +4,6 @@ using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
 
-using AspNetCore.ServiceRegistration.Dynamic.Attributes;
-
 using Brighid.Identity.Users;
 
 using Microsoft.AspNetCore.Authentication;
@@ -14,7 +12,6 @@ using OpenIddict.Server.AspNetCore;
 
 namespace Brighid.Identity.Auth
 {
-    [ScopedService]
     public interface IAuthUtils
     {
         Task<ClaimsIdentity> CreateClaimsIdentityForApplication(Guid applicationId, CancellationToken cancellationToken = default);

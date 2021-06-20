@@ -1,5 +1,3 @@
-using System.Net;
-
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
@@ -23,7 +21,7 @@ namespace Brighid.Identity
                 builder.ConfigureKestrel((context, options) =>
                 {
                     var appConfig = context.Configuration.GetSection("App").Get<AppConfig>();
-                    options.Listen(IPAddress.Any, appConfig.Port, listenOptions =>
+                    options.ListenAnyIP(appConfig.Port, listenOptions =>
                     {
                         listenOptions.Protocols = appConfig.Protocols;
                     });
