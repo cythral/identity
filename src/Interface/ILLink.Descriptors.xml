@@ -11,4 +11,8 @@
         <type fullname="Brighid.Identity.Users.UserLoginAttribute" preserve="all" />
         <type fullname="Brighid.Identity.Users.UserToken" preserve="all" />
     </assembly>
+
+    <assembly fullname="Microsoft.Extensions.Identity.Stores">
+        <type fullname="Microsoft.AspNetCore.Identity.IdentityRole`1&lt;TKey&gt;" preserve="all" />
+    </assembly>
 </linker>
