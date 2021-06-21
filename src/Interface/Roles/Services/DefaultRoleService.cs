@@ -26,7 +26,7 @@ namespace Brighid.Identity.Interface.Roles
             this.httpClient = httpClient;
             serializerOptions = new JsonSerializerOptions
             {
-                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                PropertyNameCaseInsensitive = true,
             };
         }
 
