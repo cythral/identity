@@ -188,12 +188,12 @@ Resources:
               Value: !Ref DatabasePassword
             - Name: EncryptionOptions__KmsKeyId
               Value: alias/SecretsKey
-            - Name: OpenId__DomainName
+            - Name: Auth__DomainName
               Value: !Ref DomainName
+            - Name: Auth__CookieDomain
+              Value: !Ref CookieDomain
             - Name: Network__InternalIpv4Cidr
               Value: !ImportValue cfn-utilities:Ipv4NetworkCidr
-            - Name: App__CookieDomain
-              Value: !Ref CookieDomain
         - Name: envoy
           Image: !Ref EnvoyImage
           Essential: true

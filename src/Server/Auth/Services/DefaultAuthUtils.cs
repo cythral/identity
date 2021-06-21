@@ -25,19 +25,19 @@ namespace Brighid.Identity.Auth
     {
         private readonly IApplicationRepository applicationRepository;
         private readonly IUserRepository userRepository;
-        private readonly OpenIdConfig openIdConfig;
+        private readonly AuthConfig authConfig;
         private readonly OpenIddictServerOptions openIddictServerOptions;
 
         public DefaultAuthUtils(
             IApplicationRepository applicationRepository,
             IUserRepository userRepository,
-            IOptions<OpenIdConfig> openIdConfig,
+            IOptions<AuthConfig> authConfig,
             IOptions<OpenIddictServerOptions> openIddictServerOptions
         )
         {
             this.applicationRepository = applicationRepository;
             this.userRepository = userRepository;
-            this.openIdConfig = openIdConfig.Value;
+            this.authConfig = authConfig.Value;
             this.openIddictServerOptions = openIddictServerOptions.Value;
         }
 
@@ -95,7 +95,7 @@ namespace Brighid.Identity.Auth
         {
             var claims = authenticationTicket.Principal.Claims.Where(claim => claim.HasDestination(Destinations.AccessToken));
             var jwt = new JwtSecurityToken(
-                issuer: $"https://{openIdConfig.DomainName}/",
+                issuer: $"https://{authConfig.DomainName}/",
                 audience: "identity",
                 claims: claims,
                 notBefore: DateTime.UtcNow,
@@ -110,7 +110,7 @@ namespace Brighid.Identity.Auth
         {
             var claims = authenticationTicket.Principal.Claims.Where(claim => claim.HasDestination(Destinations.IdentityToken));
             var jwt = new JwtSecurityToken(
-                issuer: $"https://{openIdConfig.DomainName}/",
+                issuer: $"https://{authConfig.DomainName}/",
                 claims: claims,
                 notBefore: DateTime.UtcNow,
                 expires: DateTime.UtcNow.Add(TimeSpan.FromHours(1)),

@@ -29,14 +29,14 @@ services:
       CONFIGURATION: Debug
       ASPNETCORE_HOSTINGSTARTUPASSEMBLIES: Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation
       ASPNETCORE_ENVIRONMENT: Development
-      OpenId__DomainName: localhost
       Database__Host: db
       Database__Name: ${DB_NAME}
       Database__User: ${DB_USER}
       Database__Password: ${DB_PASSWORD}
       EncryptionOptions__KmsKeyId: ${ENCRYPTION_KEY_ID}
       AWS_REGION: us-east-1
-      App__CookieDomain: localhost
+      Auth__DomainName: localhost
+      Auth__CookieDomain: localhost
       App__UseHttps: "false"
     labels:
       - traefik.enable=true

@@ -11,12 +11,12 @@ namespace Brighid.Identity.Auth
     {
         private readonly CookieOptions cookieOptions;
 
-        public IdentityCookieAuthenticationEvents(AppConfig appConfig)
+        public IdentityCookieAuthenticationEvents(AuthConfig authConfig)
         {
             OnRedirectToAccessDenied = OnRedirectToAccessDeniedHandler;
             OnRedirectToLogin = OnRedirectToLoginHandler;
             OnSigningIn = OnSigningInHandler;
-            cookieOptions = new CookieOptions { Domain = appConfig.CookieDomain };
+            cookieOptions = new CookieOptions { Domain = authConfig.CookieDomain };
         }
 
         public Task OnRedirectToAccessDeniedHandler(RedirectContext<CookieAuthenticationOptions> context)

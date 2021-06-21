@@ -1,9 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
-using System.Security.Principal;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
@@ -11,25 +8,19 @@ using System.Threading.Tasks;
 using Amazon.KeyManagementService;
 using Amazon.SimpleSystemsManagement;
 
-using Brighid.Identity.Auth;
 using Brighid.Identity.Roles;
 using Brighid.Identity.Sns;
-using Brighid.Identity.Users;
 
 using Flurl.Http;
 
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-
-using static OpenIddict.Abstractions.OpenIddictConstants;
 
 #pragma warning disable IDE0061
 
@@ -42,7 +33,6 @@ namespace Brighid.Identity
             Configuration = configuration;
             Environment = environment;
             DatabaseConfig = Configuration.GetSection("Database").Get<DatabaseConfig>() ?? new DatabaseConfig();
-            OpenIdConfig = Configuration.GetSection("OpenId").Get<OpenIdConfig>() ?? new OpenIdConfig();
             NetworkConfig = Configuration.GetSection("Network").Get<NetworkConfig>() ?? new NetworkConfig();
             AppConfig = Configuration.GetSection("App").Get<AppConfig>() ?? new AppConfig();
         }
@@ -53,42 +43,12 @@ namespace Brighid.Identity
 
         public DatabaseConfig DatabaseConfig { get; }
 
-        public OpenIdConfig OpenIdConfig { get; }
-
         public NetworkConfig NetworkConfig { get; }
 
         public AppConfig AppConfig { get; }
 
         public void ConfigureServices(IServiceCollection services)
         {
-            var tokenValidationParameters = new TokenValidationParameters
-            {
-                RequireSignedTokens = true,
-                ValidateIssuerSigningKey = true,
-                RequireExpirationTime = true,
-                ValidateAudience = false,
-                ValidateIssuer = true,
-                RoleClaimType = Claims.Role,
-                ValidIssuers = new string[] { $"https://{OpenIdConfig.DomainName}/", $"http://{OpenIdConfig.DomainName}/" },
-                ClockSkew = TimeSpan.FromMinutes(5),
-            };
-
-            if (Directory.Exists(OpenIdConfig.CertificatesDirectory))
-            {
-                var issuerSigningKeys = new List<SecurityKey>();
-                foreach (var file in Directory.GetFiles(OpenIdConfig.CertificatesDirectory))
-                {
-                    var certificate = new X509Certificate2(file);
-                    issuerSigningKeys.Add(new X509SecurityKey(certificate));
-                }
-
-                tokenValidationParameters.IssuerSigningKeys = issuerSigningKeys;
-            }
-            else
-            {
-                tokenValidationParameters.IssuerSigningKeys = new[] { Utils.GenerateDevelopmentSecurityKey() };
-            }
-
             services
             .AddControllers()
             .AddJsonOptions(options =>
@@ -97,50 +57,32 @@ namespace Brighid.Identity
                 options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
             });
 
-            services.Configure<OpenIdConfig>(Configuration.GetSection("OpenId"));
-            services.Configure<EncryptionOptions>(Configuration.GetSection("EncryptionOptions"));
-            services.ConfigureUsersServices();
-            services.ConfigureRolesServices();
-            services.ConfigureLoginProvidersServices();
-            services.ConfigureAuthServices();
-            services.ConfigureApplicationsServices();
-
-            services.AddHealthChecks();
-            services.AddSingleton(tokenValidationParameters);
-            services.AddSingleton<IAmazonKeyManagementService, AmazonKeyManagementServiceClient>();
-            services.AddSingleton<IAmazonSimpleSystemsManagement, AmazonSimpleSystemsManagementClient>();
-            services.AddSingleton<IEncryptionService, DefaultEncryptionService>();
-            services.AddDbContextPool<DatabaseContext>(ConfigureDatabaseOptions);
-            services.AddSwaggerGen();
-            services.AddHttpContextAccessor();
-
             services
             .AddRazorPages()
             .WithRazorPagesRoot("/Common/Pages");
 
-            services.AddSingleton<GenerateRandomString>(Utils.GenerateRandomString);
-            services.AddSingleton<GetOpenIdConnectRequest>(Utils.GetOpenIdConnectRequest);
-            services.AddIdentity<User, Role>(options =>
-            {
-                options.User.RequireUniqueEmail = true;
-            })
-            .AddEntityFrameworkStores<DatabaseContext>()
-            .AddDefaultTokenProviders();
+            services.AddHealthChecks();
+            services.AddDbContextPool<DatabaseContext>(ConfigureDatabaseOptions);
+            services.AddSwaggerGen();
 
-            // Replace Default User Manager with an overridden one
-            var oldUserManagerDescriptor = services.First(descriptor => descriptor.ServiceType == typeof(UserManager<User>));
-            services.Remove(oldUserManagerDescriptor);
-            services.AddScoped<UserManager<User>, DefaultUserManager>();
-
-            services.AddTransient(provider =>
+            services.Configure<ForwardedHeadersOptions>(options =>
             {
-                var user = provider.GetService<IHttpContextAccessor>()?.HttpContext?.User;
-                return user ?? new GenericPrincipal(new GenericIdentity("Anonymous"), null);
+                options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
             });
 
-            services.AddOpenIdServer(OpenIdConfig, tokenValidationParameters);
-            services.AddOpenIdAuth(AppConfig, tokenValidationParameters);
-            services.AddAuthorizationPolicies();
+            services.Configure<EncryptionOptions>(Configuration.GetSection("EncryptionOptions"));
+            services.ConfigureUsersServices();
+            services.ConfigureRolesServices();
+            services.ConfigureLoginProvidersServices();
+            services.ConfigureAuthServices(options => Configuration.Bind("Auth", options));
+            services.ConfigureApplicationsServices();
+
+            services.AddSingleton<IAmazonKeyManagementService, AmazonKeyManagementServiceClient>();
+            services.AddSingleton<IAmazonSimpleSystemsManagement, AmazonSimpleSystemsManagementClient>();
+            services.AddSingleton<IEncryptionService, DefaultEncryptionService>();
+
+            services.AddSingleton<GenerateRandomString>(Utils.GenerateRandomString);
+            services.AddSingleton<GetOpenIdConnectRequest>(Utils.GetOpenIdConnectRequest);
 
             var jsonOptions = new JsonSerializerOptions { DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull };
             jsonOptions.Converters.Add(new JsonStringEnumConverter());
@@ -183,12 +125,6 @@ namespace Brighid.Identity
                     context.Request.Headers["content-type"] = "application/json";
                 }
 
-                if (context.Request.Headers.TryGetValue("x-forwarded-proto", out var forwardedProtoValues))
-                {
-                    context.Request.Scheme = forwardedProtoValues.First();
-                    Console.WriteLine("Set Request Scheme to: " + context.Request.Scheme);
-                }
-
                 await next();
             });
 
@@ -209,6 +145,7 @@ namespace Brighid.Identity
                     swaggerDoc.Servers = new List<OpenApiServer> { new OpenApiServer { Url = $"{httpReq.Scheme}://{httpReq.Host.Value}/api/" } };
                 });
             });
+
             app.UseSwaggerUI(options =>
             {
                 options.SwaggerEndpoint("/swagger/v1/swagger.json", "Brighid Identity Swagger");
