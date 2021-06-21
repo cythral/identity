@@ -16,7 +16,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <BlazorLinkerDescriptor Include="ILLink.Descriptors.xml" />
+        <EmbeddedResource Include="ILLink.Descriptors.xml" LogicalName="$(MSBuildProjectName).xml" />
     </ItemGroup>
 
     <ItemGroup>

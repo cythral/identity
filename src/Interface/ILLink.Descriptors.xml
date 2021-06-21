@@ -14,6 +14,6 @@
     </assembly>
 
     <assembly fullname="Microsoft.Extensions.Identity.Stores">
-        <type fullname="Microsoft.AspNetCore.Identity.IdentityRole`1&lt;TKey&gt;" preserve="all" />
+        <type fullname="Microsoft.AspNetCore.Identity.IdentityRole`1" preserve="all" />
     </assembly>
 </linker>
