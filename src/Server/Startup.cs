@@ -183,11 +183,10 @@ namespace Brighid.Identity
                     context.Request.Headers["content-type"] = "application/json";
                 }
 
-                context.Request.Headers.TryGetValue("x-forwarded-for", out var forwardedForAddressValues);
-
-                if (AppConfig.UseHttps && forwardedForAddressValues.Any())
+                if (context.Request.Headers.TryGetValue("x-forwarded-proto", out var forwardedProtoValues))
                 {
-                    context.Request.Scheme = "https";
+                    context.Request.Scheme = forwardedProtoValues.First();
+                    Console.WriteLine("Set Request Scheme to: " + context.Request.Scheme);
                 }
 
                 await next();
