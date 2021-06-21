@@ -20,7 +20,7 @@ namespace Brighid.Identity
                 builder.UseStartup<Startup>();
                 builder.ConfigureKestrel((context, options) =>
                 {
-                    var appConfig = context.Configuration.GetSection("App").Get<AppConfig>();
+                    var appConfig = context.Configuration.GetSection("App").Get<AppConfig>() ?? new AppConfig();
                     options.ListenAnyIP(appConfig.Port, listenOptions =>
                     {
                         listenOptions.Protocols = appConfig.Protocols;
