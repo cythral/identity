@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <linker>
     <assembly fullname="Common">
         <type fullname="Brighid.Identity.Roles.Role" preserve="all" />
