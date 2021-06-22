@@ -115,6 +115,7 @@ namespace Brighid.Identity
                 app.UseWebAssemblyDebugging();
             }
 
+            app.UseForwardedHeaders();
             app.Use(async (context, next) =>
             {
                 context.Items[Constants.RequestSource] = IdentityRequestSource.Direct;
