@@ -14,17 +14,17 @@ namespace Brighid.Identity.Auth
     {
         private const string DefaultRedirectUri = "/";
         private readonly SignInManager<User> signinManager;
-        private readonly UserManager<User> userManager;
+        private readonly IAuthService authService;
         private readonly IUserService userService;
 
         public SignupController(
             SignInManager<User> signinManager,
-            UserManager<User> userManager,
+            IAuthService authService,
             IUserService userService
         )
         {
             this.signinManager = signinManager;
-            this.userManager = userManager;
+            this.authService = authService;
             this.userService = userService;
         }
 
@@ -62,14 +62,12 @@ namespace Brighid.Identity.Auth
                 }
 
                 var user = await userService.Create(request.Email, request.Password);
-                var signinResult = await signinManager.PasswordSignInAsync(user, request.Password, false, false);
-
-                if (!signinResult.Succeeded)
-                {
-                    throw new SignupException("Unable to sign in.");
-                }
-
-                return LocalRedirect(redirectUri);
+                var ticket = await authService.PasswordExchange(request.Email, request.Password, request.RedirectUri, HttpContext.RequestAborted);
+                return SignIn(ticket.Principal, ticket.Properties, ticket.AuthenticationScheme);
+            }
+            catch (InvalidCredentialsException)
+            {
+                ModelState.AddModelError("signupError", "Unable to sign in.");
             }
             catch (SignupException e)
             {

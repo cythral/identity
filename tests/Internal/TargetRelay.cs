@@ -6,6 +6,12 @@ using System.Reflection;
 using AutoFixture.AutoNSubstitute;
 using AutoFixture.Kernel;
 
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
+
+using NSubstitute;
+
 public class TargetRelay : ISpecimenBuilder
 {
     public object Create(object request, ISpecimenContext context)
@@ -35,6 +41,15 @@ public class TargetRelay : ISpecimenBuilder
         var instance = parameters.Any()
             ? Activator.CreateInstance(type, parameters)
             : Activator.CreateInstance(type, true);
+
+        if (instance is Controller controller)
+        {
+            var tempDataProvider = Substitute.For<ITempDataProvider>();
+            var tempDataDictionaryFactory = new TempDataDictionaryFactory(tempDataProvider);
+            var tempData = tempDataDictionaryFactory.GetTempData(new DefaultHttpContext());
+
+            controller.TempData = tempData;
+        }
 
         return instance ?? new NoSpecimen();
     }

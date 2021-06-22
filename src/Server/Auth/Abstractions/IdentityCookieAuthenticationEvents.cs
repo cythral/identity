@@ -16,6 +16,7 @@ namespace Brighid.Identity.Auth
             OnRedirectToAccessDenied = OnRedirectToAccessDeniedHandler;
             OnRedirectToLogin = OnRedirectToLoginHandler;
             OnSigningIn = OnSigningInHandler;
+            OnSignedIn = OnSignedInHandler;
             cookieOptions = new CookieOptions { Domain = authConfig.CookieDomain };
         }
 
@@ -54,6 +55,16 @@ namespace Brighid.Identity.Auth
                          select authToken.Value).First();
 
             context.HttpContext.Response.Cookies.Append(".Brighid.IdentityToken", token, cookieOptions);
+            return Task.FromResult(0);
+        }
+
+        public Task OnSignedInHandler(CookieSignedInContext context)
+        {
+            if (context.Properties.RedirectUri != null)
+            {
+                context.Response.Redirect(context.Properties.RedirectUri);
+            }
+
             return Task.FromResult(0);
         }
     }
