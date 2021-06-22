@@ -1,5 +1,6 @@
 using System;
 using System.Security.Claims;
+using System.Threading;
 using System.Threading.Tasks;
 
 using AutoFixture.AutoNSubstitute;
@@ -9,16 +10,19 @@ using Brighid.Identity.Users;
 
 using FluentAssertions;
 
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 using NSubstitute;
+using NSubstitute.ExceptionExtensions;
 
 using NUnit.Framework;
 
 using static NSubstitute.Arg;
 
-using SignInResult = Microsoft.AspNetCore.Identity.SignInResult;
+using SignInResult = Microsoft.AspNetCore.Mvc.SignInResult;
 
 namespace Brighid.Identity.Auth
 {
@@ -210,7 +214,6 @@ namespace Brighid.Identity.Auth
                 request.RedirectUri = new Uri(destination, UriKind.Relative);
 
                 signInManager.IsSignedIn(Any<ClaimsPrincipal>()).Returns(false);
-                signInManager.PasswordSignInAsync(Any<string>(), Any<string>(), Any<bool>(), Any<bool>()).Returns(SignInResult.Success);
                 userService.Create(Any<string>(), Any<string>()).Returns(user);
 
                 var result = await signupController.Signup(request) as ViewResult;
@@ -227,7 +230,9 @@ namespace Brighid.Identity.Auth
                 string destination,
                 SignupRequest request,
                 User user,
+                HttpContext httpContext,
                 [Frozen, Substitute] SignInManager<User> signInManager,
+                [Frozen, Substitute] IAuthService authService,
                 [Frozen, Substitute] IUserService userService,
                 [Target] SignupController signupController
             )
@@ -237,13 +242,15 @@ namespace Brighid.Identity.Auth
                 request.RedirectUri = new Uri(destination, UriKind.Relative);
 
                 signInManager.IsSignedIn(Any<ClaimsPrincipal>()).Returns(false);
-                signInManager.PasswordSignInAsync(Any<string>(), Any<string>(), Any<bool>(), Any<bool>()).Returns(SignInResult.Failed);
+                authService.PasswordExchange(Any<string>(), Any<string>(), Any<Uri>(), Any<CancellationToken>()).Throws(new InvalidCredentialsException(string.Empty));
                 userService.Create(Any<string>(), Any<string>()).Returns(user);
+
+                signupController.ControllerContext = new ControllerContext { HttpContext = httpContext };
 
                 var result = await signupController.Signup(request) as ViewResult;
                 var errors = signupController.ModelState["signupError"].Errors;
 
-                await signInManager.Received().PasswordSignInAsync(Is(user), Is(request.Password), Is(false), Is(false));
+                await authService.Received().PasswordExchange(Is(request.Email), Is(password), Is(request.RedirectUri), Is(httpContext.RequestAborted));
                 result!.Should().NotBeNull();
                 errors.Should().Contain(error => error.ErrorMessage == "Unable to sign in.");
             }
@@ -255,6 +262,8 @@ namespace Brighid.Identity.Auth
                 string destination,
                 SignupRequest request,
                 User user,
+                HttpContext httpContext,
+                [Frozen] AuthenticationTicket ticket,
                 [Frozen, Substitute] SignInManager<User> signInManager,
                 [Frozen, Substitute] IUserService userService,
                 [Target] SignupController signupController
@@ -263,14 +272,16 @@ namespace Brighid.Identity.Auth
                 request.Password = password;
                 request.ConfirmPassword = password;
                 request.RedirectUri = new Uri(destination, UriKind.Relative);
+                ticket.Properties.RedirectUri = destination;
 
                 signInManager.IsSignedIn(Any<ClaimsPrincipal>()).Returns(false);
-                signInManager.PasswordSignInAsync(Any<User>(), Any<string>(), Any<bool>(), Any<bool>()).Returns(SignInResult.Success);
                 userService.Create(Any<string>(), Any<string>()).Returns(user);
 
-                var result = await signupController.Signup(request) as LocalRedirectResult;
+                signupController.ControllerContext = new ControllerContext { HttpContext = httpContext };
+
+                var result = await signupController.Signup(request) as SignInResult;
                 result!.Should().NotBeNull();
-                result!.Url.Should().Be(destination);
+                result!.Properties.RedirectUri.Should().Be(destination);
             }
         }
     }
