@@ -1,5 +1,19 @@
 .navbar-toggler {
-  background-color: rgba(255, 255, 255, 0.1);
+  background: none;
+  color: white;
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 0 1rem;
+  line-height: 3.5rem;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  transition: transform .5s;
+}
+
+.navbar-toggler.active {
+  transform: rotate(180deg);
 }
 
 .navbar-dark {
@@ -13,6 +27,16 @@
   font-size: 1.1rem;
   color: white;
   font-weight: bold;
+}
+
+.navbar-menu {
+  height: calc(100vh - 3.5rem);
+  transition: height .25s ease-out;
+  overflow: hidden;
+}
+
+.navbar-menu.collapse {
+  height: 0;
 }
 
 .oi {
@@ -38,11 +62,13 @@
 .nav-item ::deep a.active {
   background-color: rgba(255, 255, 255, 0.25);
   color: white;
+  text-decoration: none;
 }
 
 .nav-item ::deep a:hover {
   background-color: rgba(255, 255, 255, 0.1);
   color: white;
+  text-decoration: none;
 }
 
 @media (min-width: 641px) {
@@ -50,8 +76,9 @@
     display: none;
   }
 
-  .collapse {
+  .navbar-menu.collapse {
     /* Never collapse the sidebar for wide screens */
+    height: calc(100vh - 3.5rem);
     display: block;
   }
 }

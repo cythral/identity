@@ -36,6 +36,13 @@
   text-overflow: ellipsis;
 }
 
+.top-row .user-box {
+  position: relative;
+  height: 100%;
+  line-height: 3.5rem;
+  min-width: 10rem;
+}
+
 @media (max-width: 640.98px) {
   .top-row:not(.auth) {
     display: none;
