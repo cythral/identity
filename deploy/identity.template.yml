@@ -317,11 +317,11 @@ Resources:
 
 Outputs:
   CloudFormationApplicationClientId:
-    Value: !Select [0, !Split ["\n", !GetAtt WaitCondition.Data]]
+    Value: !Select [0, !Split ["\n", !GetAtt WaitCondition.Data.SeededApplication]]
     Description: Client ID of the CloudFormation Brighid Identity Application
   
   CloudFormationApplicationEncryptedSecret:
-    Value: !Select [1, !Split ["\n", !GetAtt WaitCondition.Data]]
+    Value: !Select [1, !Split ["\n", !GetAtt WaitCondition.Data.SeededApplication]]
     Description: Encrypted Client Secret of the CloudFormation Brighid Identity Application
 
   ApplicationTopicArn:
