@@ -124,7 +124,7 @@ Resources:
                 }
               },
               {
-                "rulePriority": 1,
+                "rulePriority": 2,
                 "description": "Keep Last 5 Prod Images",
                 "selection": {
                   "tagStatus": "tagged",
