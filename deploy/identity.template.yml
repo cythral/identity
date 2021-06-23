@@ -246,6 +246,15 @@ Resources:
       Handle: !Ref WaitConditionHandle
       Timeout: "300"
 
+  SeededApplicationInfo:
+    Type: Custom::JsonValue
+    Properties:
+      ServiceToken: !Sub 
+        - arn:aws:lambda:us-east-1:${MasterAccountId}:function:cfn-core-GetJsonValueFunction-nZztqYTdg1wB	
+        - MasterAccountId: !ImportValue cfn-metadata:SharedAccountId
+      Json: !GetAtt WaitCondition.Data
+      Key: SeededApplication
+
   ApplicationTopic:
     Type: AWS::SNS::Topic
     
@@ -317,11 +326,11 @@ Resources:
 
 Outputs:
   CloudFormationApplicationClientId:
-    Value: !Select [0, !Split ["\n", !GetAtt WaitCondition.Data.SeededApplication]]
+    Value: !Select [0, !Split ["\n", !GetAtt SeededApplicationInfo.Result]]
     Description: Client ID of the CloudFormation Brighid Identity Application
   
   CloudFormationApplicationEncryptedSecret:
-    Value: !Select [1, !Split ["\n", !GetAtt WaitCondition.Data.SeededApplication]]
+    Value: !Select [1, !Split ["\n", !GetAtt SeededApplicationInfo.Result]]
     Description: Encrypted Client Secret of the CloudFormation Brighid Identity Application
 
   ApplicationTopicArn:
