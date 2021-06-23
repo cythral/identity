@@ -112,10 +112,10 @@ Resources:
             "rules": [
               {
                 "rulePriority": 1,
-                "description": "Keep Last 5 Dev Images",
+                "description": "Keep Last 5 Prod Images",
                 "selection": {
                   "tagStatus": "tagged",
-                  "tagPrefixList": ["dev"],
+                  "tagPrefixList": ["prod"],
                   "countType": "imageCountMoreThan",
                   "countNumber": 5
                 },
@@ -125,10 +125,10 @@ Resources:
               },
               {
                 "rulePriority": 2,
-                "description": "Keep Last 5 Prod Images",
+                "description": "Keep Last 5 Dev Images",
                 "selection": {
                   "tagStatus": "tagged",
-                  "tagPrefixList": ["prod"],
+                  "tagPrefixList": ["dev"],
                   "countType": "imageCountMoreThan",
                   "countNumber": 5
                 },
