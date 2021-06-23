@@ -179,6 +179,7 @@ namespace Brighid.Identity
                 var response = JsonSerializer.Serialize(new
                 {
                     Status = "SUCCESS",
+                    UniqueId = "SeededApplication",
                     Data = seededApplication.Id + "\n" + seededApplication.EncryptedSecret,
                 });
 
