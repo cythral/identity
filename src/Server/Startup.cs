@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
-using System.Net.Http.Json;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
@@ -177,13 +176,14 @@ namespace Brighid.Identity
             if (AppConfig.WaitConditionHandle != null)
             {
                 var seededApplication = SeedApplication(provider, "BrighidIdentityCloudFormation", new[] { nameof(BuiltInRole.ApplicationManager) }).GetAwaiter().GetResult();
-                var httpClient = new HttpClient();
-                httpClient
-                .PutAsJsonAsync(AppConfig.WaitConditionHandle, new
+                var response = JsonSerializer.Serialize(new
                 {
                     Status = "SUCCESS",
                     Data = seededApplication.Id + "\n" + seededApplication.EncryptedSecret,
-                })
+                });
+
+                new HttpClient()
+                .PutAsync(AppConfig.WaitConditionHandle, new StringContent(response))
                 .GetAwaiter()
                 .GetResult();
             }
