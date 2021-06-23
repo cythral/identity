@@ -1,3 +1,5 @@
+using System;
+
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 
 namespace Brighid.Identity
@@ -18,5 +20,10 @@ namespace Brighid.Identity
         /// Gets or sets the port to use for the adapter's HTTP interface.
         /// </summary>
         public int Port { get; set; } = 80;
+
+        /// <summary>
+        /// Gets or sets the wait condition handle to post the iac management application to.
+        /// </summary>
+        public Uri? WaitConditionHandle { get; set; } = null;
     }
 }

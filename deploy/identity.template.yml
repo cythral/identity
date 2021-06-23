@@ -194,6 +194,8 @@ Resources:
               Value: !Ref CookieDomain
             - Name: Network__InternalIpv4Cidr
               Value: !ImportValue cfn-utilities:Ipv4NetworkCidr
+            - Name: App__WaitConditionHandle
+              Value: !Ref WaitConditionHandle
         - Name: envoy
           Image: !Ref EnvoyImage
           Essential: true
@@ -224,6 +226,17 @@ Resources:
               Value: !Sub
                 - mesh/brighid-mesh@${SharedAccountId}/virtualNode/${MeshNode.VirtualNodeName}
                 - SharedAccountId: !ImportValue cfn-metadata:SharedAccountId
+                  
+  WaitConditionHandle:
+    Type: AWS::CloudFormation::WaitConditionHandle
+      
+  WaitCondition:
+    Type: AWS::CloudFormation::WaitCondition
+    DependsOn: Service
+    Properties:
+      Count: 1
+      Handle: !Ref WaitConditionHandle
+      Timeout: "300"
 
   ApplicationTopic:
     Type: AWS::SNS::Topic
@@ -292,6 +305,14 @@ Resources:
       RetentionInDays: 14
 
 Outputs:
+  CloudFormationApplicationClientId:
+    Value: !Select [0, !Split ["\n", !GetAtt WaitCondition.Data]]
+    Description: Client ID of the CloudFormation Brighid Identity Application
+  
+  CloudFormationApplicationEncryptedSecret:
+    Value: !Select [1, !Split ["\n", !GetAtt WaitCondition.Data]]
+    Description: Encrypted Client Secret of the CloudFormation Brighid Identity Application
+
   ApplicationTopicArn:
     Value: !Ref ApplicationTopic
     Description: ARN of the application topic used for creating/updating/deleting identity client applications.
