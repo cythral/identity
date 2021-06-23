@@ -115,7 +115,7 @@ Resources:
                 "description": "Keep Last 5 Dev Images",
                 "selection": {
                   "tagStatus": "tagged",
-                  "tagPrefixList": ["dev"]
+                  "tagPrefixList": ["dev"],
                   "countType": "imageCountMoreThan",
                   "countNumber": 5
                 },
@@ -128,7 +128,7 @@ Resources:
                 "description": "Keep Last 5 Prod Images",
                 "selection": {
                   "tagStatus": "tagged",
-                  "tagPrefixList": ["prod"]
+                  "tagPrefixList": ["prod"],
                   "countType": "imageCountMoreThan",
                   "countNumber": 5
                 },
