@@ -32,6 +32,10 @@ Parameters:
     Type: String
     Description: Name to use for the node in the App Mesh.
 
+  EnvironmentName:
+    Type: String
+    Description: Name to use for the environment.
+
 Resources:
   MeshService:
     Type: AWS::AppMesh::VirtualService
@@ -196,6 +200,10 @@ Resources:
               Value: !ImportValue cfn-utilities:Ipv4NetworkCidr
             - Name: App__WaitConditionHandle
               Value: !Ref WaitConditionHandle
+            - Name: App__Image
+              Value: !Ref Image
+            - Name: Environment__Name
+              Value: !Ref EnvironmentName
         - Name: envoy
           Image: !Ref EnvoyImage
           Essential: true

@@ -100,11 +100,44 @@ Resources:
               - ecr:BatchGetImage
               - ecr:BatchCheckLayerAvailability
               - ecr:ListImages
+              - ecr:PutImage
             Principal:
               AWS:
                 - !Ref AWS::AccountId
                 - !ImportValue cfn-metadata:DevAccountId
                 - !ImportValue cfn-metadata:ProdAccountId
+      LifecyclePolicy: 
+        LifecyclePolicyText: |
+          {
+            "rules": [
+              {
+                "rulePriority": 1,
+                "description": "Keep Last 5 Dev Images",
+                "selection": {
+                  "tagStatus": "tagged",
+                  "tagPrefixList": ["dev"]
+                  "countType": "imageCountMoreThan",
+                  "countNumber": 5
+                },
+                "action": {
+                  "type": "expire"
+                }
+              },
+              {
+                "rulePriority": 1,
+                "description": "Keep Last 5 Prod Images",
+                "selection": {
+                  "tagStatus": "tagged",
+                  "tagPrefixList": ["prod"]
+                  "countType": "imageCountMoreThan",
+                  "countNumber": 5
+                },
+                "action": {
+                  "type": "expire"
+                }
+              }
+            ]
+          }
 
   BuildProject:
     Type: AWS::CodeBuild::Project
