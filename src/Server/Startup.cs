@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
+using System.Net.Http.Json;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
@@ -8,6 +10,7 @@ using System.Threading.Tasks;
 using Amazon.KeyManagementService;
 using Amazon.SimpleSystemsManagement;
 
+using Brighid.Identity.Applications;
 using Brighid.Identity.Roles;
 using Brighid.Identity.Sns;
 
@@ -167,12 +170,26 @@ namespace Brighid.Identity
             });
 
             var provider = app.ApplicationServices;
-
             SeedRole(provider, nameof(BuiltInRole.Basic)).GetAwaiter().GetResult();
             SeedRole(provider, nameof(BuiltInRole.Impersonator)).GetAwaiter().GetResult();
+            SeedRole(provider, nameof(BuiltInRole.ApplicationManager)).GetAwaiter().GetResult();
+
+            if (AppConfig.WaitConditionHandle != null)
+            {
+                var seededApplication = SeedApplication(provider, "BrighidIdentityCloudFormation", new[] { nameof(BuiltInRole.ApplicationManager) }).GetAwaiter().GetResult();
+                var httpClient = new HttpClient();
+                httpClient
+                .PutAsJsonAsync(AppConfig.WaitConditionHandle, new
+                {
+                    Status = "SUCCESS",
+                    Data = seededApplication.Id + "\n" + seededApplication.EncryptedSecret,
+                })
+                .GetAwaiter()
+                .GetResult();
+            }
         }
 
-        public async Task SeedRole(IServiceProvider provider, string name)
+        public async Task<Role?> SeedRole(IServiceProvider provider, string name)
         {
             using var scope = provider.CreateScope();
             var services = scope.ServiceProvider;
@@ -181,11 +198,32 @@ namespace Brighid.Identity
 
             if (existingRole != null)
             {
-                return;
+                return existingRole;
             }
 
             var role = new Role { Name = name, NormalizedName = name.ToUpper() };
             await roleRepository.Add(role);
+            return role;
+        }
+
+        public async Task<Application> SeedApplication(IServiceProvider provider, string name, IEnumerable<string> roles)
+        {
+            using var scope = provider.CreateScope();
+            var services = scope.ServiceProvider;
+            var appService = services.GetRequiredService<IApplicationService>();
+            var appRepository = services.GetRequiredService<IApplicationRepository>();
+            var appMapper = services.GetRequiredService<IApplicationMapper>();
+            var existingApp = await appRepository.FindByName(name);
+
+            if (existingApp != null)
+            {
+                return existingApp;
+            }
+
+            var appRequest = new ApplicationRequest { Name = name, Roles = roles.ToArray() };
+            var mappedApp = await appMapper.MapRequestToEntity(appRequest);
+            var result = await appService.Create(mappedApp);
+            return result;
         }
     }
 }
