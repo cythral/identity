@@ -1,0 +1,11 @@
+<Project>
+    <Target Name="GenerateEnvFile" AfterTargets="Restore" Condition="!Exists('$(MSBuildThisFileDirectory).env')">
+        <ItemGroup>
+            <EnvFileLines Include="DB_USER=identity-user" />
+            <EnvFileLines Include="DB_PASSWORD=$([System.Guid]::NewGuid())" />
+            <EnvFileLines Include="DB_NAME=identity" />
+        </ItemGroup>
+
+        <WriteLinesToFile File="$(MSBuildThisFileDirectory).env" Lines="@(EnvFileLines)" />
+    </Target>
+</Project>
