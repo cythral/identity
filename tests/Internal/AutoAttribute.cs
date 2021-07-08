@@ -53,7 +53,6 @@ internal class AutoAttribute : AutoDataAttribute
                         BrowserSetup.Browser = Puppeteer.LaunchAsync(new LaunchOptions
                         {
                             Args = args,
-                            Headless = false,
                         }).GetAwaiter().GetResult();
                     }
                     catch (FileNotFoundException)
