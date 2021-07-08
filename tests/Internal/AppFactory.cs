@@ -45,7 +45,7 @@ public class AppFactory : WebApplicationFactory<Startup>
             ConfigureWebHost(webHostBuilder);
         }).Build();
 
-        RootUri = new Uri($"http://{endpoint}");
+        RootUri = new Uri($"http://localhost:{endpoint.Port}");
     }
 
     public static string? ContainerId { get; private set; }
@@ -80,6 +80,7 @@ public class AppFactory : WebApplicationFactory<Startup>
                 ["Database:User"] = MySqlContainer.DbUser,
                 ["Database:Password"] = MySqlContainer.DbPassword,
                 ["EncryptionOptions:KmsKeyId"] = "alias/SecretsKey",
+                ["Auth:DomainName"] = $"localhost:{endpoint.Port}",
                 ["App:Port"] = endpoint.Port.ToString(),
                 ["App:Protocols"] = HttpProtocols.Http1.ToString(),
             })
@@ -98,7 +99,7 @@ public class AppFactory : WebApplicationFactory<Startup>
 
             services
             .AddAuthentication("Test")
-            .AddScheme<AuthenticationSchemeOptions, TestAuthHandler>("Test", options => { });
+                    .AddScheme<AuthenticationSchemeOptions, TestAuthHandler>("Test", options => { });
         });
     }
 

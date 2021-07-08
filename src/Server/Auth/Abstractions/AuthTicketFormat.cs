@@ -1,9 +1,9 @@
 using System;
-using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Tokens;
@@ -19,11 +19,15 @@ namespace Brighid.Identity.Auth
     public sealed class AuthTicketFormat : ISecureDataFormat<AuthenticationTicket>
     {
         private readonly IOptionsMonitor<OpenIddictServerOptions> openIdServerOptions;
-        private readonly JwtSecurityTokenHandler tokenHandler = new();
+        private readonly ILogger<AuthTicketFormat> logger;
 
-        public AuthTicketFormat(IOptionsMonitor<OpenIddictServerOptions> openIdServerOptions)
+        public AuthTicketFormat(
+            IOptionsMonitor<OpenIddictServerOptions> openIdServerOptions,
+            ILogger<AuthTicketFormat> logger
+        )
         {
             this.openIdServerOptions = openIdServerOptions;
+            this.logger = logger;
         }
 
         public AuthenticationTicket? Unprotect(string protectedText) => Unprotect(protectedText, null);
@@ -60,7 +64,7 @@ namespace Brighid.Identity.Auth
             }
             catch (Exception exception)
             {
-                Console.WriteLine(exception.Message);
+                logger.LogError("Error occurred while attempting to validate token: {@jwt} {@exception}", protectedText, exception);
                 return null;
             }
         }

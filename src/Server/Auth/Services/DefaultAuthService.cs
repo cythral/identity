@@ -87,9 +87,10 @@ namespace Brighid.Identity.Auth
 
             var identity = await authUtils.CreateClaimsIdentityForUser(user, cancellationToken);
             var ticket = authUtils.CreateAuthTicket(identity, DefaultScopes, redirectUri, IdentityConstants.ApplicationScheme);
-            var accessTokenValue = authUtils.GenerateAccessToken(ticket, $"{httpContext.Request.Scheme}://{httpContext.Request.Host}/");
+            var issuer = $"{httpContext.Request.Scheme}://{httpContext.Request.Host}/";
+            var accessTokenValue = authUtils.GenerateAccessToken(ticket, issuer);
             var accessToken = new AuthenticationToken { Name = "access_token", Value = accessTokenValue };
-            var idTokenValue = authUtils.GenerateIdToken(ticket, user, $"{httpContext.Request.Scheme}://{httpContext.Request.Host}/");
+            var idTokenValue = authUtils.GenerateIdToken(ticket, user, issuer);
             var idToken = new AuthenticationToken { Name = "id_token", Value = idTokenValue };
             ticket.Properties.StoreTokens(new[] { accessToken, idToken });
             return ticket;

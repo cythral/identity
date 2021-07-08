@@ -230,7 +230,7 @@ namespace Microsoft.Extensions.DependencyInjection
             }
             catch (Exception)
             {
-                result.Add(new SigningCredentials(Utils.GenerateDevelopmentSecurityKey(), "RS2048"));
+                result.Add(new SigningCredentials(Utils.GenerateDevelopmentSecurityKey(), "RS256"));
                 return result;
             }
         }
