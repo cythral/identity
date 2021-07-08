@@ -223,9 +223,16 @@ namespace Microsoft.Extensions.DependencyInjection
             var configService = new DefaultCertificateConfigurationService(ssmClient, options, configServiceLogger);
             var updater = new DefaultCertificateUpdater(configService, fetcher, manager, updaterLogger);
 
-            updater.UpdateCertificates().GetAwaiter().GetResult();
-
-            return result;
+            try
+            {
+                updater.UpdateCertificates().GetAwaiter().GetResult();
+                return result;
+            }
+            catch (Exception)
+            {
+                result.Add(new SigningCredentials(Utils.GenerateDevelopmentSecurityKey(), "RS2048"));
+                return result;
+            }
         }
     }
 }
