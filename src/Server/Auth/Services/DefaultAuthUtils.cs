@@ -25,20 +25,17 @@ namespace Brighid.Identity.Auth
     {
         private readonly IApplicationRepository applicationRepository;
         private readonly IUserRepository userRepository;
-        private readonly AuthConfig authConfig;
-        private readonly OpenIddictServerOptions openIddictServerOptions;
+        private readonly IOptionsMonitor<OpenIddictServerOptions> openIddictServerOptions;
 
         public DefaultAuthUtils(
             IApplicationRepository applicationRepository,
             IUserRepository userRepository,
-            IOptions<AuthConfig> authConfig,
-            IOptions<OpenIddictServerOptions> openIddictServerOptions
+            IOptionsMonitor<OpenIddictServerOptions> openIddictServerOptions
         )
         {
             this.applicationRepository = applicationRepository;
             this.userRepository = userRepository;
-            this.authConfig = authConfig.Value;
-            this.openIddictServerOptions = openIddictServerOptions.Value;
+            this.openIddictServerOptions = openIddictServerOptions;
         }
 
         public async Task<ClaimsIdentity> CreateClaimsIdentityForApplication(Guid applicationId, CancellationToken cancellationToken = default)
@@ -91,30 +88,37 @@ namespace Brighid.Identity.Auth
             return new AuthenticationTicket(principal, authProps, authenticationScheme);
         }
 
-        public string GenerateAccessToken(AuthenticationTicket authenticationTicket)
+        /// <inheritdoc />
+        public string GenerateAccessToken(AuthenticationTicket authenticationTicket, string issuer)
         {
-            var claims = authenticationTicket.Principal.Claims.Where(claim => claim.HasDestination(Destinations.AccessToken));
+            var claims = authenticationTicket.Principal.Claims
+            .Where(claim => claim.HasDestination(Destinations.AccessToken));
+
             var jwt = new JwtSecurityToken(
-                issuer: $"https://{authConfig.DomainName}/",
+                issuer: issuer,
                 audience: "identity",
                 claims: claims,
                 notBefore: DateTime.UtcNow,
                 expires: DateTime.UtcNow.Add(TimeSpan.FromHours(1)),
-                signingCredentials: openIddictServerOptions.SigningCredentials.First()
+                signingCredentials: openIddictServerOptions.CurrentValue.SigningCredentials.First()
             );
 
+            jwt.Header["typ"] = JsonWebTokenTypes.AccessToken;
             return new JwtSecurityTokenHandler().WriteToken(jwt);
         }
 
-        public string GenerateIdToken(AuthenticationTicket authenticationTicket, User user)
+        /// <inheritdoc />
+        public string GenerateIdToken(AuthenticationTicket authenticationTicket, User user, string issuer)
         {
-            var claims = authenticationTicket.Principal.Claims.Where(claim => claim.HasDestination(Destinations.IdentityToken));
+            var claims = authenticationTicket.Principal.Claims
+            .Where(claim => claim.HasDestination(Destinations.IdentityToken));
+
             var jwt = new JwtSecurityToken(
-                issuer: $"https://{authConfig.DomainName}/",
+                issuer: issuer,
                 claims: claims,
                 notBefore: DateTime.UtcNow,
                 expires: DateTime.UtcNow.Add(TimeSpan.FromHours(1)),
-                signingCredentials: openIddictServerOptions.SigningCredentials.First()
+                signingCredentials: openIddictServerOptions.CurrentValue.SigningCredentials.First()
             );
 
             return new JwtSecurityTokenHandler().WriteToken(jwt);

@@ -36,6 +36,10 @@ Parameters:
     Type: String
     Description: Name to use for the environment.
 
+  CertificateConfigurationParameterName:
+    Type: String
+    Description: Name of the parameter that contains certificate configuration.
+
 Resources:
   MeshService:
     Type: AWS::AppMesh::VirtualService
@@ -204,6 +208,8 @@ Resources:
               Value: !Ref Image
             - Name: Environment__Name
               Value: !Ref EnvironmentName
+            - Name: Auth__CertificateConfigurationParameterName
+              Value: !Ref CertificateConfigurationParameterName
         - Name: envoy
           Image: !Ref EnvoyImage
           Essential: true

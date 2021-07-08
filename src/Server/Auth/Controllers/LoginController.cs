@@ -49,7 +49,7 @@ namespace Brighid.Identity.Auth
                     throw new LoginException();
                 }
 
-                var ticket = await authService.PasswordExchange(request.Email, request.Password, request.RedirectUri, HttpContext.RequestAborted);
+                var ticket = await authService.PasswordExchange(request.Email, request.Password, request.RedirectUri, HttpContext, HttpContext.RequestAborted);
                 return SignIn(ticket.Principal, ticket.Properties, ticket.AuthenticationScheme);
             }
             catch (LoginException e)

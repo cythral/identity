@@ -151,8 +151,8 @@
       },
       "AWSSDK.Core": {
         "type": "Transitive",
-        "resolved": "3.7.0.29",
-        "contentHash": "RXeNNVehUDF/hTdeOfbHjjMyt9UciPifhtcrOScKHN+04sENBGdahZjvQHb+uw7XNJuzeFWdGgvibNNRfXYyDA=="
+        "resolved": "3.7.0.40",
+        "contentHash": "gHUYpUHwqNojTyOX7gifKy9u8SEBTe0LNqGoP5aWvTl6TGune3NNZp9SwIJhuYIk5yv7dBbGaJ0XHnHSL+qv7g=="
       },
       "AWSSDK.KeyManagementService": {
         "type": "Transitive",
@@ -160,6 +160,14 @@
         "contentHash": "EUX4o+fAVj/Nxq1/Z0gG0vbJRS/lelkRSj5MXUqVUifGyVUngTC0fVHusPU7Q593fjdgLsJwT/KUow6m8/72nw==",
         "dependencies": {
           "AWSSDK.Core": "[3.7.0, 3.8.0)"
+        }
+      },
+      "AWSSDK.S3": {
+        "type": "Transitive",
+        "resolved": "3.7.1.10",
+        "contentHash": "mewrDoR7ldn11cioSM/ouby94nMk2jy4kzooJ/AppfpXlj6gJ2qZ9R728eSyCisQSvHRZHu1WNWTHaHOS4v6lg==",
+        "dependencies": {
+          "AWSSDK.Core": "[3.7.0.40, 4.0.0)"
         }
       },
       "AWSSDK.SimpleSystemsManagement": {
@@ -2152,6 +2160,7 @@
         "type": "Project",
         "dependencies": {
           "AWSSDK.KeyManagementService": "3.7.0",
+          "AWSSDK.S3": "3.7.1.10",
           "AWSSDK.SimpleSystemsManagement": "3.7.3.10",
           "Common": "1.0.0",
           "Flurl": "3.0.0",
@@ -2162,7 +2171,6 @@
           "Microsoft.AspNetCore.Identity.EntityFrameworkCore": "5.0.7",
           "Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation": "5.0.0",
           "Microsoft.EntityFrameworkCore.Design": "5.0.0",
-          "Microsoft.IdentityModel.Tokens": "6.11.1",
           "OpenIddict": "3.0.3",
           "OpenIddict.AspNetCore": "3.0.3",
           "OpenIddict.EntityFrameworkCore": "3.0.3",

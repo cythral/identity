@@ -13,6 +13,7 @@ using Brighid.Identity.Users;
 using FluentAssertions;
 
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 
 using NSubstitute;
@@ -247,6 +248,7 @@ namespace Brighid.Identity.Auth
                 string email,
                 string password,
                 Uri redirectUri,
+                HttpContext httpContext,
                 [Frozen, Substitute] UserManager<User> userManager,
                 [Target] DefaultAuthService service,
                 CancellationToken cancellationToken
@@ -254,7 +256,7 @@ namespace Brighid.Identity.Auth
             {
                 userManager.FindByEmailAsync(Any<string>()).Returns((User)null!);
 
-                Func<Task> func = () => service.PasswordExchange(email, password, redirectUri, cancellationToken);
+                Func<Task> func = () => service.PasswordExchange(email, password, redirectUri, httpContext, cancellationToken);
 
                 await func.Should().ThrowAsync<InvalidCredentialsException>();
                 await userManager.Received().FindByEmailAsync(Is(email));
@@ -266,6 +268,7 @@ namespace Brighid.Identity.Auth
                 string email,
                 string password,
                 Uri redirectUri,
+                HttpContext httpContext,
                 [Frozen] User user,
                 [Frozen, Substitute] UserManager<User> userManager,
                 [Target] DefaultAuthService service,
@@ -274,7 +277,7 @@ namespace Brighid.Identity.Auth
             {
                 userManager.CheckPasswordAsync(Any<User>(), Any<string>()).Returns(false);
 
-                Func<Task> func = () => service.PasswordExchange(email, password, redirectUri, cancellationToken);
+                Func<Task> func = () => service.PasswordExchange(email, password, redirectUri, httpContext, cancellationToken);
 
                 await func.Should().ThrowAsync<InvalidCredentialsException>();
                 await userManager.Received().CheckPasswordAsync(Is(user), Is(password));
@@ -286,6 +289,7 @@ namespace Brighid.Identity.Auth
                 string email,
                 string password,
                 Uri redirectUri,
+                HttpContext httpContext,
                 [Frozen] User user,
                 [Frozen, Substitute] UserManager<User> userManager,
                 [Frozen, Substitute] IAuthUtils authUtils,
@@ -295,7 +299,7 @@ namespace Brighid.Identity.Auth
             {
                 userManager.CheckPasswordAsync(Any<User>(), Any<string>()).Returns(true);
 
-                await service.PasswordExchange(email, password, redirectUri, cancellationToken);
+                await service.PasswordExchange(email, password, redirectUri, httpContext, cancellationToken);
 
                 await authUtils.Received().CreateClaimsIdentityForUser(Is(user), Is(cancellationToken));
             }
@@ -306,6 +310,7 @@ namespace Brighid.Identity.Auth
                 string email,
                 string password,
                 Uri redirectUri,
+                HttpContext httpContext,
                 [Frozen] ClaimsIdentity claimsIdentity,
                 [Frozen] AuthenticationTicket ticket,
                 [Frozen, Substitute] UserManager<User> userManager,
@@ -316,7 +321,7 @@ namespace Brighid.Identity.Auth
             {
                 userManager.CheckPasswordAsync(Any<User>(), Any<string>()).Returns(true);
 
-                var result = await service.PasswordExchange(email, password, redirectUri, cancellationToken);
+                var result = await service.PasswordExchange(email, password, redirectUri, httpContext, cancellationToken);
 
                 result.Should().Be(ticket);
                 authUtils.Received().CreateAuthTicket(Is(claimsIdentity), Is<string[]>(scopes => scopes.Contains("openid")), Is(redirectUri), Is(IdentityConstants.ApplicationScheme));
@@ -329,6 +334,7 @@ namespace Brighid.Identity.Auth
                 string password,
                 string accessToken,
                 Uri redirectUri,
+                HttpContext httpContext,
                 [Frozen, Substitute] UserManager<User> userManager,
                 [Frozen, Substitute] IAuthUtils authUtils,
                 [Target] DefaultAuthService service,
@@ -336,9 +342,9 @@ namespace Brighid.Identity.Auth
             )
             {
                 userManager.CheckPasswordAsync(Any<User>(), Any<string>()).Returns(true);
-                authUtils.GenerateAccessToken(Any<AuthenticationTicket>()).Returns(accessToken);
+                authUtils.GenerateAccessToken(Any<AuthenticationTicket>(), Any<string>()).Returns(accessToken);
 
-                var result = await service.PasswordExchange(email, password, redirectUri, cancellationToken);
+                var result = await service.PasswordExchange(email, password, redirectUri, httpContext, cancellationToken);
 
                 result.Properties.GetTokens().Should().Contain(token => token.Name == "access_token" && token.Value == accessToken);
             }
@@ -349,6 +355,7 @@ namespace Brighid.Identity.Auth
                 string email,
                 string password,
                 string idToken,
+                HttpContext httpContext,
                 Uri redirectUri,
                 [Frozen] User user,
                 [Frozen] AuthenticationTicket ticket,
@@ -359,13 +366,13 @@ namespace Brighid.Identity.Auth
             )
             {
                 userManager.CheckPasswordAsync(Any<User>(), Any<string>()).Returns(true);
-                authUtils.GenerateIdToken(Any<AuthenticationTicket>(), Any<User>()).Returns(idToken);
+                authUtils.GenerateIdToken(Any<AuthenticationTicket>(), Any<User>(), Any<string>()).Returns(idToken);
 
-                var result = await service.PasswordExchange(email, password, redirectUri, cancellationToken);
+                var result = await service.PasswordExchange(email, password, redirectUri, httpContext, cancellationToken);
 
                 result.Properties.GetTokens().Should().Contain(token => token.Name == "id_token" && token.Value == idToken);
 
-                authUtils.Received().GenerateIdToken(Is(ticket), Is(user));
+                authUtils.Received().GenerateIdToken(Is(ticket), Is(user), Is($"{httpContext.Request.Scheme}://{httpContext.Request.Host}/"));
             }
         }
 

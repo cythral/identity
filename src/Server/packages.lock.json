@@ -11,6 +11,15 @@
           "AWSSDK.Core": "[3.7.0, 3.8.0)"
         }
       },
+      "AWSSDK.S3": {
+        "type": "Direct",
+        "requested": "[3.7.1.10, )",
+        "resolved": "3.7.1.10",
+        "contentHash": "mewrDoR7ldn11cioSM/ouby94nMk2jy4kzooJ/AppfpXlj6gJ2qZ9R728eSyCisQSvHRZHu1WNWTHaHOS4v6lg==",
+        "dependencies": {
+          "AWSSDK.Core": "[3.7.0.40, 4.0.0)"
+        }
+      },
       "AWSSDK.SimpleSystemsManagement": {
         "type": "Direct",
         "requested": "[3.7.3.10, )",
@@ -88,17 +97,6 @@
           "Humanizer.Core": "2.8.26",
           "Microsoft.CSharp": "4.7.0",
           "Microsoft.EntityFrameworkCore.Relational": "5.0.0"
-        }
-      },
-      "Microsoft.IdentityModel.Tokens": {
-        "type": "Direct",
-        "requested": "[6.11.1, )",
-        "resolved": "6.11.1",
-        "contentHash": "B7vWX+WevuluZDjsf4Br2Zb7k20ps1D3RMX/J8DKsrkzJ4F3fcsLIEknI98JNYKPlN9VcqEZ1qeeEKEuwU3XcA==",
-        "dependencies": {
-          "Microsoft.CSharp": "4.5.0",
-          "Microsoft.IdentityModel.Logging": "6.11.1",
-          "System.Security.Cryptography.Cng": "4.5.0"
         }
       },
       "OpenIddict": {
@@ -228,8 +226,8 @@
       },
       "AWSSDK.Core": {
         "type": "Transitive",
-        "resolved": "3.7.0.29",
-        "contentHash": "RXeNNVehUDF/hTdeOfbHjjMyt9UciPifhtcrOScKHN+04sENBGdahZjvQHb+uw7XNJuzeFWdGgvibNNRfXYyDA=="
+        "resolved": "3.7.0.40",
+        "contentHash": "gHUYpUHwqNojTyOX7gifKy9u8SEBTe0LNqGoP5aWvTl6TGune3NNZp9SwIJhuYIk5yv7dBbGaJ0XHnHSL+qv7g=="
       },
       "Humanizer.Core": {
         "type": "Transitive",
@@ -630,6 +628,16 @@
         "dependencies": {
           "Microsoft.IdentityModel.Protocols": "6.8.0",
           "System.IdentityModel.Tokens.Jwt": "6.8.0"
+        }
+      },
+      "Microsoft.IdentityModel.Tokens": {
+        "type": "Transitive",
+        "resolved": "6.11.1",
+        "contentHash": "B7vWX+WevuluZDjsf4Br2Zb7k20ps1D3RMX/J8DKsrkzJ4F3fcsLIEknI98JNYKPlN9VcqEZ1qeeEKEuwU3XcA==",
+        "dependencies": {
+          "Microsoft.CSharp": "4.5.0",
+          "Microsoft.IdentityModel.Logging": "6.11.1",
+          "System.Security.Cryptography.Cng": "4.5.0"
         }
       },
       "Microsoft.JSInterop": {

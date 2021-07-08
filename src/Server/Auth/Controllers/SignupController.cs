@@ -62,7 +62,7 @@ namespace Brighid.Identity.Auth
                 }
 
                 var user = await userService.Create(request.Email, request.Password);
-                var ticket = await authService.PasswordExchange(request.Email, request.Password, request.RedirectUri, HttpContext.RequestAborted);
+                var ticket = await authService.PasswordExchange(request.Email, request.Password, request.RedirectUri, HttpContext, HttpContext.RequestAborted);
                 return SignIn(ticket.Principal, ticket.Properties, ticket.AuthenticationScheme);
             }
             catch (InvalidCredentialsException)

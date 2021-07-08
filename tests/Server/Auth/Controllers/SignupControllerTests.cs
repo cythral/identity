@@ -242,7 +242,7 @@ namespace Brighid.Identity.Auth
                 request.RedirectUri = new Uri(destination, UriKind.Relative);
 
                 signInManager.IsSignedIn(Any<ClaimsPrincipal>()).Returns(false);
-                authService.PasswordExchange(Any<string>(), Any<string>(), Any<Uri>(), Any<CancellationToken>()).Throws(new InvalidCredentialsException(string.Empty));
+                authService.PasswordExchange(Any<string>(), Any<string>(), Any<Uri>(), Any<HttpContext>(), Any<CancellationToken>()).Throws(new InvalidCredentialsException(string.Empty));
                 userService.Create(Any<string>(), Any<string>()).Returns(user);
 
                 signupController.ControllerContext = new ControllerContext { HttpContext = httpContext };
@@ -250,7 +250,7 @@ namespace Brighid.Identity.Auth
                 var result = await signupController.Signup(request) as ViewResult;
                 var errors = signupController.ModelState["signupError"].Errors;
 
-                await authService.Received().PasswordExchange(Is(request.Email), Is(password), Is(request.RedirectUri), Is(httpContext.RequestAborted));
+                await authService.Received().PasswordExchange(Is(request.Email), Is(password), Is(request.RedirectUri), Is(httpContext), Is(httpContext.RequestAborted));
                 result!.Should().NotBeNull();
                 errors.Should().Contain(error => error.ErrorMessage == "Unable to sign in.");
             }
