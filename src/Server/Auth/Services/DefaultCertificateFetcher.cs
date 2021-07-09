@@ -44,7 +44,7 @@ namespace Brighid.Identity.Auth
                 await response.ResponseStream.FlushAsync(cancellationToken);
                 var cert = new X509Certificate2(byteStream.ToArray());
                 var privateKey = cert.GetECDsaPrivateKey();
-                var securityKey = new ECDsaSecurityKey(privateKey);
+                var securityKey = new ECDsaSecurityKey(privateKey) { KeyId = hash };
                 return new SigningCredentials(securityKey, "ES256");
             }
             catch (Exception exception)
