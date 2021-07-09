@@ -1,24 +1,27 @@
 using System;
 using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
-using System.IO;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
 using System.Security.Principal;
+
+using Amazon.S3;
+using Amazon.SimpleSystemsManagement;
 
 using Brighid.Identity;
 using Brighid.Identity.Auth;
 using Brighid.Identity.Roles;
 using Brighid.Identity.Users;
 
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 
 using OpenIddict.Server;
+using OpenIddict.Validation.AspNetCore;
 
 using static OpenIddict.Abstractions.OpenIddictConstants;
 
@@ -36,13 +39,18 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddScoped<IAuthUtils, DefaultAuthUtils>();
             services.AddScoped<ILinkStartUrlService, SsmLinkStartUrlService>();
             services.AddScoped<AuthenticationStateProvider, AuthContextProvider>();
+            services.AddSingleton<AuthTicketFormat>();
+            services.AddSingleton<ICertificateUpdater, DefaultCertificateUpdater>();
+            services.AddSingleton<ICertificateManager, OptionsCertificateManager>();
+            services.AddSingleton<ICertificateConfigurationService, DefaultCertificateConfigurationService>();
+            services.AddSingleton<ICertificateFetcher, DefaultCertificateFetcher>();
+            services.AddSingleton<IHostedService, CertificateUpdateTimer>();
             services.AddHttpContextAccessor();
 
-            var tokenValidationParameters = GetTokenValidationParameters(authConfig);
-            services.AddSingleton(tokenValidationParameters);
+            var startupCertificates = GetStartupCertificates(authConfig);
             services.AddAspNetCoreIdentity();
-            services.AddOpenIdServer(authConfig, tokenValidationParameters);
-            services.AddOpenIdAuth(authConfig, tokenValidationParameters);
+            services.AddOpenIdServer(authConfig, startupCertificates);
+            services.AddOpenIdAuth(authConfig);
             services.AddAuthorizationPolicies();
         }
 
@@ -72,8 +80,8 @@ namespace Microsoft.Extensions.DependencyInjection
         /// </summary>
         /// <param name="services">The service collection to configure.</param>
         /// <param name="authConfig">Auth config to use.</param>
-        /// <param name="tokenValidationParameters">Parameters to use when validating tokens.</param>
-        public static void AddOpenIdServer(this IServiceCollection services, AuthConfig authConfig, TokenValidationParameters tokenValidationParameters)
+        /// <param name="startupCertificates">Certificates to use for signing/validation.</param>
+        public static void AddOpenIdServer(this IServiceCollection services, AuthConfig authConfig, List<SigningCredentials> startupCertificates)
         {
             services.Configure<IdentityOptions>(options =>
             {
@@ -114,10 +122,22 @@ namespace Microsoft.Extensions.DependencyInjection
                 options.DisableAccessTokenEncryption();
                 options.AddEphemeralEncryptionKey();
 
-                foreach (var signingKey in tokenValidationParameters.IssuerSigningKeys)
+                foreach (var credential in startupCertificates)
                 {
-                    options.AddSigningKey(signingKey);
+                    options.AddSigningCredentials(credential);
                 }
+
+                options.Configure(serverOptions =>
+                {
+                    serverOptions.TokenValidationParameters.RequireSignedTokens = true;
+                    serverOptions.TokenValidationParameters.ValidateIssuerSigningKey = true;
+                    serverOptions.TokenValidationParameters.RequireExpirationTime = true;
+                    serverOptions.TokenValidationParameters.ValidateAudience = false;
+                    serverOptions.TokenValidationParameters.ValidateIssuer = true;
+                    serverOptions.TokenValidationParameters.ValidateLifetime = true;
+                    serverOptions.TokenValidationParameters.RoleClaimType = Claims.Role;
+                    serverOptions.TokenValidationParameters.ValidIssuers = new string[] { $"https://{authConfig.DomainName}/", $"http://{authConfig.DomainName}/" };
+                });
             })
             .AddValidation(options =>
             {
@@ -131,21 +151,19 @@ namespace Microsoft.Extensions.DependencyInjection
         /// </summary>
         /// <param name="services">The service collection to configure.</param>
         /// <param name="authConfig">Auth config to use.</param>
-        /// <param name="tokenValidationParameters">Parameters to use when validating tokens.</param>
-        public static void AddOpenIdAuth(this IServiceCollection services, AuthConfig authConfig, TokenValidationParameters tokenValidationParameters)
+        public static void AddOpenIdAuth(this IServiceCollection services, AuthConfig authConfig)
         {
-            services.ConfigureApplicationCookie(options =>
+            services
+            .AddOptions<CookieAuthenticationOptions>(IdentityConstants.ApplicationScheme)
+            .Configure<IServiceProvider>((options, serviceProvider) =>
             {
                 options.LoginPath = "/login";
                 options.Cookie.Domain = authConfig.CookieDomain;
                 options.Cookie.Name = authConfig.CookieName;
                 options.ReturnUrlParameter = authConfig.RedirectUriParameter;
-                options.TicketDataFormat = new AuthTicketFormat(tokenValidationParameters);
+                options.TicketDataFormat = serviceProvider.GetRequiredService<AuthTicketFormat>();
                 options.Events = new IdentityCookieAuthenticationEvents(authConfig);
             });
-
-            JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
-            JwtSecurityTokenHandler.DefaultOutboundClaimTypeMap.Clear();
 
             services.AddAuthentication(options =>
             {
@@ -159,18 +177,9 @@ namespace Microsoft.Extensions.DependencyInjection
                 {
                     var authHeader = context.Request.Headers["Authorization"].FirstOrDefault();
                     return authHeader?.StartsWith("Bearer ") == true
-                        ? JwtBearerDefaults.AuthenticationScheme
+                        ? OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme
                         : IdentityConstants.ApplicationScheme;
                 };
-            })
-            .AddJwtBearer(options =>
-            {
-                options.SaveToken = true;
-                options.RefreshOnIssuerKeyNotFound = true;
-                options.RequireHttpsMetadata = false;
-                options.BackchannelHttpHandler = new Http2AuthMessageHandler();
-                options.MetadataAddress = $"http://localhost/.well-known/openid-configuration";
-                options.TokenValidationParameters = tokenValidationParameters;
             });
         }
 
@@ -196,37 +205,34 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddSingleton<IAuthorizationHandler, RestrictedToSelfPolicyHandler>();
         }
 
-        private static TokenValidationParameters GetTokenValidationParameters(AuthConfig authConfig)
+        private static List<SigningCredentials> GetStartupCertificates(AuthConfig config)
         {
-            var tokenValidationParameters = new TokenValidationParameters
-            {
-                RequireSignedTokens = true,
-                ValidateIssuerSigningKey = true,
-                RequireExpirationTime = true,
-                ValidateAudience = false,
-                ValidateIssuer = true,
-                RoleClaimType = Claims.Role,
-                ValidIssuers = new string[] { $"https://{authConfig.DomainName}/", $"http://{authConfig.DomainName}/" },
-                ClockSkew = TimeSpan.FromMinutes(5),
-            };
+            var result = new List<SigningCredentials>();
+            var options = Options.Options.Create(config);
 
-            if (Directory.Exists(authConfig.CertificatesDirectory))
-            {
-                var issuerSigningKeys = new List<SecurityKey>();
-                foreach (var file in Directory.GetFiles(authConfig.CertificatesDirectory))
-                {
-                    var certificate = new X509Certificate2(file);
-                    issuerSigningKeys.Add(new X509SecurityKey(certificate));
-                }
+            var loggerFactory = LoggerFactory.Create(options => options.AddConsole());
+            var fetcherLogger = loggerFactory.CreateLogger<DefaultCertificateFetcher>();
+            var configServiceLogger = loggerFactory.CreateLogger<DefaultCertificateConfigurationService>();
+            var updaterLogger = loggerFactory.CreateLogger<DefaultCertificateUpdater>();
 
-                tokenValidationParameters.IssuerSigningKeys = issuerSigningKeys;
+            var s3Client = new AmazonS3Client();
+            var ssmClient = new AmazonSimpleSystemsManagementClient();
+
+            var fetcher = new DefaultCertificateFetcher(s3Client, fetcherLogger);
+            var manager = new StartupCertificateManager(result);
+            var configService = new DefaultCertificateConfigurationService(ssmClient, options, configServiceLogger);
+            var updater = new DefaultCertificateUpdater(configService, fetcher, manager, updaterLogger);
+
+            try
+            {
+                updater.UpdateCertificates().GetAwaiter().GetResult();
+                return result;
             }
-            else
+            catch (Exception)
             {
-                tokenValidationParameters.IssuerSigningKeys = new[] { Utils.GenerateDevelopmentSecurityKey() };
+                result.Add(new SigningCredentials(Utils.GenerateDevelopmentSecurityKey(), "RS256"));
+                return result;
             }
-
-            return tokenValidationParameters;
         }
     }
 }

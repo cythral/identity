@@ -132,7 +132,7 @@ namespace Brighid.Identity.Auth
             )
             {
                 request.RedirectUri = new Uri(destination, UriKind.Relative);
-                authService.PasswordExchange(Any<string>(), Any<string>(), Any<Uri>(), Any<CancellationToken>()).Throws<InvalidCredentialsException>();
+                authService.PasswordExchange(Any<string>(), Any<string>(), Any<Uri>(), Any<HttpContext>(), Any<CancellationToken>()).Throws<InvalidCredentialsException>();
                 signInManager.IsSignedIn(Any<ClaimsPrincipal>()).Returns(false);
                 var tempDataProvider = Substitute.For<ITempDataProvider>();
                 var tempDataDictionaryFactory = new TempDataDictionaryFactory(tempDataProvider);

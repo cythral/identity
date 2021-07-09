@@ -46,5 +46,10 @@ namespace Brighid.Identity.Auth
         /// Gets or sets the domain name to use.
         /// </summary>
         public string DomainName { get; set; } = string.Empty;
+
+        /// <summary>
+        /// Gets or sets the parameter name of the parameter that contains certificate configuration.
+        /// </summary>
+        public string CertificateConfigurationParameterName { get; set; } = string.Empty;
     }
 }

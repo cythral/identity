@@ -1,10 +1,14 @@
 using System;
-using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Tokens;
+
+using OpenIddict.Server;
 
 using static OpenIddict.Abstractions.OpenIddictConstants;
 
@@ -14,12 +18,16 @@ namespace Brighid.Identity.Auth
 {
     public sealed class AuthTicketFormat : ISecureDataFormat<AuthenticationTicket>
     {
-        private readonly TokenValidationParameters validationParameters;
-        private readonly JwtSecurityTokenHandler tokenHandler = new();
+        private readonly IOptionsMonitor<OpenIddictServerOptions> openIdServerOptions;
+        private readonly ILogger<AuthTicketFormat> logger;
 
-        public AuthTicketFormat(TokenValidationParameters validationParameters)
+        public AuthTicketFormat(
+            IOptionsMonitor<OpenIddictServerOptions> openIdServerOptions,
+            ILogger<AuthTicketFormat> logger
+        )
         {
-            this.validationParameters = validationParameters;
+            this.openIdServerOptions = openIdServerOptions;
+            this.logger = logger;
         }
 
         public AuthenticationTicket? Unprotect(string protectedText) => Unprotect(protectedText, null);
@@ -30,9 +38,14 @@ namespace Brighid.Identity.Auth
         {
             try
             {
-                tokenHandler.ValidateToken(protectedText, validationParameters, out var token);
+                var validationParameters = openIdServerOptions.CurrentValue.TokenValidationParameters.Clone();
+                var result = openIdServerOptions.CurrentValue.JsonWebTokenHandler.ValidateToken(protectedText, validationParameters);
+                if (!result.IsValid)
+                {
+                    throw new Exception("JWT Failed to Validate", result.Exception);
+                }
 
-                if (!(token is JwtSecurityToken jwt))
+                if (!(result.SecurityToken is JsonWebToken jwt))
                 {
                     throw new SecurityTokenValidationException("JWT token was found to be invalid");
                 }
@@ -49,8 +62,9 @@ namespace Brighid.Identity.Auth
             {
                 return null;
             }
-            catch (Exception)
+            catch (Exception exception)
             {
+                logger.LogError("Error occurred while attempting to validate token: {@jwt} {@exception}", protectedText, exception);
                 return null;
             }
         }

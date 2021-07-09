@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Brighid.Identity.Users;
 
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 
 using OpenIddict.Abstractions;
@@ -69,7 +70,13 @@ namespace Brighid.Identity.Auth
         }
 
         /// <inheritdoc />
-        public async Task<AuthenticationTicket> PasswordExchange(string email, string password, Uri redirectUri, CancellationToken cancellationToken = default)
+        public async Task<AuthenticationTicket> PasswordExchange(
+            string email,
+            string password,
+            Uri redirectUri,
+            HttpContext httpContext,
+            CancellationToken cancellationToken = default
+        )
         {
             cancellationToken.ThrowIfCancellationRequested();
             var user = await userManager.FindByEmailAsync(email);
@@ -80,8 +87,11 @@ namespace Brighid.Identity.Auth
 
             var identity = await authUtils.CreateClaimsIdentityForUser(user, cancellationToken);
             var ticket = authUtils.CreateAuthTicket(identity, DefaultScopes, redirectUri, IdentityConstants.ApplicationScheme);
-            var accessToken = new AuthenticationToken { Name = "access_token", Value = authUtils.GenerateAccessToken(ticket) };
-            var idToken = new AuthenticationToken { Name = "id_token", Value = authUtils.GenerateIdToken(ticket, user) };
+            var issuer = $"{httpContext.Request.Scheme}://{httpContext.Request.Host}/";
+            var accessTokenValue = authUtils.GenerateAccessToken(ticket, issuer);
+            var accessToken = new AuthenticationToken { Name = "access_token", Value = accessTokenValue };
+            var idTokenValue = authUtils.GenerateIdToken(ticket, user, issuer);
+            var idToken = new AuthenticationToken { Name = "id_token", Value = idTokenValue };
             ticket.Properties.StoreTokens(new[] { accessToken, idToken });
             return ticket;
         }

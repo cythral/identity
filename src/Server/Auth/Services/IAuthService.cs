@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Http;
 
 using OpenIddict.Abstractions;
 
@@ -35,9 +36,10 @@ namespace Brighid.Identity.Auth
         /// <param name="email">The email of the user to get a token for.</param>
         /// <param name="password">The password of the user to get a token for.</param>
         /// <param name="redirectUri">The URI to redirect to after obtaining a token.</param>
+        /// <param name="httpContext">HTTP Context holder.</param>
         /// <param name="cancellationToken">Token used to cancel the operation.</param>
         /// <returns>The resulting ticket, which will contain the user token.</returns>
-        Task<AuthenticationTicket> PasswordExchange(string email, string password, Uri redirectUri, CancellationToken cancellationToken = default);
+        Task<AuthenticationTicket> PasswordExchange(string email, string password, Uri redirectUri, HttpContext httpContext, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Extract the User Principal/Identity from the given <paramref name="context" />.
