@@ -321,6 +321,7 @@ Resources:
             Action: ssm:GetParameter
             Resource: 
               - !Sub arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/brighid/*/account-link/start-url
+              - !Sub arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/brighid/identity/signing-certificates
 
   LogGroup:
     Type: AWS::Logs::LogGroup
