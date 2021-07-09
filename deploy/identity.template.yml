@@ -326,7 +326,7 @@ Resources:
             Action: s3:GetObject
             Resource: !Sub
               - ${BucketArn}/*
-              - BucketArn: !ImportValue identity-certificate:CertificateBucketArn
+              - BucketArn: !ImportValue identity-certificates:CertificateBucketArn
 
   LogGroup:
     Type: AWS::Logs::LogGroup
