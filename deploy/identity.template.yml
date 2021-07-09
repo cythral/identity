@@ -298,6 +298,7 @@ Resources:
         - arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerServiceforEC2Role
         - !ImportValue cfn-utilities:SecretsKeyDecryptPolicyArn
         - !ImportValue cfn-utilities:SecretsKeyEncryptPolicyArn
+        - !ImportValue identity-certificates:CertificateReadPolicyArn
       AssumeRolePolicyDocument:
         Version: 2012-10-17
         Statement:
@@ -321,12 +322,6 @@ Resources:
             Action: ssm:GetParameter
             Resource: 
               - !Sub arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/brighid/*/account-link/start-url
-              - !Sub arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/brighid/identity/signing-certificates
-          - Effect: Allow
-            Action: s3:GetObject
-            Resource: !Sub
-              - ${BucketArn}/*
-              - BucketArn: !ImportValue identity-certificates:CertificateBucketArn
 
   LogGroup:
     Type: AWS::Logs::LogGroup
