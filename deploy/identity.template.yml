@@ -322,6 +322,11 @@ Resources:
             Resource: 
               - !Sub arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/brighid/*/account-link/start-url
               - !Sub arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/brighid/identity/signing-certificates
+          - Effect: Allow
+            Action: s3:GetObject
+            Resource: !Sub
+              - ${BucketArn}/*
+              - BucketArn: !ImportValue identity-certificate:CertificateBucketArn
 
   LogGroup:
     Type: AWS::Logs::LogGroup
