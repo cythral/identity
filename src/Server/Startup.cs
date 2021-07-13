@@ -14,6 +14,8 @@ using Brighid.Identity.Applications;
 using Brighid.Identity.Roles;
 using Brighid.Identity.Sns;
 
+using Destructurama;
+
 using Flurl.Http;
 
 using Microsoft.AspNetCore.Builder;
@@ -24,6 +26,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+
+using Serilog;
 
 #pragma warning disable IDE0061
 
@@ -38,6 +42,13 @@ namespace Brighid.Identity
             DatabaseConfig = Configuration.GetSection("Database").Get<DatabaseConfig>() ?? new DatabaseConfig();
             NetworkConfig = Configuration.GetSection("Network").Get<NetworkConfig>() ?? new NetworkConfig();
             AppConfig = Configuration.GetSection("App").Get<AppConfig>() ?? new AppConfig();
+
+            Log.Logger = new LoggerConfiguration()
+                .ReadFrom.Configuration(configuration)
+                .Destructure.UsingAttributes()
+                .Enrich.FromLogContext()
+                .WriteTo.Console(outputTemplate: "[{Timestamp:HH:mm:ss} {Level:u3}] [{SourceContext:s}] {Message:lj} {Properties:j} {Exception}{NewLine}")
+                .CreateLogger();
         }
 
         public IWebHostEnvironment Environment { get; }
@@ -116,8 +127,9 @@ namespace Brighid.Identity
             if (env.IsDevelopment())
             {
                 context.Database.Migrate();
-                app.UseWebAssemblyDebugging();
             }
+
+            app.UseWebAssemblyDebugging();
 
             app.UseForwardedHeaders();
             app.Use(async (context, next) =>
@@ -156,8 +168,8 @@ namespace Brighid.Identity
                 options.SwaggerEndpoint("/swagger/v1/swagger.json", "Brighid Identity Swagger");
             });
 
-            app.UseBlazorFrameworkFiles();
             app.UseStaticFiles();
+            app.UseBlazorFrameworkFiles();
             app.UseAuthentication();
             app.UseMiddleware<SnsMiddleware>();
             app.UseRouting();
