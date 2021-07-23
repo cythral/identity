@@ -12,7 +12,7 @@ RUN if [ ! -f ${DLL_PATH} ]; then dotnet publish; fi
 EXPOSE 80
 ENTRYPOINT ["dotnet", "watch", "--project", "/app/src/Server", "run"]
 
-FROM mcr.microsoft.com/dotnet/aspnet:5.0.6 AS production
+FROM mcr.microsoft.com/dotnet/aspnet:5.0.8 AS production
 
 WORKDIR /app
 COPY --from=development /app/bin/Server/Release/net5.0/publish /app
