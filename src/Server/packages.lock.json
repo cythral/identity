@@ -263,8 +263,8 @@
       },
       "Majorsoft.Blazor.Extensions.BrowserStorage": {
         "type": "Transitive",
-        "resolved": "1.3.0",
-        "contentHash": "FiZo6g4R3Ps8nZLv6584O6z85m6AhKLYRxFzGp647Ln051IBFmb7c6wM6v48Qy8aC9cBquJZLcLctH0f1H8lxA==",
+        "resolved": "1.4.0",
+        "contentHash": "z86t0CSjlxbiU2W9sX30w1cLQ0Hr5BdPpck2gX4ibdNhCv2S+zlgx+I1NXf5b8rYnIq/1617ACfS/ek73N5eYg==",
         "dependencies": {
           "Microsoft.AspNetCore.Components.Web": "5.0.3"
         }
@@ -1419,7 +1419,7 @@
         "type": "Project",
         "dependencies": {
           "Common": "1.0.0",
-          "Majorsoft.Blazor.Extensions.BrowserStorage": "1.3.0",
+          "Majorsoft.Blazor.Extensions.BrowserStorage": "1.4.0",
           "Microsoft.AspNetCore.Components.Authorization": "5.0.2",
           "Microsoft.AspNetCore.Components.WebAssembly": "5.0.2",
           "System.IdentityModel.Tokens.Jwt": "6.12.0"
