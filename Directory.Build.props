@@ -47,6 +47,6 @@
 
     <ItemGroup>
         <PackageReference Include="Microsoft.CodeAnalysis.CSharp.CodeStyle" Version="3.9.0" PrivateAssets="all" />
-        <PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.333" PrivateAssets="all" />
+        <PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.66" PrivateAssets="all" />
     </ItemGroup>
 </Project> 
