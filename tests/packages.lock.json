@@ -42,12 +42,6 @@
           "System.Configuration.ConfigurationManager": "4.4.0"
         }
       },
-      "Flurl": {
-        "type": "Direct",
-        "requested": "[3.0.0, )",
-        "resolved": "3.0.0",
-        "contentHash": "ChxU0nz82zTbMX25+B0HpvmYp63VsYWjYGI0N3ovsN6rzyxSwp3UMKm69dL1JA/sNCSCrTo70R9ZSiQCE6+Rqw=="
-      },
       "Microsoft.AspNetCore.Mvc.Testing": {
         "type": "Direct",
         "requested": "[5.0.0, )",
@@ -210,6 +204,11 @@
         "dependencies": {
           "NETStandard.Library": "1.6.1"
         }
+      },
+      "Flurl": {
+        "type": "Transitive",
+        "resolved": "3.0.0",
+        "contentHash": "ChxU0nz82zTbMX25+B0HpvmYp63VsYWjYGI0N3ovsN6rzyxSwp3UMKm69dL1JA/sNCSCrTo70R9ZSiQCE6+Rqw=="
       },
       "Flurl.Http": {
         "type": "Transitive",
@@ -969,11 +968,11 @@
       },
       "OpenIddict.Abstractions": {
         "type": "Transitive",
-        "resolved": "3.0.3",
-        "contentHash": "mQbi936AZpdbYzKpERWoiTdkFTqwDZEFtrLUbfhmWUNw0OY2u78t8OLZf5dbN8HThEkUofR8yPyQElFn++6eHw==",
+        "resolved": "3.1.0",
+        "contentHash": "qbFyczUzcC3lxxcnU+5/mxEnuxsev1OslLSXqWlEHUg95jKfMxugfepFhvIh2l3t4bbUWybgnj8UfHbbH7Hpxw==",
         "dependencies": {
-          "Microsoft.Extensions.DependencyInjection.Abstractions": "3.1.13",
-          "Microsoft.Extensions.Primitives": "3.1.13",
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "3.1.16",
+          "Microsoft.Extensions.Primitives": "3.1.16",
           "System.Collections.Immutable": "1.7.1",
           "System.ComponentModel.Annotations": "4.7.0",
           "System.Text.Encodings.Web": "4.7.2",
@@ -994,29 +993,29 @@
       },
       "OpenIddict.Core": {
         "type": "Transitive",
-        "resolved": "3.0.3",
-        "contentHash": "wJOMBcjrDaAxkQN3IEm9EZEvLb/MSH2uMjU6p77TnnK98iaSMs1abYfh9vL1lXcY4pIwNGM+pocgrJthV0Dodg==",
+        "resolved": "3.1.0",
+        "contentHash": "/kyUhICWGQd09Yad9THCZ2ceBYFod9jftzX897H58SxFLUr+LtxtL7r0QhVv6JC7kY3EGr2r1EUNQH4oK29g2w==",
         "dependencies": {
           "Microsoft.Extensions.Caching.Memory": "5.0.0",
           "Microsoft.Extensions.Logging": "5.0.0",
           "Microsoft.Extensions.Options": "5.0.0",
-          "OpenIddict.Abstractions": "3.0.3"
+          "OpenIddict.Abstractions": "3.1.0"
         }
       },
       "OpenIddict.EntityFrameworkCore": {
         "type": "Transitive",
-        "resolved": "3.0.3",
-        "contentHash": "STinlEJWXyXk68aYC5bp2JNRDg8cZ/mJEQIg0obkcgnllQqOst9XbMFYdQ5a9pkBuCtZWuOSW5ta3s1bAcc5dw==",
+        "resolved": "3.1.0",
+        "contentHash": "b+9nsOwaCwkpd2l4xt2ruVVJI/zPXHWIL8ev08eeqUniO5TV+JlfNhRqTrHsuz+iQijoWFKdGw9pdq3EqsxwYw==",
         "dependencies": {
-          "Microsoft.EntityFrameworkCore.Relational": "5.0.4",
-          "OpenIddict.Core": "3.0.3",
-          "OpenIddict.EntityFrameworkCore.Models": "3.0.3"
+          "Microsoft.EntityFrameworkCore.Relational": "5.0.7",
+          "OpenIddict.Core": "3.1.0",
+          "OpenIddict.EntityFrameworkCore.Models": "3.1.0"
         }
       },
       "OpenIddict.EntityFrameworkCore.Models": {
         "type": "Transitive",
-        "resolved": "3.0.3",
-        "contentHash": "Rgw5U7U4DLayNYk1eRGcdEIFAOqOtX/O3bZOphQ/V5fxXAuL4tPSJvnRKELeV+8QLEckx35Z+eG4fOV+YNSewA=="
+        "resolved": "3.1.0",
+        "contentHash": "LfhIkFPwJRnnkw2bjmxFyg5eGSSWZgw4nC3eeMfYgiDAz3XUWeRM/TFffQYRKzrMwH5lwsKRXxH05nyHuNgCAQ=="
       },
       "OpenIddict.Server": {
         "type": "Transitive",
@@ -2295,7 +2294,7 @@
           "Microsoft.EntityFrameworkCore.Design": "5.0.0",
           "OpenIddict": "3.0.3",
           "OpenIddict.AspNetCore": "3.0.3",
-          "OpenIddict.EntityFrameworkCore": "3.0.3",
+          "OpenIddict.EntityFrameworkCore": "3.1.0",
           "OpenIddict.Server.AspNetCore": "3.0.3",
           "Pomelo.EntityFrameworkCore.MySql": "5.0.1",
           "Serilog.AspNetCore": "4.1.0",
