@@ -148,11 +148,11 @@
       },
       "OpenIddict.Server.AspNetCore": {
         "type": "Direct",
-        "requested": "[3.0.3, )",
-        "resolved": "3.0.3",
-        "contentHash": "hz+10GvUBdluwSalLnxwjg3AAQ3ZdTjsXoFtbDYQZLRwari4G+MJswj2azsquaHdWubhBzB4wjGE0NL36C7QoA==",
+        "requested": "[3.1.0, )",
+        "resolved": "3.1.0",
+        "contentHash": "W5W7CgFN556j5PW0Sy3WGtBTsY92dq3PYYQHtqALlABgfLa1arl5q/LEnP4w+t9Tu7rBxiBuJDKeRe42sbD4XQ==",
         "dependencies": {
-          "OpenIddict.Server": "3.0.3"
+          "OpenIddict.Server": "3.1.0"
         }
       },
       "Pomelo.EntityFrameworkCore.MySql": {
@@ -729,11 +729,11 @@
       },
       "OpenIddict.Abstractions": {
         "type": "Transitive",
-        "resolved": "3.0.3",
-        "contentHash": "mQbi936AZpdbYzKpERWoiTdkFTqwDZEFtrLUbfhmWUNw0OY2u78t8OLZf5dbN8HThEkUofR8yPyQElFn++6eHw==",
+        "resolved": "3.1.0",
+        "contentHash": "qbFyczUzcC3lxxcnU+5/mxEnuxsev1OslLSXqWlEHUg95jKfMxugfepFhvIh2l3t4bbUWybgnj8UfHbbH7Hpxw==",
         "dependencies": {
-          "Microsoft.Extensions.DependencyInjection.Abstractions": "3.1.13",
-          "Microsoft.Extensions.Primitives": "3.1.13",
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "3.1.16",
+          "Microsoft.Extensions.Primitives": "3.1.16",
           "System.Collections.Immutable": "1.7.1",
           "System.ComponentModel.Annotations": "4.7.0",
           "System.Text.Encodings.Web": "4.7.2",
@@ -758,12 +758,12 @@
       },
       "OpenIddict.Server": {
         "type": "Transitive",
-        "resolved": "3.0.3",
-        "contentHash": "8UshecpzBd0ctMk+p68d/wHyu4GqzzBLgCDXRb/MlUbT1xnPMja/ejCUwcVXfivilm6/N+C/befsAQHjXybvxw==",
+        "resolved": "3.1.0",
+        "contentHash": "I5Xs1hoWXdO4PU9ASRy8XPJRfFEWNYdJ51CqPdc0g/tDRVrQlNVKCCNmVGy12JJWzQ6+c/3JtzYD9vK5WPpSPQ==",
         "dependencies": {
           "Microsoft.Extensions.Logging": "5.0.0",
-          "Microsoft.IdentityModel.JsonWebTokens": "6.8.0",
-          "OpenIddict.Abstractions": "3.0.3"
+          "Microsoft.IdentityModel.JsonWebTokens": "6.11.1",
+          "OpenIddict.Abstractions": "3.1.0"
         }
       },
       "OpenIddict.Server.DataProtection": {
