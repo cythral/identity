@@ -121,6 +121,7 @@ Resources:
     Type: AWS::ECS::Service
     Properties:
       Cluster: !ImportValue brighid-infrastructure:ClusterName
+      ServiceName: identity
       LaunchType: FARGATE
       EnableECSManagedTags: true
       PropagateTags: TASK_DEFINITION
