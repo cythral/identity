@@ -8,7 +8,6 @@ using AutoFixture.AutoNSubstitute;
 using AutoFixture.NUnit3;
 
 using Brighid.Identity.Roles;
-using Brighid.Identity.Sns;
 
 using FluentAssertions;
 
@@ -29,14 +28,13 @@ namespace Brighid.Identity.Applications
     [Category("Unit")]
     public class ApplicationControllerTests
     {
-        public static HttpContext SetupHttpContext(Controller controller, IdentityRequestSource source = IdentityRequestSource.Direct)
+        public static HttpContext SetupHttpContext(Controller controller)
         {
             var itemDictionary = new Dictionary<object, object?>();
             var httpContext = Substitute.For<HttpContext>();
             var controllerContext = new ControllerContext { HttpContext = httpContext };
             controller.ControllerContext = controllerContext;
             httpContext.Items.Returns(itemDictionary);
-            httpContext.Items[Constants.RequestSource] = source;
             return httpContext;
         }
 
@@ -44,62 +42,6 @@ namespace Brighid.Identity.Applications
         [Category("Unit")]
         public class CreateTests
         {
-            [Test]
-            [Auto]
-            public async Task ShouldRemoveUnencryptedSecretFromResult_IfRequestSourceIsSns(
-                Guid id,
-                string secret,
-                ApplicationRequest request,
-                Application mappedRequest,
-                Application application,
-                [Frozen, Substitute] IApplicationMapper mapper,
-                [Frozen, Substitute] IApplicationService service,
-                [Target] ApplicationController controller
-            )
-            {
-                application.Id = id;
-                application.Secret = secret;
-                mapper.MapRequestToEntity(Any<ApplicationRequest>(), Any<CancellationToken>()).Returns(mappedRequest);
-                service.GetPrimaryKey(Any<Application>()).Returns(id);
-                service.Create(Any<Application>()).Returns(application);
-                var httpContext = SetupHttpContext(controller, IdentityRequestSource.Sns);
-
-                var response = await controller.Create(request);
-                var result = response.Result.As<CreatedResult>();
-                var resultValue = result.Value.As<Application>();
-                var data = httpContext.Items[CloudFormationConstants.Data];
-
-                data.As<Application>().Secret.Should().BeNull();
-                resultValue.Secret.Should().BeNull();
-            }
-
-            [Test]
-            [Auto]
-            public async Task ShouldNotRemoveUnencryptedSecretFromResult_IfRequestSourceIsDirect(
-                Guid id,
-                string secret,
-                ApplicationRequest request,
-                Application mappedRequest,
-                Application application,
-                [Frozen, Substitute] IApplicationMapper mapper,
-                [Frozen, Substitute] IApplicationService service,
-                [Target] ApplicationController controller
-            )
-            {
-                application.Id = id;
-                application.Secret = secret;
-                mapper.MapRequestToEntity(Any<ApplicationRequest>(), Any<CancellationToken>()).Returns(mappedRequest);
-                service.GetPrimaryKey(Any<Application>()).Returns(id);
-                service.Create(Any<Application>()).Returns(application);
-                SetupHttpContext(controller, IdentityRequestSource.Direct);
-
-                var response = await controller.Create(request);
-                var result = response.Result.As<CreatedResult>();
-                var resultValue = result.Value.As<Application>();
-
-                resultValue.Secret.Should().Be(secret);
-            }
-
             [Test]
             [Auto]
             public async Task ShouldReturnForbidIfRoleValidationFails(
@@ -117,7 +59,7 @@ namespace Brighid.Identity.Applications
                 service.GetPrimaryKey(Any<Application>()).Returns(id);
                 service.Create(Any<Application>()).Returns(application);
                 roleService.When(svc => svc.ValidateRoleDelegations(Any<IEnumerable<string>>(), Any<ClaimsPrincipal>())).Throw(new RoleDelegationDeniedException());
-                SetupHttpContext(controller, IdentityRequestSource.Direct);
+                SetupHttpContext(controller);
 
                 var response = await controller.Create(request);
                 response.Result.Should().BeOfType<UnprocessableEntityObjectResult>();
@@ -132,62 +74,6 @@ namespace Brighid.Identity.Applications
         {
             [Test]
             [Auto]
-            public async Task ShouldRemoveUnencryptedSecretFromResult_IfRequestSourceIsSns(
-                Guid id,
-                string secret,
-                ApplicationRequest request,
-                Application mappedRequest,
-                Application application,
-                [Frozen, Substitute] IApplicationMapper mapper,
-                [Frozen, Substitute] IApplicationService service,
-                [Target] ApplicationController controller
-            )
-            {
-                application.Id = id;
-                application.Secret = secret;
-                mapper.MapRequestToEntity(Any<ApplicationRequest>(), Any<CancellationToken>()).Returns(mappedRequest);
-                service.GetPrimaryKey(Any<Application>()).Returns(id);
-                service.UpdateById(Any<Guid>(), Any<Application>()).Returns(application);
-                var httpContext = SetupHttpContext(controller, IdentityRequestSource.Sns);
-
-                var response = await controller.UpdateById(id, request);
-                var result = response.Result.As<OkObjectResult>();
-                var resultValue = result.Value.As<Application>();
-                var data = httpContext.Items[CloudFormationConstants.Data];
-
-                data.As<Application>().Secret.Should().BeNull();
-                resultValue.Secret.Should().BeNull();
-            }
-
-            [Test]
-            [Auto]
-            public async Task ShouldNotRemoveUnencryptedSecretFromResult_IfRequestSourceIsDirect(
-                Guid id,
-                string secret,
-                ApplicationRequest request,
-                Application mappedRequest,
-                Application application,
-                [Frozen, Substitute] IApplicationMapper mapper,
-                [Frozen, Substitute] IApplicationService service,
-                [Target] ApplicationController controller
-            )
-            {
-                application.Id = id;
-                application.Secret = secret;
-                mapper.MapRequestToEntity(Any<ApplicationRequest>(), Any<CancellationToken>()).Returns(mappedRequest);
-                service.GetPrimaryKey(Any<Application>()).Returns(id);
-                service.UpdateById(Any<Guid>(), Any<Application>()).Returns(application);
-                SetupHttpContext(controller, IdentityRequestSource.Direct);
-
-                var response = await controller.UpdateById(id, request);
-                var result = response.Result.As<OkObjectResult>();
-                var resultValue = result.Value.As<Application>();
-
-                resultValue.Secret.Should().Be(secret);
-            }
-
-            [Test]
-            [Auto]
             public async Task ShouldReturnForbidIfRoleValidationFails(
                 Guid id,
                 ApplicationRequest request,
@@ -203,7 +89,7 @@ namespace Brighid.Identity.Applications
                 service.GetPrimaryKey(Any<Application>()).Returns(id);
                 service.Create(Any<Application>()).Returns(application);
                 roleService.When(svc => svc.ValidateRoleDelegations(Any<IEnumerable<string>>(), Any<ClaimsPrincipal>())).Throw(new RoleDelegationDeniedException());
-                SetupHttpContext(controller, IdentityRequestSource.Direct);
+                SetupHttpContext(controller);
 
                 var response = await controller.UpdateById(id, request);
                 response.Result.Should().BeOfType<UnprocessableEntityObjectResult>();

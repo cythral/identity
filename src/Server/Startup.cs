@@ -12,7 +12,6 @@ using Amazon.SimpleSystemsManagement;
 
 using Brighid.Identity.Applications;
 using Brighid.Identity.Roles;
-using Brighid.Identity.Sns;
 
 using Destructurama;
 
@@ -134,7 +133,6 @@ namespace Brighid.Identity
             app.UseForwardedHeaders();
             app.Use(async (context, next) =>
             {
-                context.Items[Constants.RequestSource] = IdentityRequestSource.Direct;
                 context.Request.Headers.TryGetValue("content-type", out var contentType);
 
                 if (!contentType.Any() || contentType.Any(type => type.StartsWith("text/plain", StringComparison.OrdinalIgnoreCase)))
@@ -171,7 +169,6 @@ namespace Brighid.Identity
             app.UseStaticFiles();
             app.UseBlazorFrameworkFiles();
             app.UseAuthentication();
-            app.UseMiddleware<SnsMiddleware>();
             app.UseRouting();
             app.UseAuthorization();
             app.UseEndpoints(endpoints =>

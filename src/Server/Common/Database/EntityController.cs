@@ -2,8 +2,6 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 
-using Brighid.Identity.Sns;
-
 using Microsoft.AspNetCore.Mvc;
 
 namespace Brighid.Identity
@@ -45,7 +43,6 @@ namespace Brighid.Identity
                 var result = await Service.Create(entity);
                 var primaryKey = Service.GetPrimaryKey(entity);
                 var destination = new Uri($"{BaseAddress}/{primaryKey}", UriKind.Relative);
-                TrySetSnsContextItems(primaryKey, result);
                 return Created(destination, result);
             }
             catch (Exception e) when (e is IValidationException)
@@ -79,7 +76,6 @@ namespace Brighid.Identity
                 await Validate(request);
                 var entity = await Mapper.MapRequestToEntity(request, HttpContext.RequestAborted);
                 var result = await Service.UpdateById(id, entity);
-                TrySetSnsContextItems(id, result);
                 return Ok(result);
             }
             catch (Exception e) when (e is IValidationException)
@@ -102,28 +98,12 @@ namespace Brighid.Identity
         public virtual async Task<ActionResult<TEntity>> DeleteById(TPrimaryKey id)
         {
             var result = await Service.DeleteById(id);
-            TrySetSnsContextItems(id, result);
             return Ok(result);
-        }
-
-        protected virtual void SetSnsContextItems(TPrimaryKey id, TEntity data)
-        {
-            HttpContext.Items[CloudFormationConstants.Id] = id;
-            HttpContext.Items[CloudFormationConstants.Data] = data;
         }
 
         protected virtual Task Validate(TEntityRequest request)
         {
             return Task.CompletedTask;
-        }
-
-        private void TrySetSnsContextItems(TPrimaryKey id, TEntity data)
-        {
-            var requestType = HttpContext.Items[Constants.RequestSource] as IdentityRequestSource?;
-            if (requestType == IdentityRequestSource.Sns)
-            {
-                SetSnsContextItems(id, data);
-            }
         }
     }
 }

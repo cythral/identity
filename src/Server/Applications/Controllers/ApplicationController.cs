@@ -36,11 +36,5 @@ namespace Brighid.Identity.Applications
             roleService.ValidateRoleDelegations(request.Roles, HttpContext.User);
             return Task.CompletedTask;
         }
-
-        protected override void SetSnsContextItems(Guid id, Application data)
-        {
-            data.Secret = null;
-            base.SetSnsContextItems(id, data);
-        }
     }
 }
