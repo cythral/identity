@@ -89,7 +89,6 @@ public class AppFactory : WebApplicationFactory<Startup>
         builder.ConfigureTestServices(services =>
         {
             services
-            .AddSingleton<MockControllerCalls>()
             .AddScoped<IItemRepository>(provider => null!)
             .AddScoped<IItemMapper>(provider => null!)
             .AddScoped<IItemService>(provider => null!)

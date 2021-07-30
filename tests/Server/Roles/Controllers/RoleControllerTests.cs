@@ -22,14 +22,13 @@ namespace Brighid.Identity.Roles
     [Category("Unit")]
     public class RoleControllerTests
     {
-        public static HttpContext SetupHttpContext(Controller controller, IdentityRequestSource source = IdentityRequestSource.Direct)
+        public static HttpContext SetupHttpContext(Controller controller)
         {
             var itemDictionary = new Dictionary<object, object?>();
             var httpContext = Substitute.For<HttpContext>();
             var controllerContext = new ControllerContext { HttpContext = httpContext };
             controller.ControllerContext = controllerContext;
             httpContext.Items.Returns(itemDictionary);
-            httpContext.Items[Constants.RequestSource] = source;
             return httpContext;
         }
 
