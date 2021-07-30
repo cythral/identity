@@ -89,6 +89,7 @@ namespace Brighid.Identity.Applications
                 service.GetPrimaryKey(Any<Application>()).Returns(id);
                 service.Create(Any<Application>()).Returns(application);
                 roleService.When(svc => svc.ValidateRoleDelegations(Any<IEnumerable<string>>(), Any<ClaimsPrincipal>())).Throw(new RoleDelegationDeniedException());
+                SetupHttpContext(controller);
 
                 var response = await controller.UpdateById(id, request);
                 response.Result.Should().BeOfType<UnprocessableEntityObjectResult>();
