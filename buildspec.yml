@@ -13,7 +13,7 @@ phases:
     commands:
       - . ./scripts/codebuild-extras.sh
       - ./scripts/install-dotnet.sh
-      - yum install libXScrnSaver
+      - yum install -y libXScrnSaver
       - pip install cfn-lint
       - docker pull public.ecr.aws/bitnami/mariadb:10.4
       
