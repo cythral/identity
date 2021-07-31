@@ -1,4 +1,6 @@
-#!/bin/bash
+#!/bin/bash 
+
+set -eo pipefail
 
 decrypt() {
     ciphertext=$1
@@ -27,4 +29,4 @@ tag_image() {
 export Database__Password=$(decrypt ${Encrypted__Database__Password})
 
 tag_image $Environment__Name
-dotnet /app/Server.dll
+dotnet $DLL_PATH

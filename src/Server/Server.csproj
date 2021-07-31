@@ -1,11 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
-    <NoWarn>IDE0058;CA1062</NoWarn>
     <RootNamespace>Brighid.Identity</RootNamespace>
-    <LangVersion>9.0</LangVersion>
-    <Configuration Condition="$(Configuration) == ''">Debug</Configuration>
   </PropertyGroup>
 
   <ItemGroup>
@@ -55,5 +51,11 @@
     <InternalsVisibleTo Include="IdentityTests" />
     <InternalsVisibleTo Include="DynamicProxyGenAssembly2" />
   </ItemGroup>
+
+  <Target Name="GetDockerBuildPropsForSolutionTarget" Outputs="@(ProjectInfo)">
+    <ItemGroup>
+      <ProjectInfo Include="$(MSBuildThisFile)" TargetFramework="$(TargetFramework)" AspNetCoreVersion="$(BundledNETCoreAppPackageVersion)" AssemblyName="$(AssemblyName)" />
+    </ItemGroup>
+  </Target>
 
 </Project> 
