@@ -11,32 +11,31 @@ phases:
       docker: 19
 
     commands:
-      - ./scripts/codebuild-extras.sh
-      - dotnet-install.sh --jsonfile global.json
+      - . ./scripts/codebuild-extras.sh
+      - ./scripts/install-dotnet.sh
+      - yum install -y libXScrnSaver
       - pip install cfn-lint
       - docker pull public.ecr.aws/bitnami/mariadb:10.4
       
   pre_build:
     commands:
-      - aws ecr get-login-password | docker login --username AWS --password-stdin $REPOSITORY_URI
-      - dotnet --info
-
+      - $(aws ecr get-login --no-include-email)
+      - export image="$REPOSITORY_URI:$CODEBUILD_BUILD_NUMBER"
+  
   build:
     commands:
-      - export image="$REPOSITORY_URI:$CODEBUILD_BUILD_NUMBER"
-
-      - dotnet build
+      - dotnet publish -p:DockerImageTag=$image
       - dotnet test --no-build
-
-      - docker build -t $image .
-      - docker push $image
 
       - ./deploy/create-config-files.sh $image
       - cfn-lint deploy/identity.template.yml
+  
+  post_build:
+    commands:
+      - ./scripts/push-docker-image.sh $image
 
 artifacts:
   discard-paths: yes
   files:
     - "deploy/identity.template.yml"
     - "identity.*.config.json"
-    - "bin/Packages/Release/*"

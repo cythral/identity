@@ -13,9 +13,9 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock:ro
 
   api:
-    build:
-      context: .
-      target: development
+    image: mcr.microsoft.com/dotnet/sdk:5.0.302
+    entrypoint: dotnet watch --project src/Server run
+    working_dir: /app
     restart: unless-stopped
     ports:
       - "80"

@@ -8,4 +8,23 @@
 
         <WriteLinesToFile File="$(MSBuildThisFileDirectory).env" Lines="@(EnvFileLines)" />
     </Target>
+
+    <Target Name="PrepareForDockerization" AfterTargets="Publish">
+        <MSBuild Targets="GetDockerBuildPropsForSolutionTarget" Projects="$(MSBuildThisFileDirectory)src/Server/Server.csproj">
+            <Output TaskParameter="TargetOutputs" ItemName="ProjectInfo" />
+        </MSBuild>
+    </Target>
+
+    <Target Name="Dockerize" Inputs="@(ProjectInfo)" Outputs="@(ProjectInfo)" AfterTargets="PrepareForDockerization">
+        <ItemGroup>
+            <DockerBuildArgs Include="--file $(MSBuildThisFileDirectory)Dockerfile" />
+            <DockerBuildArgs Include="--tag $(DockerImageTag)" />
+            <DockerBuildArgs Include="--build-arg CONFIGURATION=$(Configuration)" />
+            <DockerBuildArgs Include="--build-arg TARGET_FRAMEWORK=%(ProjectInfo.TargetFramework)" />
+            <DockerBuildArgs Include="--build-arg ASPNETCORE_VERSION=%(ProjectInfo.AspNetCoreVersion)" />
+            <DockerBuildArgs Include="--build-arg ASSEMBLY_NAME=%(ProjectInfo.AssemblyName)" />
+        </ItemGroup>
+
+        <Exec Command="docker build @(DockerBuildArgs, ' ') $(MSBuildThisFileDirectory)" />
+    </Target>
 </Project>
