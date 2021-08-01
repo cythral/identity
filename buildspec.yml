@@ -25,7 +25,7 @@ phases:
   build:
     commands:
       - dotnet publish -p:DockerImageTag=$image
-      - dotnet test --no-build
+      - dotnet test --logger trx --no-build
 
       - ./deploy/create-config-files.sh $image
       - cfn-lint deploy/identity.template.yml
@@ -39,3 +39,10 @@ artifacts:
   files:
     - "deploy/identity.template.yml"
     - "identity.*.config.json"
+
+reports:
+  test-results:
+    files:
+      - "**/TestResults/*.trx"
+    discard-paths: yes
+    file-format: VisualStudioTrx
