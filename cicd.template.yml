@@ -139,6 +139,19 @@ Resources:
             ]
           }
 
+  TestReportGroup:
+    Type: AWS::CodeBuild::ReportGroup
+    Properties:
+      Type: TEST
+      Name: !Sub ${AWS::StackName}-build-test-results
+      ExportConfig:
+        ExportConfigType: S3
+        S3Destination:
+          Bucket: !Ref ArtifactStore
+          Path: test-reports/
+          Packaging: ZIP
+          EncryptionKey: !ImportValue cfn-utilities:ArtifactKeyArn
+
   BuildProject:
     Type: AWS::CodeBuild::Project
     Properties:
