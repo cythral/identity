@@ -1,20 +1,11 @@
-using System;
+using System.Net;
 
 namespace Brighid.Identity.Roles
 {
-    public class RoleDelegationDeniedException : Exception, IValidationException
+    public class RoleDelegationDeniedException : HttpStatusCodeException, IValidationException
     {
-        public RoleDelegationDeniedException()
-        {
-        }
-
         public RoleDelegationDeniedException(string message)
-            : base(message)
-        {
-        }
-
-        public RoleDelegationDeniedException(string message, Exception innerException)
-            : base(message, innerException)
+            : base(HttpStatusCode.UnprocessableEntity, message)
         {
         }
     }

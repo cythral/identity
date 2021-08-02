@@ -28,7 +28,7 @@ namespace Brighid.Identity.Applications
     [Category("Unit")]
     public class ApplicationControllerTests
     {
-        public static HttpContext SetupHttpContext(Controller controller)
+        public static HttpContext SetupHttpContext(ControllerBase controller)
         {
             var itemDictionary = new Dictionary<object, object?>();
             var httpContext = Substitute.For<HttpContext>();
@@ -44,7 +44,7 @@ namespace Brighid.Identity.Applications
         {
             [Test]
             [Auto]
-            public async Task ShouldReturnForbidIfRoleValidationFails(
+            public async Task ShouldThrowIfRoleValidationFails(
                 Guid id,
                 ApplicationRequest request,
                 Application mappedRequest,
@@ -58,11 +58,11 @@ namespace Brighid.Identity.Applications
                 mapper.MapRequestToEntity(Any<ApplicationRequest>(), Any<CancellationToken>()).Returns(mappedRequest);
                 service.GetPrimaryKey(Any<Application>()).Returns(id);
                 service.Create(Any<Application>()).Returns(application);
-                roleService.When(svc => svc.ValidateRoleDelegations(Any<IEnumerable<string>>(), Any<ClaimsPrincipal>())).Throw(new RoleDelegationDeniedException());
+                roleService.When(svc => svc.ValidateRoleDelegations(Any<IEnumerable<string>>(), Any<ClaimsPrincipal>())).Throw(new RoleDelegationDeniedException("Not allowed"));
                 SetupHttpContext(controller);
 
-                var response = await controller.Create(request);
-                response.Result.Should().BeOfType<UnprocessableEntityObjectResult>();
+                Func<Task> func = () => controller.Create(request);
+                await func.Should().ThrowAsync<RoleDelegationDeniedException>();
 
                 roleService.Received().ValidateRoleDelegations(Is(request.Roles), Is(controller.HttpContext.User));
             }
@@ -88,11 +88,11 @@ namespace Brighid.Identity.Applications
                 mapper.MapRequestToEntity(Any<ApplicationRequest>(), Any<CancellationToken>()).Returns(mappedRequest);
                 service.GetPrimaryKey(Any<Application>()).Returns(id);
                 service.Create(Any<Application>()).Returns(application);
-                roleService.When(svc => svc.ValidateRoleDelegations(Any<IEnumerable<string>>(), Any<ClaimsPrincipal>())).Throw(new RoleDelegationDeniedException());
+                roleService.When(svc => svc.ValidateRoleDelegations(Any<IEnumerable<string>>(), Any<ClaimsPrincipal>())).Throw(new RoleDelegationDeniedException("Not allowed"));
                 SetupHttpContext(controller);
 
-                var response = await controller.UpdateById(id, request);
-                response.Result.Should().BeOfType<UnprocessableEntityObjectResult>();
+                Func<Task> func = () => controller.UpdateById(id, request);
+                await func.Should().ThrowAsync<RoleDelegationDeniedException>();
 
                 roleService.Received().ValidateRoleDelegations(Is(request.Roles), Is(controller.HttpContext.User));
             }

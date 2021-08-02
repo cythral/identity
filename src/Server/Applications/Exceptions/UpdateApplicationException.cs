@@ -1,20 +1,11 @@
-using System;
+using System.Net;
 
 namespace Brighid.Identity.Applications
 {
-    public class UpdateApplicationException : Exception, IValidationException
+    public class UpdateApplicationException : HttpStatusCodeException
     {
-        public UpdateApplicationException()
-        {
-        }
-
         public UpdateApplicationException(string message)
-            : base(message)
-        {
-        }
-
-        public UpdateApplicationException(string message, Exception innerException)
-            : base(message, innerException)
+            : base(HttpStatusCode.UnprocessableEntity, message)
         {
         }
     }
