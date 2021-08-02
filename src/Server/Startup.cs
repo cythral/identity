@@ -67,7 +67,10 @@ namespace Brighid.Identity
         public void ConfigureServices(IServiceCollection services)
         {
             services
-            .AddControllers()
+            .AddControllers(options =>
+            {
+                options.Filters.Add(typeof(HttpStatusCodeExceptionFilter));
+            })
             .AddJsonOptions(options =>
             {
                 options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;

@@ -46,7 +46,7 @@ namespace Brighid.Identity.Roles
                     }
                 }
 
-                throw new RoleDelegationDeniedException();
+                throw new RoleDelegationDeniedException($"{principal.Identity?.Name} is not allowed to delegate {role}.");
             }
         }
 
