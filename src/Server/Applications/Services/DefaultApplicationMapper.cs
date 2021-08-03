@@ -21,7 +21,13 @@ namespace Brighid.Identity.Applications
 
         public async Task<Application> MapRequestToEntity(ApplicationRequest request, CancellationToken cancellationToken = default)
         {
-            var application = (Application)request;
+            var application = new Application
+            {
+                Name = request.Name,
+                Description = request.Description,
+                Serial = request.Serial,
+            };
+
             var roles = (await roleRepository.FindAllByName(request.Roles, cancellationToken)).ToList();
             var roleDict = roles.ToDictionary(role => role.Name, role => role);
             var missingRoles = new List<RoleNotFoundException>();
