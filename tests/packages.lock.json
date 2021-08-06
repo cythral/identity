@@ -145,31 +145,31 @@
       },
       "AWSSDK.Core": {
         "type": "Transitive",
-        "resolved": "3.7.1.4",
-        "contentHash": "HzJOlGMWtGjC6CAzjCZrczQIpWlw6SJ6YoUuopc2nQmkxbAqj9XnMJsoNMARTmvUBnVtN9jlF7yGYMOhf0S/Dw=="
+        "resolved": "3.7.2.1",
+        "contentHash": "W0dxLGNhSaAKzXUk2/PCG901SbF1LAN8OkWAicm8dpmKv4HQXO6/GHF/7ZqgPSsWdVwmVmWai8mKk/wSXhVBrg=="
       },
       "AWSSDK.KeyManagementService": {
         "type": "Transitive",
-        "resolved": "3.7.1.17",
-        "contentHash": "jwnyeSmq8VlNww6OCULqXVZPbKuerxGJagkNybhHjXl2BrosHX5qr3KWRf4AcNbVBftYojj1R5o0eTcJG5q7aA==",
+        "resolved": "3.7.1.18",
+        "contentHash": "J5s5gJO/fHJgOOpd6vxCkL5bkwMRZPy/NRmfLCZ14PQDcRLqgwiTmg2azGVa4UwbJUvn9LVXNRKKiOElkRuxuA==",
         "dependencies": {
-          "AWSSDK.Core": "[3.7.1.4, 4.0.0)"
+          "AWSSDK.Core": "[3.7.2.1, 4.0.0)"
         }
       },
       "AWSSDK.S3": {
         "type": "Transitive",
-        "resolved": "3.7.1.20",
-        "contentHash": "6SSTeGX11UsaVzPmouf0OlNKma1XQCRjYeeOEYYkuMfsiwGu2mUicoLns9ioh8N1jZaHSOsqkDDoE7Y49AckmA==",
+        "resolved": "3.7.1.21",
+        "contentHash": "ewWQEHo1EHDradTpbMu+8cGNjotLawuac7p9vLEWbLRxmObSu7C6sCCU+U0iFKdv9hCi/8jw4TUH7cOjbXEPlA==",
         "dependencies": {
-          "AWSSDK.Core": "[3.7.1.4, 4.0.0)"
+          "AWSSDK.Core": "[3.7.2.1, 4.0.0)"
         }
       },
       "AWSSDK.SimpleSystemsManagement": {
         "type": "Transitive",
-        "resolved": "3.7.4.6",
-        "contentHash": "Pq4IIb3nqP+vmjBmQiC5ghQP920ux/F050YXaXLoW4NuJyyDmsiASTfj+QgrZqZqE/+UDaLikIYwvmGxswm2AA==",
+        "resolved": "3.7.4.7",
+        "contentHash": "lX8PppHLn0cYZoYbgngLkzS38HSo13YV27QXa3sj5khu2jxd/fB5X4FFoQ9fpG3PbeJv5M8Nu/0KDJXD4Nxa0A==",
         "dependencies": {
-          "AWSSDK.Core": "[3.7.1.4, 4.0.0)"
+          "AWSSDK.Core": "[3.7.2.1, 4.0.0)"
         }
       },
       "Castle.Core": {
@@ -2293,9 +2293,9 @@
       "server": {
         "type": "Project",
         "dependencies": {
-          "AWSSDK.KeyManagementService": "3.7.1.17",
-          "AWSSDK.S3": "3.7.1.20",
-          "AWSSDK.SimpleSystemsManagement": "3.7.4.6",
+          "AWSSDK.KeyManagementService": "3.7.1.18",
+          "AWSSDK.S3": "3.7.1.21",
+          "AWSSDK.SimpleSystemsManagement": "3.7.4.7",
           "Common": "1.0.0",
           "Destructurama.Attributed": "2.0.0",
           "Flurl": "3.0.2",
