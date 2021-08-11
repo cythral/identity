@@ -40,12 +40,6 @@
         "resolved": "5.0.9",
         "contentHash": "wHz5jIvC+IK0A7faD5qNRb8PqBzr/Fh5iCcSGJ9/g1pmDDdB5uCrB9Xu7edHJx8ccx4DPVd7hEn1s8tkhjfXgw=="
       },
-      "Microsoft.CodeAnalysis.CSharp.CodeStyle": {
-        "type": "Direct",
-        "requested": "[3.9.0, )",
-        "resolved": "3.9.0",
-        "contentHash": "g6W0Qsdt28XGWRvxlb91//Jk0+9XsndLh+A8c0wpFUOXxJ+tTy0PPX9NcjJN1H/n3nFlv5nCK6j7bykElbNcJg=="
-      },
       "StyleCop.Analyzers": {
         "type": "Direct",
         "requested": "[1.2.0-beta.333, )",
