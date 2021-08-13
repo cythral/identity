@@ -210,12 +210,12 @@
       },
       "System.IdentityModel.Tokens.Jwt": {
         "type": "Direct",
-        "requested": "[6.12.0, )",
-        "resolved": "6.12.0",
-        "contentHash": "ItNtskBwZu/5wLgpnl0HekeChEVqqVHLskHufdfa41zZsiziOHU4j4VvUnIqm6oywUMpbccvCU4Wp0hqNQ0H/Q==",
+        "requested": "[6.12.1, )",
+        "resolved": "6.12.1",
+        "contentHash": "2HgriovEBDX0XeV6G/N6eMkAy4LgrTtaGjVOjOc9tLXdKdkIpzrIT3/6o0MzBig3dIsmgXln+roFejJlcoTtdw==",
         "dependencies": {
-          "Microsoft.IdentityModel.JsonWebTokens": "6.12.0",
-          "Microsoft.IdentityModel.Tokens": "6.12.0"
+          "Microsoft.IdentityModel.JsonWebTokens": "6.12.1",
+          "Microsoft.IdentityModel.Tokens": "6.12.1"
         }
       },
       "System.Linq.Async": {
@@ -654,16 +654,16 @@
       },
       "Microsoft.IdentityModel.JsonWebTokens": {
         "type": "Transitive",
-        "resolved": "6.12.0",
-        "contentHash": "/qmSO1U+4R5Nj6BDn5v6lKRo9prTk4W/vMR/H+Qnn6E/9FU+1uykT0Idn0HWpxB0yv7YYRCUcFMxBN5S8hUv8A==",
+        "resolved": "6.12.1",
+        "contentHash": "0rMYegsigcKccO3pmpFY3Q9RkElMIaZgqtvRXz2T1DCc9fjhWudJsliURY0kSMYIl4R+MPfED945HF+URimvLg==",
         "dependencies": {
-          "Microsoft.IdentityModel.Tokens": "6.12.0"
+          "Microsoft.IdentityModel.Tokens": "6.12.1"
         }
       },
       "Microsoft.IdentityModel.Logging": {
         "type": "Transitive",
-        "resolved": "6.12.0",
-        "contentHash": "WEEle1M7bbq+oY8tLN+FpUA6kRUvA1JgCKhj0C/0EZaBgs0f82hxcSMXdczuoVtBhCT5+1WR4gDlBec/d5KhrQ=="
+        "resolved": "6.12.1",
+        "contentHash": "6ZQV/76CpdsSacIKw6qZypP1AlEJsORl7Hps763PN0I92DJpwFrl0zkUmQUUFMJsW3iLo570I1IHeJvdsNWgIA=="
       },
       "Microsoft.IdentityModel.Protocols": {
         "type": "Transitive",
@@ -685,11 +685,11 @@
       },
       "Microsoft.IdentityModel.Tokens": {
         "type": "Transitive",
-        "resolved": "6.12.0",
-        "contentHash": "fdWwZ33IpSNRBwcQlHSuG9OpEz25xAWMbtSFygfl1l9iSV29I241+Lw3tI6mEYIhL4K6Fe0cDuqnfIQ5ymiWkw==",
+        "resolved": "6.12.1",
+        "contentHash": "m2mSP82NFq2o6pOPrAnANc9hRJ+0koiy2RHdlr2FRSOF3C5c5IEVaO7IRFPKRCnvcSeEJF5kWUVoJmpEAutoFw==",
         "dependencies": {
           "Microsoft.CSharp": "4.5.0",
-          "Microsoft.IdentityModel.Logging": "6.12.0",
+          "Microsoft.IdentityModel.Logging": "6.12.1",
           "System.Security.Cryptography.Cng": "4.5.0"
         }
       },
@@ -1431,7 +1431,7 @@
           "Majorsoft.Blazor.Extensions.BrowserStorage": "1.4.0",
           "Microsoft.AspNetCore.Components.Authorization": "5.0.9",
           "Microsoft.AspNetCore.Components.WebAssembly": "5.0.9",
-          "System.IdentityModel.Tokens.Jwt": "6.12.0"
+          "System.IdentityModel.Tokens.Jwt": "6.12.1"
         }
       }
     }
