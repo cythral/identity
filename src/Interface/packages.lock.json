@@ -4,9 +4,9 @@
     ".NETCoreApp,Version=v5.0": {
       "Majorsoft.Blazor.Extensions.BrowserStorage": {
         "type": "Direct",
-        "requested": "[1.4.0, )",
-        "resolved": "1.4.0",
-        "contentHash": "z86t0CSjlxbiU2W9sX30w1cLQ0Hr5BdPpck2gX4ibdNhCv2S+zlgx+I1NXf5b8rYnIq/1617ACfS/ek73N5eYg==",
+        "requested": "[1.5.0, )",
+        "resolved": "1.5.0",
+        "contentHash": "KNlVUlAmc/GX2T5YJG1rnZ0YDEnF656s9Tl+tInw6+7j8FAFHAnDGrMjV7/eNQJh0rSgCgRshCJbAPdOQzFRMg==",
         "dependencies": {
           "Microsoft.AspNetCore.Components.Web": "5.0.3"
         }
