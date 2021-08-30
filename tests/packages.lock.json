@@ -1312,37 +1312,37 @@
         "resolved": "2.3.0",
         "contentHash": "L7ZLWjec5aPWWebsOKM6+8SdobSFMPJFIS8S8TT46oH2iELA70H95spRMeP1yPH9nDL/o+XYP29DPtVwVdzPeA=="
       },
-      "Swashbuckle.AspNetCore": {
+      "swashbuckle.aspnetcore": {
         "type": "Transitive",
-        "resolved": "6.1.5",
-        "contentHash": "AFiomCan3c3twBr3q/0P0YECN+AtJEKASjtRybbKlFyqSyENrwj8Q3JmPQ7knyp7Z2TzbhZ+ZccA3eXpGcD97g==",
+        "resolved": "6.2.0",
+        "contentHash": "mn1UPKc/NYGRgG/VeVLzZNaTeGLaUDI5yZfWHIF0kHSbE/fwaottQtuROXQp5iJ7jjabXegYg6dwxBp+ez4f1A==",
         "dependencies": {
           "Microsoft.Extensions.ApiDescription.Server": "3.0.0",
-          "Swashbuckle.AspNetCore.Swagger": "6.1.5",
-          "Swashbuckle.AspNetCore.SwaggerGen": "6.1.5",
-          "Swashbuckle.AspNetCore.SwaggerUI": "6.1.5"
+          "Swashbuckle.AspNetCore.Swagger": "6.2.0",
+          "Swashbuckle.AspNetCore.SwaggerGen": "6.2.0",
+          "Swashbuckle.AspNetCore.SwaggerUI": "6.2.0"
         }
       },
       "Swashbuckle.AspNetCore.Swagger": {
         "type": "Transitive",
-        "resolved": "6.1.5",
-        "contentHash": "Wp8FlwNCKR/DfxvEkjQdru0l7aUp4/5VLEvejCA8t/SMMcUTP+xw4zvyEjGCBoJ/ETqzQM3y+72iYaEOhBlYOw==",
+        "resolved": "6.2.0",
+        "contentHash": "dyb3vtZqjoVnV6u0VPbrL/E/1qWWdsjPImMKadJpsNrT8+MXHa3d/dJm3VGIWpeovTbj7yLy6FQMzFxhIICASA==",
         "dependencies": {
           "Microsoft.OpenApi": "1.2.3"
         }
       },
       "Swashbuckle.AspNetCore.SwaggerGen": {
         "type": "Transitive",
-        "resolved": "6.1.5",
-        "contentHash": "16M5iJN+hzykkH/vEm4V+47rh8r8KNCOSkIWvP9/+krH3hqVjMlhuop8Xzq6IXckmpXLwxoylLBpiSG9Yy2UUQ==",
+        "resolved": "6.2.0",
+        "contentHash": "9ud+l74pRKD54SCH6Xuj58SWms+kjm0B1h7+ojeuNlZgwfYCAysRsWoPWCQ+9I/7mJ4q1Cbs3nddHzAHZEOhXA==",
         "dependencies": {
-          "Swashbuckle.AspNetCore.Swagger": "6.1.5"
+          "Swashbuckle.AspNetCore.Swagger": "6.2.0"
         }
       },
       "Swashbuckle.AspNetCore.SwaggerUI": {
         "type": "Transitive",
-        "resolved": "6.1.5",
-        "contentHash": "/YwEGAdkDK8rEPSuPURNNgJ3mWmtsCI/xnVlWBaM2UDNVTr8wBUO0qhLvHFgrf6NjjjNq6cyO3M7lZMLXcGusw=="
+        "resolved": "6.2.0",
+        "contentHash": "zObat/rvg0yxFewoFMzmFm1KaVt5JLhWqurQUM6lQfHQ07pFLWwho9GNYqic4xwDNUqDBPMvWHIcS2hbRe5PAg=="
       },
       "System.AppContext": {
         "type": "Transitive",
@@ -2307,7 +2307,7 @@
           "Pomelo.EntityFrameworkCore.MySql": "5.0.1",
           "Serilog.AspNetCore": "4.1.0",
           "Serilog.Filters.Expressions": "2.1.0",
-          "Swashbuckle.AspNetCore": "6.1.5",
+          "Swashbuckle.AspNetCore": "6.2.0",
           "System.IdentityModel.Tokens.Jwt": "6.12.2",
           "System.Linq.Async": "5.0.0",
           "System.Security.Cryptography.Algorithms": "4.3.1",
