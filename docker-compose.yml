@@ -13,7 +13,7 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock:ro
 
   api:
-    image: mcr.microsoft.com/dotnet/sdk:5.0.400
+    image: mcr.microsoft.com/dotnet/sdk:5.0.401
     entrypoint: dotnet watch --project src/Server run
     working_dir: /app
     restart: unless-stopped
