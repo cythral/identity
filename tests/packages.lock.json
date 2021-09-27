@@ -185,10 +185,10 @@
       },
       "Destructurama.Attributed": {
         "type": "Transitive",
-        "resolved": "2.0.0",
-        "contentHash": "WKW8UJQMf0fB2CsalGW4wyW+ObNtnnxQtuOd8SoZPIy+sCeL3r3G8bMmGipLitWkr3As5E9i2Bnlokw3EFYRaQ==",
+        "resolved": "3.0.0",
+        "contentHash": "Wam0fvMhCrtN0HvRIiHpNsW8HhlKHM5CkAlUzrAdzqkzuHVBj3zd/zfY9610NELW296Vugcnmf/TMiaUMvepvA==",
         "dependencies": {
-          "Serilog": "2.6.0"
+          "Serilog": "[2.8.0, 3.0.0)"
         }
       },
       "Fare": {
@@ -2291,7 +2291,7 @@
           "AWSSDK.S3": "3.7.3.5",
           "AWSSDK.SimpleSystemsManagement": "3.7.6.2",
           "Common": "1.0.0",
-          "Destructurama.Attributed": "2.0.0",
+          "Destructurama.Attributed": "3.0.0",
           "Flurl": "3.0.2",
           "Flurl.Http": "3.2.0",
           "Interface": "1.0.0",
