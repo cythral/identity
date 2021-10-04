@@ -926,8 +926,8 @@
       },
       "MySqlConnector": {
         "type": "Transitive",
-        "resolved": "1.3.10",
-        "contentHash": "geL3pNiwbSXzUqQLHLm2/igDHuz5Q4qqp2rKczYoIHtdvvrsd5fnYHN8eFgP81qu77Blv0+0IOn69RJATNQoSQ=="
+        "resolved": "1.3.13",
+        "contentHash": "o1qsijkFGvTslpuQdcJwG6IvdNOiVL7fRqvFZ0LTg04kfz+IzzwSWj4YwgTe0q0C3p0WqgaDXui5OEx6qgwebg=="
       },
       "NETStandard.Library": {
         "type": "Transitive",
@@ -1097,12 +1097,12 @@
       },
       "Pomelo.EntityFrameworkCore.MySql": {
         "type": "Transitive",
-        "resolved": "5.0.1",
-        "contentHash": "15t0Zda7kZFIe3U68komYU18KLGBr5K9lFydWBOycN7Xzb98xopVlyvb07GZb2OKJfX+sInhhD/U+jmHY9ceOg==",
+        "resolved": "5.0.2",
+        "contentHash": "Vy6nC+FWWyZujmzEUN2mqoKsZi4xawtcJ8PJ861X7BG7EnJl+zH9uBvCCcO/qFOkS9zSCvWtYul3aFQOAJuGyA==",
         "dependencies": {
-          "Microsoft.EntityFrameworkCore.Relational": "[5.0.7, 6.0.0)",
-          "Microsoft.Extensions.DependencyInjection": "5.0.1",
-          "MySqlConnector": "1.3.10"
+          "Microsoft.EntityFrameworkCore.Relational": "[5.0.10, 6.0.0)",
+          "Microsoft.Extensions.DependencyInjection": "5.0.2",
+          "MySqlConnector": "1.3.13"
         }
       },
       "runtime.debian.8-x64.runtime.native.System.Security.Cryptography.OpenSsl": {
@@ -2304,7 +2304,7 @@
           "OpenIddict.AspNetCore": "3.1.1",
           "OpenIddict.EntityFrameworkCore": "3.1.1",
           "OpenIddict.Server.AspNetCore": "3.1.1",
-          "Pomelo.EntityFrameworkCore.MySql": "5.0.1",
+          "Pomelo.EntityFrameworkCore.MySql": "5.0.2",
           "Serilog.AspNetCore": "4.1.0",
           "Serilog.Filters.Expressions": "2.1.0",
           "Swashbuckle.AspNetCore": "6.2.2",
