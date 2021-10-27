@@ -4,29 +4,29 @@
     ".NETCoreApp,Version=v5.0": {
       "AWSSDK.KeyManagementService": {
         "type": "Direct",
-        "requested": "[3.7.2.24, )",
-        "resolved": "3.7.2.24",
-        "contentHash": "HtCcj53i8519kRsknssM3at6OKzyS2E0zGBhc1pNm9z9R98a7SCGZ75ZlE2bvA5NoFA3qjk3QLfZCqzyKP4btg==",
+        "requested": "[3.7.2.32, )",
+        "resolved": "3.7.2.32",
+        "contentHash": "tgqx8EJkh3UPAyZYAjO82q34TqqpUQqUulk+EVzzKM1Ai1z19UkMrMhiKJuc/Oz9SIdpoLilhgMg4Mo/eIevzg==",
         "dependencies": {
-          "AWSSDK.Core": "[3.7.3.19, 4.0.0)"
+          "AWSSDK.Core": "[3.7.3.27, 4.0.0)"
         }
       },
       "AWSSDK.S3": {
         "type": "Direct",
-        "requested": "[3.7.3.12, )",
-        "resolved": "3.7.3.12",
-        "contentHash": "u30Il7DzQpR6qZciWdO/cSg0ugZQTr+M3w5/IBJ9Ak9htOXqtYp8MxcLVNN2eDJEMtQ+/EIzl/I6/dnpkgNCdg==",
+        "requested": "[3.7.3.20, )",
+        "resolved": "3.7.3.20",
+        "contentHash": "IL0BKQutngNyqa+yPLUCaUh8T+P2FsvGXmON8HGPA81+eSp8UrBwNIjVLAUlqGVvo2w+PnoXUTg8inSfvXlEtA==",
         "dependencies": {
-          "AWSSDK.Core": "[3.7.3.19, 4.0.0)"
+          "AWSSDK.Core": "[3.7.3.27, 4.0.0)"
         }
       },
       "AWSSDK.SimpleSystemsManagement": {
         "type": "Direct",
-        "requested": "[3.7.7.4, )",
-        "resolved": "3.7.7.4",
-        "contentHash": "IsQGCPFvPs1Jz8QYHFWn4Cy4yH2nMeYd24ea2C5pHyP+u65oHYmHhTTXH5N+D5Ttve/zaswCb9IJwLCUpP6VTg==",
+        "requested": "[3.7.7.12, )",
+        "resolved": "3.7.7.12",
+        "contentHash": "VQwwh1NsLvAppFqR4WCsMw5WX/nhAmy0WLy3CfpfOCLmLZBbFKHCTPGHH7hHMl6TVkTFuXmT3b3z4WXvV1dHhw==",
         "dependencies": {
-          "AWSSDK.Core": "[3.7.3.19, 4.0.0)"
+          "AWSSDK.Core": "[3.7.3.27, 4.0.0)"
         }
       },
       "Destructurama.Attributed": {
@@ -257,8 +257,8 @@
       },
       "AWSSDK.Core": {
         "type": "Transitive",
-        "resolved": "3.7.3.19",
-        "contentHash": "qgcAnE80NqEf9BSW942qi5yahKOjgBw35SiTPQD03JIWFddbxQh9fhfi1zqB+PdYYHFdbmMKJmUBsFEjeXZ/kw=="
+        "resolved": "3.7.3.27",
+        "contentHash": "cuZktbG7Qe0XTyIjiP1LU6psgvzyiPOcYdD4Txvmotb7H7/AmpucK5Ji8p4fnavTTvHLx1J+q+bJJX2y6Oybmg=="
       },
       "Humanizer.Core": {
         "type": "Transitive",
