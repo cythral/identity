@@ -187,6 +187,31 @@ Resources:
           Context: AWS CodeBuild (identity)
           TargetUrl: !Sub https://sso.brigh.id/start/shared?destination=https://console.aws.amazon.com/codesuite/codebuild/${AWS::AccountId}/projects/${AWS::StackName}-build/build/$CODEBUILD_BUILD_ID/?region=${AWS::Region}
 
+  TagImageBuildProject:
+    Type: AWS::CodeBuild::Project
+    Properties:
+      Name: !Sub ${AWS::StackName}-tag-image
+      ServiceRole: !ImportValue cfn-utilities:BuilderRoleArn
+      EncryptionKey: !ImportValue cfn-utilities:ArtifactKeyArn
+      Environment:
+        PrivilegedMode: true
+        Image: aws/codebuild/amazonlinux2-x86_64-standard:3.0
+        ComputeType: BUILD_GENERAL1_SMALL
+        EnvironmentVariables:
+          - Name: REPOSITORY_URI
+            Value: !Sub ${AWS::AccountId}.dkr.ecr.${AWS::Region}.amazonaws.com/${DockerRepo}
+        Type: LINUX_CONTAINER
+      Cache:
+        Type: LOCAL
+        Modes:
+          - LOCAL_DOCKER_LAYER_CACHE
+      Artifacts:
+        Type: NO_ARTIFACTS
+      Source:
+        Type: GITHUB
+        BuildSpec: deploy/tasks/tag-image.yml
+        Location: !Sub https://github.com/${GithubOwner}/${GithubRepo}.git
+
   SupersessionQueue:
     Type: AWS::SQS::Queue
     Properties:
@@ -233,6 +258,7 @@ Resources:
         DevRoleArn: !ImportValue cfn-metadata:DevAgentRoleArn
         ProdRoleArn: !ImportValue cfn-metadata:ProdAgentRoleArn
         SharedRoleArn: !ImportValue cfn-utilities:MasterRoleArn
+        TagImageBuildProject: !Ref TagImageBuildProject
         ApprovalNotificationFunction: !ImportValue cfn-core:ApprovalNotificationFunctionArn
         FileFromZipArn: !ImportValue cfn-core:ExtractFileFromZipFunctionArn
         AccountId: !Ref AWS::AccountId

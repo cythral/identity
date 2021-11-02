@@ -93,6 +93,28 @@
           }
         }
       },
+      "Next": "Dev - Tag Image"
+    },
+    "Dev - Tag Image": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::codebuild:startBuild.sync",
+      "Parameters": {
+        "ProjectName": "${TagImageBuildProject}",
+        "SourceVersion.$": "States.Format('{}^\\{{}\\}', $.ref, $.head_commit_id)",
+        "EnvironmentVariablesOverride": [
+          {
+            "Name": "OLD_TAG",
+            "Type": "PLAINTEXT",
+            "Value.$": "States.Format('{}', $.BuildOutput.Build.BuildNumber)"
+          },
+          {
+            "Name": "NEW_TAG",
+            "Type": "PLAINTEXT",
+            "Value": "dev"
+          }
+        ]
+      },
+      "ResultPath": null,
       "Next": "Deploy to Prod"
     },
     "Deploy to Prod": {
@@ -118,6 +140,28 @@
           }
         }
       },
+      "Next": "Prod - Tag Image"
+    },
+    "Prod - Tag Image": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::codebuild:startBuild.sync",
+      "Parameters": {
+        "ProjectName": "${TagImageBuildProject}",
+        "SourceVersion.$": "States.Format('{}^\\{{}\\}', $.ref, $.head_commit_id)",
+        "EnvironmentVariablesOverride": [
+          {
+            "Name": "OLD_TAG",
+            "Type": "PLAINTEXT",
+            "Value.$": "States.Format('{}', $.BuildOutput.Build.BuildNumber)"
+          },
+          {
+            "Name": "NEW_TAG",
+            "Type": "PLAINTEXT",
+            "Value": "prod"
+          }
+        ]
+      },
+      "ResultPath": null,
       "Next": "Success"
     },
     "Success": {
