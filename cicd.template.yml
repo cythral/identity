@@ -90,6 +90,8 @@ Resources:
   DockerRepo:
     Type: AWS::ECR::Repository
     Properties:
+      ImageScanningConfiguration:
+        ScanOnPush: true
       RepositoryPolicyText:
         Version: 2012-10-17
         Statement:
@@ -112,12 +114,12 @@ Resources:
             "rules": [
               {
                 "rulePriority": 1,
-                "description": "Keep Last 5 Prod Images",
+                "description": "Protect prod-tagged images.",
                 "selection": {
                   "tagStatus": "tagged",
                   "tagPrefixList": ["prod"],
                   "countType": "imageCountMoreThan",
-                  "countNumber": 5
+                  "countNumber": 1
                 },
                 "action": {
                   "type": "expire"
@@ -125,12 +127,24 @@ Resources:
               },
               {
                 "rulePriority": 2,
-                "description": "Keep Last 5 Dev Images",
+                "description": "Protect dev-tagged images.",
                 "selection": {
                   "tagStatus": "tagged",
                   "tagPrefixList": ["dev"],
                   "countType": "imageCountMoreThan",
-                  "countNumber": 5
+                  "countNumber": 1
+                },
+                "action": {
+                  "type": "expire"
+                }
+              },
+              {
+                "rulePriority": 3,
+                "description": "Keep last 3 images not tagged with dev or prod.",
+                "selection": {
+                  "tagStatus": "any",
+                  "countType": "imageCountMoreThan",
+                  "countNumber": 3
                 },
                 "action": {
                   "type": "expire"
