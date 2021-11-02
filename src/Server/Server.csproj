@@ -2,6 +2,10 @@
 
   <PropertyGroup>
     <RootNamespace>Brighid.Identity</RootNamespace>
+    <RuntimeIdentifier>linux-musl-x64</RuntimeIdentifier>
+    <PublishTrimmed>true</PublishTrimmed>
+    <PublishSelfContained>true</PublishSelfContained>
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
   </PropertyGroup>
 
   <ItemGroup>
@@ -45,6 +49,10 @@
   <ItemGroup>
     <ProjectReference Include="../Common/Common.csproj" />
     <ProjectReference Include="../Interface/Interface.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Server.StaticWebAssets.xml" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
   <ItemGroup>

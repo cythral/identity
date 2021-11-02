@@ -16,13 +16,16 @@
     </Target>
 
     <Target Name="Dockerize" Inputs="@(ProjectInfo)" Outputs="@(ProjectInfo)" AfterTargets="PrepareForDockerization">
+        <PropertyGroup>
+            <DockerImageTag Condition="'$(DockerImageTag)' == ''">brighid/identity</DockerImageTag>
+        </PropertyGroup>
+
         <ItemGroup>
             <DockerBuildArgs Include="--file $(MSBuildThisFileDirectory)Dockerfile" />
             <DockerBuildArgs Include="--tag $(DockerImageTag)" />
             <DockerBuildArgs Include="--build-arg CONFIGURATION=$(Configuration)" />
             <DockerBuildArgs Include="--build-arg TARGET_FRAMEWORK=%(ProjectInfo.TargetFramework)" />
             <DockerBuildArgs Include="--build-arg ASPNETCORE_VERSION=%(ProjectInfo.AspNetCoreVersion)" />
-            <DockerBuildArgs Include="--build-arg ASSEMBLY_NAME=%(ProjectInfo.AssemblyName)" />
         </ItemGroup>
 
         <Exec Command="docker build @(DockerBuildArgs, ' ') $(MSBuildThisFileDirectory)" />

@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
@@ -18,6 +20,14 @@ namespace Brighid.Identity
             return Host
             .CreateDefaultBuilder(args)
             .UseSerilog(dispose: true)
+            .ConfigureHostConfiguration(configure =>
+            {
+                configure.AddEnvironmentVariables();
+                configure.AddInMemoryCollection(new Dictionary<string, string>
+                {
+                    [WebHostDefaults.StaticWebAssetsKey] = "Server.StaticWebAssets.xml",
+                });
+            })
             .ConfigureWebHostDefaults(builder =>
             {
                 builder.UseStartup<Startup>();
