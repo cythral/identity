@@ -20,12 +20,12 @@ namespace Brighid.Identity
             return Host
             .CreateDefaultBuilder(args)
             .UseSerilog(dispose: true)
-            .ConfigureHostConfiguration(configure =>
+            .ConfigureAppConfiguration(configure =>
             {
                 configure.AddEnvironmentVariables();
                 configure.AddInMemoryCollection(new Dictionary<string, string>
                 {
-                    [WebHostDefaults.StaticWebAssetsKey] = "Server.StaticWebAssets.xml",
+                    [WebHostDefaults.StaticWebAssetsKey] = "StaticWebAssets.xml",
                 });
             })
             .ConfigureWebHostDefaults(builder =>

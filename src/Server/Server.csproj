@@ -52,7 +52,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="Server.StaticWebAssets.xml" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="StaticWebAssets.xml" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
   <ItemGroup>

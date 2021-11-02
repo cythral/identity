@@ -75,6 +75,7 @@ public class AppFactory : WebApplicationFactory<Startup>
             options
             .AddInMemoryCollection(new Dictionary<string, string>
             {
+                [WebHostDefaults.StaticWebAssetsKey] = "Interface.StaticWebAssets.xml",
                 ["Database:Host"] = databaseServerAddress,
                 ["Database:Name"] = MySqlContainer.DbName,
                 ["Database:User"] = MySqlContainer.DbUser,
