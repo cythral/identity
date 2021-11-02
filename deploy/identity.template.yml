@@ -8,6 +8,10 @@ Parameters:
     Type: String
     Description: Domain name to use.
 
+  DatabaseHost:
+    Type: String
+    Description: The hostname of the database to use.
+
   DatabaseName:
     Type: String
     Description: The name of the database to use.
@@ -188,7 +192,7 @@ Resources:
               awslogs-stream-prefix: brighid
           Environment:
             - Name: Database__Host
-              Value: !ImportValue mutedac:ClusterAddress
+              Value: !Ref DatabaseHost
             - Name: Database__Name
               Value: !Ref DatabaseName
             - Name: Database__User
