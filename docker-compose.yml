@@ -13,20 +13,24 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock:ro
 
   api:
-    image: mcr.microsoft.com/dotnet/sdk:5.0.402
-    entrypoint: dotnet watch --project src/Server run
+    image: brighid/identity
+    # image: mcr.microsoft.com/dotnet/sdk:5.0.303
+    # entrypoint: dotnet watch --project src/Server run
     working_dir: /app
     restart: unless-stopped
     ports:
       - "80"
       - "8736:8736"
     volumes:
-      - ./:/app
-      - ~/.aws:/root/.aws
-      - ./certs:/certs
+      # - ./:/app
+      - ./bin/Server/Debug/net5.0/linux-musl-x64:/app
+      - ./bin/Interface/Debug/net5.0/publish/wwwroot:/wwwroot
+      - ~/.aws:/home/brighid/.aws
       - ~/.vsdbg:/remote_debugger:rw
     environment:
+      Environment: local
       CONFIGURATION: Debug
+      DECRYPTION_DISABLED: "true"
       ASPNETCORE_HOSTINGSTARTUPASSEMBLIES: Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation
       ASPNETCORE_ENVIRONMENT: Development
       Database__Host: db
