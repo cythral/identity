@@ -211,7 +211,7 @@ Resources:
               Value: !Ref WaitConditionHandle
             - Name: App__Image
               Value: !Ref Image
-            - Name: Environment__Name
+            - Name: Environment
               Value: !Ref EnvironmentName
             - Name: Auth__CertificateConfigurationParameterName
               Value: !Ref CertificateConfigurationParameterName

@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -10,16 +12,29 @@ namespace Brighid.Identity
 {
     public static class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
-            CreateHostBuilder(args).Build().Run();
+            await CreateHostBuilder(args).Build().RunAsync();
         }
 
         private static IHostBuilder CreateHostBuilder(string[] args)
         {
+            var environment = Environment.GetEnvironmentVariable("Environment") ?? Environments.Local;
+
             return Host
             .CreateDefaultBuilder(args)
+            .UseEnvironment(environment)
             .UseSerilog(dispose: true)
+            .UseDefaultServiceProvider(options =>
+            {
+#pragma warning disable IDE0078 // Use Pattern Matching
+
+                var isDevOrLocal = environment == Environments.Local || environment == Environments.Development;
+                options.ValidateScopes = isDevOrLocal;
+                options.ValidateOnBuild = isDevOrLocal;
+
+#pragma warning restore IDE0078
+            })
             .ConfigureAppConfiguration(configure =>
             {
                 configure.AddEnvironmentVariables();
