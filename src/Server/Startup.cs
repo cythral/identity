@@ -130,12 +130,15 @@ namespace Brighid.Identity
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, DatabaseContext context)
         {
-            if (env.IsDevelopment())
+            if (env.IsEnvironment(Environments.Local))
             {
                 context.Database.Migrate();
             }
 
-            app.UseWebAssemblyDebugging();
+            if (env.IsEnvironment(Environments.Local) || env.IsEnvironment(Environments.Development))
+            {
+                app.UseWebAssemblyDebugging();
+            }
 
             app.UseForwardedHeaders();
             app.Use(async (context, next) =>
