@@ -18,6 +18,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
+using Environments = Brighid.Identity.Environments;
+
 #pragma warning disable IDE0022
 
 public class AppFactory : WebApplicationFactory<Startup>
@@ -71,6 +73,7 @@ public class AppFactory : WebApplicationFactory<Startup>
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
+        builder.UseEnvironment(Environments.Local);
         builder.ConfigureAppConfiguration((options) =>
             options
             .AddInMemoryCollection(new Dictionary<string, string>
