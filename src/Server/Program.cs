@@ -19,7 +19,7 @@ namespace Brighid.Identity
 
         private static IHostBuilder CreateHostBuilder(string[] args)
         {
-            var environment = Environment.GetEnvironmentVariable("Environment") ?? Environments.Development;
+            var environment = Environment.GetEnvironmentVariable("Environment") ?? Environments.Local;
 
             return Host
             .CreateDefaultBuilder(args)
