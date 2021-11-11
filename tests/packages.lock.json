@@ -1097,8 +1097,8 @@
       },
       "Pomelo.EntityFrameworkCore.MySql": {
         "type": "Transitive",
-        "resolved": "5.0.2",
-        "contentHash": "Vy6nC+FWWyZujmzEUN2mqoKsZi4xawtcJ8PJ861X7BG7EnJl+zH9uBvCCcO/qFOkS9zSCvWtYul3aFQOAJuGyA==",
+        "resolved": "5.0.3",
+        "contentHash": "MtIjBlhfSpCbJx3NPFCBUpVlXN/+prd4P4vbGzfIAi8lOGX6SFdde3uBrSgJeSlpt1+oDtU1Tjtr2eC4VuvOhg==",
         "dependencies": {
           "Microsoft.EntityFrameworkCore.Relational": "[5.0.10, 6.0.0)",
           "Microsoft.Extensions.DependencyInjection": "5.0.2",
@@ -2304,7 +2304,7 @@
           "OpenIddict.AspNetCore": "3.1.1",
           "OpenIddict.EntityFrameworkCore": "3.1.1",
           "OpenIddict.Server.AspNetCore": "3.1.1",
-          "Pomelo.EntityFrameworkCore.MySql": "5.0.2",
+          "Pomelo.EntityFrameworkCore.MySql": "5.0.3",
           "Serilog.AspNetCore": "4.1.0",
           "Serilog.Filters.Expressions": "2.1.0",
           "Swashbuckle.AspNetCore": "6.2.3",
