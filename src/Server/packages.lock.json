@@ -151,9 +151,9 @@
       },
       "Pomelo.EntityFrameworkCore.MySql": {
         "type": "Direct",
-        "requested": "[5.0.2, )",
-        "resolved": "5.0.2",
-        "contentHash": "Vy6nC+FWWyZujmzEUN2mqoKsZi4xawtcJ8PJ861X7BG7EnJl+zH9uBvCCcO/qFOkS9zSCvWtYul3aFQOAJuGyA==",
+        "requested": "[5.0.3, )",
+        "resolved": "5.0.3",
+        "contentHash": "MtIjBlhfSpCbJx3NPFCBUpVlXN/+prd4P4vbGzfIAi8lOGX6SFdde3uBrSgJeSlpt1+oDtU1Tjtr2eC4VuvOhg==",
         "dependencies": {
           "Microsoft.EntityFrameworkCore.Relational": "[5.0.10, 6.0.0)",
           "Microsoft.Extensions.DependencyInjection": "5.0.2",
