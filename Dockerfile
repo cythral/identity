@@ -1,6 +1,6 @@
 ARG CONFIGURATION=Release
 
-FROM public.ecr.aws/cythral/brighid/base:0.1.9
+FROM public.ecr.aws/cythral/brighid/base:0.1.10
 ARG PROJECT_DIRECTORY
 ARG OUTPUT_DIRECTORY
 ARG CONFIGURATION
