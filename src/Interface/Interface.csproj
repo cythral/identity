@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
     <PropertyGroup>
-        <TargetFramework>net5.0</TargetFramework>
+        <TrimMode>copyused</TrimMode>
     </PropertyGroup>
 
     <ItemGroup>

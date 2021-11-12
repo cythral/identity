@@ -15,9 +15,9 @@ namespace Brighid.Identity
     {
         public static string GenerateRandomString(int length)
         {
-            using var cryptoRandomDataGenerator = new RNGCryptoServiceProvider();
+            using var randomNumberGenerator = RandomNumberGenerator.Create();
             var buffer = new byte[length];
-            cryptoRandomDataGenerator.GetBytes(buffer);
+            randomNumberGenerator.GetBytes(buffer);
             return Convert.ToBase64String(buffer);
         }
 

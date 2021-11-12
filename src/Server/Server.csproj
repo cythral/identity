@@ -3,9 +3,11 @@
   <PropertyGroup>
     <RootNamespace>Brighid.Identity</RootNamespace>
     <RuntimeIdentifier>linux-musl-x64</RuntimeIdentifier>
+    <TrimMode>copyused</TrimMode>
     <PublishTrimmed>true</PublishTrimmed>
     <PublishSelfContained>true</PublishSelfContained>
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+    <NoWarn>NETSDK1152</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
@@ -41,7 +43,7 @@
     <PackageReference Include="Flurl" Version="3.0.2" />
     <PackageReference Include="Flurl.Http" Version="3.2.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
-    <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="5.0.3" />
+    <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="6.0.0" />
     <PackageReference Include="Serilog.AspNetCore" Version="4.1.0" />
     <PackageReference Include="Destructurama.Attributed" Version="3.0.0" />
   </ItemGroup>
@@ -52,6 +54,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Remove="packages.lock.json" />
     <None Include="StaticWebAssets.xml" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 

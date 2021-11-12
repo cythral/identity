@@ -108,7 +108,7 @@ namespace Brighid.Identity.Applications
                 [Target] DefaultApplicationService service
             )
             {
-                repository.FindById(Any<Guid>(), Any<string>()).Returns<Application>(x => throw new Exception());
+                repository.FindById(Any<Guid>(), Any<string>()).Returns<Application?>(x => throw new Exception());
 
                 Func<Task<Application>> func = () => service.UpdateById(id, application);
 

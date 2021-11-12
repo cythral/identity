@@ -144,7 +144,7 @@ namespace Brighid.Identity.Users
 
                 result.Should().BeOfType<BadRequestObjectResult>();
 
-                dynamic value = result.As<ObjectResult>().Value;
+                dynamic value = result.As<ObjectResult>().Value!;
                 var errors = (IEnumerable<string>)value.Errors;
                 errors.Should().Contain(error1);
                 errors.Should().Contain(error2);
@@ -174,7 +174,7 @@ namespace Brighid.Identity.Users
 
                 result.Should().BeOfType<BadRequestObjectResult>();
 
-                dynamic value = result.As<ObjectResult>().Value;
+                dynamic value = result.As<ObjectResult>().Value!;
                 var errors = (IEnumerable<string>)value.Errors;
                 errors.Should().Contain(nonUserError);
                 errors.Should().NotContain(userError);

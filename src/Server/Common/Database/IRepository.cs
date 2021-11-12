@@ -17,7 +17,7 @@ namespace Brighid.Identity
 
         Task<TEntity?> TryAdd(TEntity entity);
 
-        Task<TEntity> FindById(TPrimaryKeyType primaryKey, params string[] embeds);
+        Task<TEntity?> FindById(TPrimaryKeyType primaryKey, params string[] embeds);
 
         Task<bool> Exists(TPrimaryKeyType primaryKey);
 
