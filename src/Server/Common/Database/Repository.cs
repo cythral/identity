@@ -22,7 +22,7 @@ namespace Brighid.Identity
 
             if (PrimaryKeyName == null)
             {
-                PrimaryKeyName = Context.Model.FindEntityType(typeof(TEntity)).FindPrimaryKey().Properties[0].Name;
+                PrimaryKeyName = Context.Model.FindEntityType(typeof(TEntity))!.FindPrimaryKey()!.Properties[0].Name;
 
                 var prop = typeof(TEntity).GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance).Where(prop => prop.Name == PrimaryKeyName).First();
                 var setterMethod = prop.GetSetMethod(true);
@@ -90,14 +90,14 @@ namespace Brighid.Identity
 #pragma warning restore CA1031
         }
 
-        public virtual async Task<TEntity> FindById(TPrimaryKeyType primaryKey, params string[] embeds)
+        public virtual async Task<TEntity?> FindById(TPrimaryKeyType primaryKey, params string[] embeds)
         {
             var entitySet = embeds
                 .Aggregate(All, (query, embed) => query.Include(embed))
                 .AsQueryable();
 
             var query = from entity in entitySet
-                        where EF.Property<TPrimaryKeyType>(entity, PrimaryKeyName).Equals(primaryKey)
+                        where EF.Property<TPrimaryKeyType>(entity, PrimaryKeyName!).Equals(primaryKey)
                         select entity;
 
             return await query.FirstOrDefaultAsync();
@@ -105,7 +105,7 @@ namespace Brighid.Identity
 
         public virtual async Task<bool> Exists(TPrimaryKeyType primaryKey)
         {
-            var query = from obj in All where EF.Property<TPrimaryKeyType>(obj, PrimaryKeyName).Equals(primaryKey) select obj;
+            var query = from obj in All where EF.Property<TPrimaryKeyType>(obj, PrimaryKeyName!).Equals(primaryKey) select obj;
             var count = await query.CountAsync();
             return count > 0;
         }

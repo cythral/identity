@@ -146,7 +146,7 @@ namespace Brighid.Identity.Auth
                 userService.Create(Any<string>(), Any<string>()).Returns<User>(x => throw new CreateUserException(exceptions));
 
                 var result = await signupController.Signup(request) as ViewResult;
-                var errors = signupController.ModelState["signupError"].Errors;
+                var errors = signupController.ModelState["signupError"]!.Errors;
 
                 await userService.Received().Create(Is(request.Email), Is(request.Password));
                 result!.Should().NotBeNull();
@@ -187,11 +187,11 @@ namespace Brighid.Identity.Auth
 
                 _ = await signupController.Signup(request) as ViewResult;
 
-                signupController.ModelState["signupError"].Errors.Should().Contain(err =>
+                signupController.ModelState["signupError"]!.Errors.Should().Contain(err =>
                     err.ErrorMessage == randomErrorException.Message
                 );
 
-                signupController.ModelState["signupError"].Errors.Should().NotContain(err =>
+                signupController.ModelState["signupError"]!.Errors.Should().NotContain(err =>
                     err.ErrorMessage == duplicateUserNameMessage
                 );
             }
@@ -217,7 +217,7 @@ namespace Brighid.Identity.Auth
                 userService.Create(Any<string>(), Any<string>()).Returns(user);
 
                 var result = await signupController.Signup(request) as ViewResult;
-                var errors = signupController.ModelState["signupError"].Errors;
+                var errors = signupController.ModelState["signupError"]!.Errors;
 
                 result!.Should().NotBeNull();
                 errors.Should().Contain(error => error.ErrorMessage == "Passwords do not match.");
@@ -248,7 +248,7 @@ namespace Brighid.Identity.Auth
                 signupController.ControllerContext = new ControllerContext { HttpContext = httpContext };
 
                 var result = await signupController.Signup(request) as ViewResult;
-                var errors = signupController.ModelState["signupError"].Errors;
+                var errors = signupController.ModelState["signupError"]!.Errors;
 
                 await authService.Received().PasswordExchange(Is(request.Email), Is(password), Is(request.RedirectUri), Is(httpContext), Is(httpContext.RequestAborted));
                 result!.Should().NotBeNull();
@@ -281,7 +281,7 @@ namespace Brighid.Identity.Auth
 
                 var result = await signupController.Signup(request) as SignInResult;
                 result!.Should().NotBeNull();
-                result!.Properties.RedirectUri.Should().Be(destination);
+                result!.Properties!.RedirectUri.Should().Be(destination);
             }
         }
     }

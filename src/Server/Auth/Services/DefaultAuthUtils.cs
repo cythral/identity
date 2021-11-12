@@ -38,6 +38,8 @@ namespace Brighid.Identity.Auth
             this.openIddictServerOptions = openIddictServerOptions;
         }
 
+        /// <inheritdoc />
+        /// <todo>Handle cases where the application's roles are not found.</todo>
         public async Task<ClaimsIdentity> CreateClaimsIdentityForApplication(Guid applicationId, CancellationToken cancellationToken = default)
         {
             var result = new ClaimsIdentity(OpenIddictServerAspNetCoreDefaults.AuthenticationScheme, Claims.Name, Claims.Role);
@@ -45,7 +47,7 @@ namespace Brighid.Identity.Auth
             result.AddClaim(Claims.Name, applicationId.ToString(), Destinations.AccessToken, Destinations.IdentityToken);
             result.AddClaim(Claims.Subject, applicationId.ToString(), Destinations.AccessToken, Destinations.IdentityToken);
 
-            var roles = await applicationRepository.FindRolesById(applicationId);
+            var roles = (await applicationRepository.FindRolesById(applicationId))!;
             var roleNames = roles.Select(role => $"\"{role.Name}\"");
             var roleClaim = new Claim(Claims.Role, $"[{string.Join(',', roleNames)}]", JsonClaimValueTypes.JsonArray);
             roleClaim.SetDestinations(Destinations.AccessToken, Destinations.IdentityToken);

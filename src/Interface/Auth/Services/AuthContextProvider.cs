@@ -31,7 +31,7 @@ namespace Brighid.Identity.Interface.Auth
             return new AuthenticationState(principal);
         }
 
-        private async Task<ClaimsPrincipal?> GetCurrentPrincipal()
+        private async Task<ClaimsPrincipal> GetCurrentPrincipal()
         {
             if (currentPrincipal != null && currentSecurityToken != null && currentSecurityToken.ValidTo >= DateTime.Now)
             {

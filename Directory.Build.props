@@ -12,17 +12,19 @@
     </PropertyGroup>
 
     <PropertyGroup>
-        <TargetFramework>net5.0</TargetFramework>
+        <TargetFramework>net6.0</TargetFramework>
         <Configuration Condition="$(Configuration) == ''">Debug</Configuration>
         <Nullable>enable</Nullable>
         <LangVersion>9.0</LangVersion>
+        <EnableTrimAnalyzer>false</EnableTrimAnalyzer>
+        <SuppressTrimAnalysisWarnings>true</SuppressTrimAnalysisWarnings>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     </PropertyGroup>
 
     <PropertyGroup>
         <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
-        <RestoreLockedMode Condition="$(NUKEEPER) != 'true'">true</RestoreLockedMode>
+        <RestoreLockedMode>true</RestoreLockedMode>
         <DisableImplicitNuGetFallbackFolder>true</DisableImplicitNuGetFallbackFolder>
         <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
         <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
@@ -34,10 +36,6 @@
         <PackageOutputPath>$(MSBuildThisFileDirectory)bin/Packages/$(Configuration)</PackageOutputPath>
         <RestorePackagesPath>$(MSBuildThisFileDirectory).nuget</RestorePackagesPath>
     </PropertyGroup>
-
-    <ItemGroup Condition="Exists('$(MSBuildThisFileDirectory)\.editorconfig')">
-        <AdditionalFiles Include="$(MSBuildThisFileDirectory)\.editorconfig" />
-    </ItemGroup>
 
     <ItemGroup>
         <None Include="$(MSBuildThisFileDirectory)LICENSE.txt" Pack="true" PackagePath="LICENSE.txt" />

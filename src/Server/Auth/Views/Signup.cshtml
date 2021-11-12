@@ -7,7 +7,7 @@
 }
 
 @{
-    var redirectUri = Uri.EscapeDataString(Model.RedirectUri.ToString());
+    var redirectUri = Uri.EscapeDataString(Model?.RedirectUri.ToString() ?? string.Empty);
 }
 
 <div class="auth-page">

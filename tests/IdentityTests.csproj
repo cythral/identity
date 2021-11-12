@@ -1,7 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
     <NoWarn>IDE0058;CA2007;CA1068</NoWarn>
     <IsPackable>false</IsPackable>
     <RestoreLockedMode>false</RestoreLockedMode>

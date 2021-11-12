@@ -142,7 +142,7 @@ namespace Brighid.Identity.Auth
                 loginController.ControllerContext = new ControllerContext { HttpContext = httpContext };
                 var result = await loginController.Login(request) as ViewResult;
 
-                var errors = loginController.ModelState["loginErrors"].Errors;
+                var errors = loginController.ModelState["loginErrors"]!.Errors;
                 result!.Should().NotBeNull();
                 result!.ViewName.Should().Be("~/Auth/Views/Login.cshtml");
                 errors.Should().Contain(error => error.ErrorMessage == "Username and/or password were incorrect.");

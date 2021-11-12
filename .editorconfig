@@ -43,6 +43,9 @@ dotnet_diagnostic.SA1518.severity = error
 dotnet_separate_import_directive_groups = true
 dotnet_diagnostic.IDE0005.severity = error
 
+# Namespace should match folder structure
+dotnet_diagnostic.IDE0130.severity = none
+
 dotnet_analyzer_diagnostic.category-Style.severity = error
 dotnet_diagnostic.IDE0058.severity = none
 dotnet_diagnostic.IDE0007.severity = error
