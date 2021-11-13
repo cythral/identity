@@ -22,6 +22,11 @@ namespace Brighid.Identity
         public int Port { get; set; } = 80;
 
         /// <summary>
+        /// Gets or sets the content paths.
+        /// </summary>
+        public string ContentPaths { get; set; } = "/wwwroot";
+
+        /// <summary>
         /// Gets or sets the wait condition handle to post the iac management application to.
         /// </summary>
         public Uri? WaitConditionHandle { get; set; } = null;

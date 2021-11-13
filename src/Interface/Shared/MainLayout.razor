@@ -1,24 +1,61 @@
-@namespace Brighid.Identity.Interface
-@inherits LayoutComponentBase
-
 @using Brighid.Identity.Interface.Auth
+@namespace Brighid.Identity.Interface
 
-<AuthorizeView>
-    <div class="page">
-        <div class="sidebar">
-            <NavMenu />
+@inherits LayoutComponentBase
+@implements IDisposable
+
+@inject PersistentComponentState ApplicationState
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
+<div class="page">
+    <div class="sidebar">
+        <NavMenu />
+    </div>
+
+    <div class="main">
+        <div class="top-row px-4">
+            <div class="user-box">
+                <a href="#">@UserName</a>
+            </div>
         </div>
 
-        <div class="main">
-            <div class="top-row px-4">
-                <div class="user-box">
-                    <a href="#">@context.User.Identity!.Name</a>
-                </div>
-            </div>
-
-            <div class="content px-4">
-                @Body
-            </div>
+        <div class="content px-4">
+            @Body
         </div>
     </div>
-</AuthorizeView>
+</div>
+
+@code {
+    private PersistingComponentStateSubscription persistingSubscription;
+
+    public string UserName { get; set; } = string.Empty;
+
+
+    protected async override Task OnInitializedAsync()
+    {
+        persistingSubscription = ApplicationState.RegisterOnPersisting(Persist);
+        UserName = await GetUserName();
+    }
+
+    public async ValueTask<string> GetUserName()
+    {
+        if (ApplicationState.TryTakeFromJson<string>(nameof(UserName), out var userName) && userName != null)
+        {
+            return userName;
+        }
+
+        var state = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        return state?.User.Identity?.Name ?? string.Empty;
+    }
+
+    private Task Persist()
+    {
+        ApplicationState.PersistAsJson(nameof(UserName), UserName);
+        return Task.CompletedTask;
+    }
+
+    public void Dispose()
+    {
+        persistingSubscription.Dispose();
+    }
+}

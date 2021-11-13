@@ -23,6 +23,7 @@ using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 
@@ -176,7 +177,15 @@ namespace Brighid.Identity
                 options.SwaggerEndpoint("/swagger/v1/swagger.json", "Brighid Identity Swagger");
             });
 
-            app.UseStaticFiles();
+            var contentPaths = from path in AppConfig.ContentPaths.Split(',') where !string.IsNullOrEmpty(path) select path;
+            var fileProviders = from path in contentPaths select new PhysicalFileProvider(path);
+
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = new CompositeFileProvider(fileProviders),
+                ServeUnknownFileTypes = true,
+            });
+
             app.UseBlazorFrameworkFiles();
             app.UseAuthentication();
             app.UseRouting();

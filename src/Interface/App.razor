@@ -1,10 +1,13 @@
 @namespace Brighid.Identity.Interface
+
+@implements IDisposable
+@inject PersistentComponentState ApplicationState
 @inject NavigationManager NavigationManager
 @inject AuthenticationStateProvider AuthenticationStateProvider
 
 <Router AppAssembly="@typeof(Program).Assembly">
     <Found Context="routeData">
-        <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
+        <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
     </Found>
     <NotFound>
         <LayoutView Layout="@typeof(MainLayout)">
@@ -15,19 +18,43 @@
 
 @code
 {
+    private PersistingComponentStateSubscription persistingSubscription;
+
+    public bool IsAuthenticated { get; set; }
+
     protected async override Task OnInitializedAsync()
     {
-        base.OnInitialized();
+        persistingSubscription = ApplicationState.RegisterOnPersisting(Persist);
+        IsAuthenticated = await GetIsAuthenticated();
 
-        var state = await AuthenticationStateProvider.GetAuthenticationStateAsync();
-        var user = state?.User;
-        var isAuthenticated = user?.Identity?.IsAuthenticated ?? false;
-
-        if (!isAuthenticated)
+        if (!IsAuthenticated)
         {
             var relativePath = new Uri(NavigationManager.Uri).AbsolutePath;
             var redirectUri = Uri.EscapeDataString(relativePath);
             NavigationManager.NavigateTo($"login?redirect_uri={redirectUri}", true);
         }
+    }
+
+    private async ValueTask<bool> GetIsAuthenticated()
+    {
+        if (ApplicationState.TryTakeFromJson<bool>(nameof(IsAuthenticated), out var isAuthenticated))
+        {
+            return isAuthenticated;
+        }
+
+        var state = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = state?.User;
+        return user?.Identity?.IsAuthenticated ?? false;
+    }
+
+    private Task Persist()
+    {
+        ApplicationState.PersistAsJson(nameof(IsAuthenticated), IsAuthenticated);
+        return Task.CompletedTask;
+    }
+
+    public void Dispose()
+    {
+        persistingSubscription.Dispose();
     }
 }

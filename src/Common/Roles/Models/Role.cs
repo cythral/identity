@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.Serialization;
 
 using Brighid.Identity.Applications;
@@ -10,6 +11,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace Brighid.Identity.Roles
 {
+    [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)]
     public class Role : IdentityRole<Guid>
     {
         public Role()

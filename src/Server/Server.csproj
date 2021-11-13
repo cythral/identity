@@ -55,7 +55,6 @@
 
   <ItemGroup>
     <Content Remove="packages.lock.json" />
-    <None Include="StaticWebAssets.xml" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
   <ItemGroup>

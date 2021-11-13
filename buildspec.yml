@@ -2,6 +2,8 @@ version: 0.2
 env:
   variables:
     CI: true
+    DOTNET_SYSTEM_GLOBALIZATION_INVARIANT: "true"
+    DOTNET_SYSTEM_GLOBALIZATION_PREDEFINED_CULTURES_ONLY: "false"
     DOTNET_NOLOGO: true
     CONFIGURATION: Release
     
