@@ -45,6 +45,7 @@ namespace Brighid.Identity
             })
             .ConfigureWebHostDefaults(builder =>
             {
+                builder.UseContentRoot("/wwwroot");
                 builder.UseStartup<Startup>();
                 builder.ConfigureKestrel((context, options) =>
                 {

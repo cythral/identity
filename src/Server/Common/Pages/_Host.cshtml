@@ -5,9 +5,11 @@
 }
 
 @namespace Brighid.Identity
+@using Microsoft.AspNetCore.Mvc.TagHelpers
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 
 <component type="typeof(Interface.App)" render-mode="WebAssemblyPrerendered" />
+<persist-component-state />
 
 <div id="blazor-error-ui">
     An unhandled error has occurred.

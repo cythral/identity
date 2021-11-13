@@ -20,8 +20,8 @@ services:
       - "80"
       - "8736:8736"
     volumes:
-      - ./bin/Server/Debug/net5.0/linux-musl-x64:/app
-      - ./bin/Interface/Debug/net5.0/publish/wwwroot:/wwwroot
+      - ./bin/Server/Debug/net6.0/linux-musl-x64:/app
+      - ./bin/Interface/Debug/net6.0/publish/wwwroot:/wwwroot
       - ~/.aws:/home/brighid/.aws
       - ~/.vsdbg:/remote_debugger:rw
     environment:

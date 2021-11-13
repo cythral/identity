@@ -3,6 +3,8 @@
 @using Brighid.Identity.Roles
 
 @page "/roles"
+@implements IDisposable
+@inject PersistentComponentState ApplicationState
 @inject IRoleService roleService
 
 <div class="heading">
@@ -24,10 +26,30 @@
 
 @code
 {
+    private PersistingComponentStateSubscription persistingSubscription;
+
     IEnumerable<Role> Roles { get; set; } = Array.Empty<Role>();
 
     protected override async Task OnInitializedAsync()
     {
-        Roles = await roleService.List();
+        persistingSubscription = ApplicationState.RegisterOnPersisting(Persist);
+        Roles = await GetRoles();
+    }
+
+    public async ValueTask<IEnumerable<Role>> GetRoles()
+    {
+        ApplicationState.TryTakeFromJson<IEnumerable<Role>>(nameof(Roles), out var roles);
+        return roles ?? await roleService.List();
+    }
+
+    private Task Persist()
+    {
+        ApplicationState.PersistAsJson(nameof(Roles), Roles);
+        return Task.CompletedTask;
+    }
+
+    public void Dispose()
+    {
+        persistingSubscription.Dispose();
     }
 }
