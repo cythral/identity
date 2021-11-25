@@ -90,6 +90,7 @@ Resources:
   DockerRepo:
     Type: AWS::ECR::Repository
     Properties:
+      RepositoryName: brighid/identity
       ImageScanningConfiguration:
         ScanOnPush: true
       RepositoryPolicyText:
