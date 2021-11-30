@@ -15,8 +15,6 @@ using Brighid.Identity.Roles;
 
 using Destructurama;
 
-using Flurl.Http;
-
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpOverrides;
@@ -108,7 +106,6 @@ namespace Brighid.Identity
 
             var jsonOptions = new JsonSerializerOptions { DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull };
             jsonOptions.Converters.Add(new JsonStringEnumConverter());
-            FlurlHttp.GlobalSettings.JsonSerializer = new Serializer(jsonOptions);
         }
 
         public void ConfigureDatabaseOptions(DbContextOptionsBuilder options)
