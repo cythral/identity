@@ -129,20 +129,17 @@ namespace Microsoft.Extensions.DependencyInjection
 
                 options.Configure(serverOptions =>
                 {
-                    serverOptions.TokenValidationParameters.RequireSignedTokens = true;
-                    serverOptions.TokenValidationParameters.ValidateIssuerSigningKey = true;
-                    serverOptions.TokenValidationParameters.RequireExpirationTime = true;
-                    serverOptions.TokenValidationParameters.ValidateAudience = false;
-                    serverOptions.TokenValidationParameters.ValidateIssuer = true;
-                    serverOptions.TokenValidationParameters.ValidateLifetime = true;
-                    serverOptions.TokenValidationParameters.RoleClaimType = Claims.Role;
-                    serverOptions.TokenValidationParameters.ValidIssuers = new string[] { $"https://{authConfig.DomainName}/", $"http://{authConfig.DomainName}/" };
+                    ConfigureTokenValidationParameters(serverOptions.TokenValidationParameters, authConfig);
                 });
             })
             .AddValidation(options =>
             {
                 options.UseLocalServer();
                 options.UseAspNetCore();
+                options.Configure(configure =>
+                {
+                    ConfigureTokenValidationParameters(configure.TokenValidationParameters, authConfig);
+                });
             });
         }
 
@@ -233,6 +230,19 @@ namespace Microsoft.Extensions.DependencyInjection
                 result.Add(new SigningCredentials(Utils.GenerateDevelopmentSecurityKey(), "RS256"));
                 return result;
             }
+        }
+
+        private static void ConfigureTokenValidationParameters(TokenValidationParameters parameters, AuthConfig authConfig)
+        {
+            parameters.RequireSignedTokens = true;
+            parameters.ValidateIssuerSigningKey = true;
+            parameters.RequireExpirationTime = true;
+            parameters.ValidateAudience = false;
+            parameters.ValidateIssuer = true;
+            parameters.ValidateLifetime = true;
+            parameters.RoleClaimType = Claims.Role;
+            parameters.ValidIssuer = null;
+            parameters.ValidIssuers = new string[] { $"https://{authConfig.DomainName}/", $"http://{authConfig.DomainName}/" };
         }
     }
 }
