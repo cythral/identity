@@ -13,18 +13,18 @@
       },
       "AWSSDK.S3": {
         "type": "Direct",
-        "requested": "[3.7.5, )",
-        "resolved": "3.7.5",
-        "contentHash": "dJ0ofs7bVrxA32oEnIf03AX7rUnfOB4DOMoDIKDHzaVqRZ5mm2VDMsa4icBNoAeCfNvFexXsG3km09DgXUBeaA==",
+        "requested": "[3.7.6, )",
+        "resolved": "3.7.6",
+        "contentHash": "8ES5XTygLRD0O8zqmjgLzlcRD+u8rCM1zx930oE5hWXiyVR18DiWK+FJmv8lVy0F79MlTlKf2m4ygSHcIOq1dA==",
         "dependencies": {
           "AWSSDK.Core": "[3.7.5.2, 4.0.0)"
         }
       },
       "AWSSDK.SimpleSystemsManagement": {
         "type": "Direct",
-        "requested": "[3.7.10, )",
-        "resolved": "3.7.10",
-        "contentHash": "0DtDxT2ZWQk1vYb/1Wbjza/BxuJ5Wuhg79H+hfyvSlxedbxgQoP8UaOQhkeW5w7pidLsF8w1M9BkseaVOiFu4w==",
+        "requested": "[3.7.11, )",
+        "resolved": "3.7.11",
+        "contentHash": "oSM28V10HlKI7lKcuuxvVpl4Nmuxk8u0wb5lscuvlPJ7shINZPhFXNX0RARUDUm+CU08IrBwG/cgm9VBcHWR4g==",
         "dependencies": {
           "AWSSDK.Core": "[3.7.5.2, 4.0.0)"
         }
