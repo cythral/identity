@@ -24,7 +24,7 @@ namespace Brighid.Identity.Roles
         /// </summary>
         /// <value>The role's unique identifier.</value>
         [Key]
-        public new Guid Id
+        public new virtual Guid Id
         {
             get => base.Id;
             set => base.Id = value;

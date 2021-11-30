@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 
 using Microsoft.AspNetCore.Mvc;
@@ -47,6 +48,7 @@ namespace Brighid.Identity.Roles
         }
 
         [HttpPost]
+        [ProducesResponseType(typeof(Role), (int)HttpStatusCode.Created)]
         public async Task<ActionResult<Role>> Create([FromBody] RoleRequest request)
         {
             try
