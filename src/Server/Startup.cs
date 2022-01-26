@@ -114,13 +114,11 @@ namespace Brighid.Identity
             conn += $"Database={DatabaseConfig.Name};";
             conn += $"User={DatabaseConfig.User};";
             conn += $"Password=\"{DatabaseConfig.Password}\";";
-            conn += "GuidFormat=Binary16";
+            conn += "GuidFormat=Binary16;";
+            conn += "UseCompression=true";
 
             options
-            .UseMySql(
-                conn,
-                new MySqlServerVersion(new Version(5, 7, 0))
-            );
+            .UseMySql(conn, ServerVersion.AutoDetect(conn));
 
             options.UseOpenIddict();
         }

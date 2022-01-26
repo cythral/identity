@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 
 using Microsoft.AspNetCore.Hosting;
@@ -45,7 +46,11 @@ namespace Brighid.Identity
             })
             .ConfigureWebHostDefaults(builder =>
             {
-                builder.UseContentRoot("/wwwroot");
+                if (Directory.Exists("/wwwroot"))
+                {
+                    builder.UseContentRoot("/wwwroot");
+                }
+
                 builder.UseStartup<Startup>();
                 builder.ConfigureKestrel((context, options) =>
                 {
