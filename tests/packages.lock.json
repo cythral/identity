@@ -152,8 +152,8 @@
       },
       "AWSSDK.S3": {
         "type": "Transitive",
-        "resolved": "3.7.7.26",
-        "contentHash": "4R2rw+DqO5rR//P0vrqfEv9OZSukNYng2c93q4dhuYKRSgt/PJB508wWUerfkcB7IfvRDbUcvvVYyHvTZlJMjw==",
+        "resolved": "3.7.8",
+        "contentHash": "z7O0UhJmMdA/gMQbBvd9GD1uAAaL2d3F043fexk6q+sGnHsu2qM4IjD5Y6mePhHIooE4wHFXqrYpS7oK06ZvsA==",
         "dependencies": {
           "AWSSDK.Core": "[3.7.8.2, 4.0.0)"
         }
@@ -2301,7 +2301,7 @@
         "type": "Project",
         "dependencies": {
           "AWSSDK.KeyManagementService": "3.7.2.73",
-          "AWSSDK.S3": "3.7.7.26",
+          "AWSSDK.S3": "3.7.8",
           "AWSSDK.SimpleSystemsManagement": "3.7.12.15",
           "Common": "1.0.0",
           "Destructurama.Attributed": "3.0.0",
