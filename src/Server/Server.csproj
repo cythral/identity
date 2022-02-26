@@ -4,7 +4,7 @@
     <RootNamespace>Brighid.Identity</RootNamespace>
     <RuntimeIdentifiers>osx-x64;linux-x64;linux-musl-x64</RuntimeIdentifiers>
     <TrimMode>copyused</TrimMode>
-    <PublishTrimmed>true</PublishTrimmed>
+    <PublishTrimmed Condition="'$(RuntimeIdentifier)' != ''">true</PublishTrimmed>
     <PublishSelfContained>true</PublishSelfContained>
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
     <NoWarn>NETSDK1152</NoWarn>
