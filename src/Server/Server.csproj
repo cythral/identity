@@ -45,7 +45,7 @@
   <ItemGroup>
     <ProjectReference Include="../Common/Common.csproj" />
     <ProjectReference Include="../Database/Database.csproj" />
-    <ProjectReference Include="../Interface/Interface.csproj" />
+    <ProjectReference Include="../Interface/Interface.csproj" Targets="Publish" />
   </ItemGroup>
 
   <ItemGroup>
