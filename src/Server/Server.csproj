@@ -60,14 +60,6 @@
     <InternalsVisibleTo Include="DynamicProxyGenAssembly2" />
   </ItemGroup>
 
-  <Target Name="PublishLinuxMusl" AfterTargets="Build" Condition="'$(RuntimeIdentifier)' == ''">
-    <ItemGroup>
-      <ProjectsToPublish Include="$(MSBuildProjectFullPath)" AdditionalProperties="RuntimeIdentifier=linux-musl-x64" />
-    </ItemGroup>
-
-    <MSBuild Projects="@(ProjectsToPublish)" Targets="Publish" BuildInParallel="true" />
-  </Target>
-
   <Target Name="GetDockerBuildPropsForSolutionTarget" Outputs="@(ProjectInfo)">
     <ItemGroup>
       <ProjectInfo Include="$(MSBuildThisFile)" TargetFramework="$(TargetFramework)" AspNetCoreVersion="$(BundledNETCoreAppPackageVersion)" AssemblyName="$(AssemblyName)" />
