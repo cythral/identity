@@ -39,6 +39,9 @@
         "resolved": "1.2.0.333",
         "contentHash": "7mwxcwa3xZnyU71OTqSgntCDpsZ5gkc4saXhuJeyg5Xc+3xiQxzyhy26uG8rVF8Z7GKpXCsHCL3rd5ZomA+a/A=="
       }
-    }
+    },
+    "net6.0/linux-musl-x64": {},
+    "net6.0/linux-x64": {},
+    "net6.0/osx-x64": {}
   }
 }

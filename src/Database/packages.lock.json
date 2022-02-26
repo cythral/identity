@@ -309,6 +309,9 @@
           "Microsoft.AspNetCore.Identity.EntityFrameworkCore": "6.0.2"
         }
       }
-    }
+    },
+    "net6.0/linux-musl-x64": {},
+    "net6.0/linux-x64": {},
+    "net6.0/osx-x64": {}
   }
 }
