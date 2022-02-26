@@ -20,7 +20,6 @@
 
     <ItemGroup>
         <ProjectReference Include="../../src/Server/Server.csproj" ReferenceOutputAssembly="false" Properties="SwaggerOutputPath=$(CicdOutputFolder)" />
-        <ProjectReference Include="../../src/Interface/Interface.csproj" ReferenceOutputAssembly="false" />
         <ProjectReference Include="../../tests/Tests.csproj" ReferenceOutputAssembly="false" />
         <ProjectReference Include="../Cicd.Utils/Cicd.Utils.csproj" />
     </ItemGroup>
