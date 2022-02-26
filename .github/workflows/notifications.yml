@@ -1,0 +1,35 @@
+name: Notifications
+on: deployment_status
+jobs:
+  notifications:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Request Deployment Approval
+        uses: Ilshidur/action-discord@master
+        if: ${{ github.event.deployment_status.state == 'waiting' && github.event.deployment.environment == 'Production' }}
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+          DISCORD_EMBEDS: |
+            [
+              {
+                "title": "[${{ github.repository }}] Requires Deployment Approval",
+                "url": "${{ github.event.deployment_status.target_url }}",
+                "description": "${{ github.repository }} requires approval for deployment to production.",
+                "color": 15105570
+              }
+            ]
+
+      - name: Notify Deployment Success
+        uses: Ilshidur/action-discord@master
+        if: ${{ github.event.deployment_status.state == 'success' }}
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+          DISCORD_EMBEDS: |
+            [
+              {
+                "title": "[${{ github.repository }}] ${{ github.event.deployment.environment }} Deployment Succeeded",
+                "url": "${{ github.event.deployment_status.target_url }}",
+                "description": "Successfully deployed ${{ github.repository }} to ${{ github.event.deployment.environment }}.",
+                "color": 3066993
+              }
+            ]
