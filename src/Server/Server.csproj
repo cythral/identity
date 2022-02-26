@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <RootNamespace>Brighid.Identity</RootNamespace>
-    <RuntimeIdentifier Condition="'$(RuntimeIdentifier)' == ''">linux-musl-x64</RuntimeIdentifier>
+    <RuntimeIdentifiers>osx-x64;linux-x64;linux-musl-x64</RuntimeIdentifiers>
     <TrimMode>copyused</TrimMode>
     <PublishTrimmed>true</PublishTrimmed>
     <PublishSelfContained>true</PublishSelfContained>
@@ -59,6 +59,14 @@
     <InternalsVisibleTo Include="IdentityTests" />
     <InternalsVisibleTo Include="DynamicProxyGenAssembly2" />
   </ItemGroup>
+
+  <Target Name="PublishLinuxMusl" AfterTargets="Build" Condition="'$(RuntimeIdentifier)' == ''">
+    <ItemGroup>
+      <ProjectsToPublish Include="$(MSBuildProjectFullPath)" AdditionalProperties="RuntimeIdentifier=linux-musl-x64" />
+    </ItemGroup>
+
+    <MSBuild Projects="@(ProjectsToPublish)" Targets="Publish" BuildInParallel="true" />
+  </Target>
 
   <Target Name="GetDockerBuildPropsForSolutionTarget" Outputs="@(ProjectInfo)">
     <ItemGroup>
