@@ -8,10 +8,4 @@
 
         <WriteLinesToFile File="$(MSBuildThisFileDirectory).env" Lines="@(EnvFileLines)" />
     </Target>
-
-    <Target Name="PrepareForDockerization" AfterTargets="Publish">
-        <MSBuild Targets="GetDockerBuildPropsForSolutionTarget" Projects="$(MSBuildThisFileDirectory)src/Server/Server.csproj">
-            <Output TaskParameter="TargetOutputs" ItemName="ProjectInfo" />
-        </MSBuild>
-    </Target>
 </Project>

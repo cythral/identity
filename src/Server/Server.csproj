@@ -67,10 +67,4 @@
     <MSBuild Projects="@(ProjectsToPublish)" Targets="Publish" BuildInParallel="false" />
   </Target>
 
-  <Target Name="GetDockerBuildPropsForSolutionTarget" Outputs="@(ProjectInfo)">
-    <ItemGroup>
-      <ProjectInfo Include="$(MSBuildThisFile)" TargetFramework="$(TargetFramework)" AspNetCoreVersion="$(BundledNETCoreAppPackageVersion)" AssemblyName="$(AssemblyName)" />
-    </ItemGroup>
-  </Target>
-
 </Project> 
