@@ -1,12 +1,13 @@
-Description: Brighid Identity
+Transform: AWS::Serverless-2016-10-31
+Description: Brighid Commands Service
 Parameters:
-  Image:
-    Type: String
-    Description: Docker Image uri to pull.
-
   DomainName:
     Type: String
-    Description: Domain name to use.
+    Description: Domain name to use for Brighid Commands.
+
+  Image:
+    Type: String
+    Description: URI of the Docker Image to pull.
 
   DatabaseHost:
     Type: String
@@ -24,9 +25,13 @@ Parameters:
     Type: String
     Description: The encrypted database password.
 
-  CookieDomain:
+  OpenIdMetadataAddress:
     Type: String
-    Description: The domain name to use for the session cookie.
+    Description: The metadata address for validating OpenID Tokens.
+
+  OpenIdValidIssuer:
+    Type: String
+    Description: The issuer to validate tokens against.
 
   EnvoyImage:
     Type: String
@@ -38,11 +43,10 @@ Parameters:
 
   EnvironmentName:
     Type: String
-    Description: Name to use for the environment.
-
-  CertificateConfigurationParameterName:
-    Type: String
-    Description: Name of the parameter that contains certificate configuration.
+    Description: Name of the environment being deployed to.
+    AllowedValues:
+      - dev
+      - prod
 
 Resources:
   MeshService:
@@ -77,7 +81,7 @@ Resources:
         ServiceDiscovery:
           AWSCloudMap:
             NamespaceName: !ImportValue brighid-infrastructure:ServiceRegistryName
-            ServiceName: identity
+            ServiceName: commands
 
   MeshGatewayRoute:
     Type: Custom::MeshGatewayRoute
@@ -100,8 +104,8 @@ Resources:
 
   ServiceRegistryRecord:
     Type: AWS::ServiceDiscovery::Service
-    Properties: 
-      Description: Internal Discovery Service for Brighid
+    Properties:
+      Description: Service Registry Record for Brighid Commands.
       DnsConfig:
         RoutingPolicy: MULTIVALUE
         DnsRecords:
@@ -112,23 +116,14 @@ Resources:
       HealthCheckCustomConfig:
         FailureThreshold: 1
       NamespaceId: !ImportValue brighid-infrastructure:ServiceRegistry
-      Name: identity
-
-  DecryptedClientSecret:
-    Type: Custom::Secret
-    Properties:
-      ServiceToken: !ImportValue cfn-secret-resource:SecretLambdaArn
-      EncryptionRoleArn: !ImportValue cfn-secret-resource:EncryptionRoleArn
-      Ciphertext: !ImportValue sso-aws:GoogleClientSecret
+      Name: commands
 
   Service:
     Type: AWS::ECS::Service
     Properties:
       Cluster: !ImportValue brighid-infrastructure:ClusterName
-      ServiceName: identity
+      ServiceName: commands
       LaunchType: FARGATE
-      EnableECSManagedTags: true
-      PropagateTags: TASK_DEFINITION
       NetworkConfiguration:
         AwsvpcConfiguration:
           Subnets: !Split
@@ -136,12 +131,11 @@ Resources:
             - !ImportValue cfn-utilities:SubnetIds
           SecurityGroups:
             - !ImportValue cfn-utilities:WebSecurityGroupId
-            - !ImportValue cfn-utilities:EnvoySecurityGroupId
           AssignPublicIp: ENABLED
+      TaskDefinition: !Ref TaskDefinition
       ServiceRegistries:
         - RegistryArn: !GetAtt ServiceRegistryRecord.Arn
           Port: 80
-      TaskDefinition: !Ref TaskDefinition
       DesiredCount: 1
       DeploymentConfiguration:
         MinimumHealthyPercent: 1
@@ -176,7 +170,7 @@ Resources:
           - Name: EgressIgnoredIPs
             Value: 169.254.170.2,169.254.169.254
       ContainerDefinitions:
-        - Name: !Ref AWS::StackName
+        - Name: commands
           Essential: true
           Image: !Ref Image
           DependsOn:
@@ -191,6 +185,8 @@ Resources:
               awslogs-region: !Ref AWS::Region
               awslogs-stream-prefix: brighid
           Environment:
+            - Name: ASPNETCORE_ENVIRONMENT
+              Value: !Ref EnvironmentName
             - Name: Database__Host
               Value: !Ref DatabaseHost
             - Name: Database__Name
@@ -199,22 +195,10 @@ Resources:
               Value: !Ref DatabaseUser
             - Name: Encrypted__Database__Password
               Value: !Ref DatabasePassword
-            - Name: EncryptionOptions__KmsKeyId
-              Value: alias/SecretsKey
-            - Name: Auth__DomainName
-              Value: !Ref DomainName
-            - Name: Auth__CookieDomain
-              Value: !Ref CookieDomain
-            - Name: Network__InternalIpv4Cidr
-              Value: !ImportValue cfn-utilities:Ipv4NetworkCidr
-            - Name: App__WaitConditionHandle
-              Value: !Ref WaitConditionHandle
-            - Name: App__Image
-              Value: !Ref Image
-            - Name: Environment
-              Value: !Ref EnvironmentName
-            - Name: Auth__CertificateConfigurationParameterName
-              Value: !Ref CertificateConfigurationParameterName
+            - Name: Auth__MetadataAddress
+              Value: !Ref OpenIdMetadataAddress
+            - Name: Auth__ValidIssuer
+              Value: !Ref OpenIdValidIssuer
         - Name: envoy
           Image: !Ref EnvoyImage
           Essential: true
@@ -245,45 +229,6 @@ Resources:
               Value: !Sub
                 - mesh/brighid-mesh@${SharedAccountId}/virtualNode/${MeshNode.VirtualNodeName}
                 - SharedAccountId: !ImportValue cfn-metadata:SharedAccountId
-                  
-  WaitConditionHandle:
-    Type: AWS::CloudFormation::WaitConditionHandle
-      
-  WaitCondition:
-    Type: AWS::CloudFormation::WaitCondition
-    DependsOn: Service
-    Properties:
-      Count: 1
-      Handle: !Ref WaitConditionHandle
-      Timeout: "300"
-
-  WaitConditionSignal:
-    Type: Custom::JsonValue
-    Properties:
-      ServiceToken: !ImportValue cfn-json-value-resource:JsonValueLambdaArn
-      Json: !GetAtt WaitCondition.Data
-      Key: SeededApplication
-
-  ApplicationTopic:
-    Type: AWS::SNS::Topic
-  
-  ApplicationTopicPolicy:
-    Type: AWS::SNS::TopicPolicy
-    Properties:
-      PolicyDocument:
-        Version: 2012-10-17
-        Statement:
-          - Effect: Allow
-            Action: sns:Publish
-            Resource: "*"
-            Principal:
-              AWS:
-                - !Sub arn:aws:iam::${AWS::AccountId}:root
-                - !Sub 
-                  - arn:aws:iam::${MasterAccountId}:root
-                  - MasterAccountId: !ImportValue cfn-utilities:MasterAccountId
-      Topics:
-        - !Ref ApplicationTopic
 
   TaskRole:
     Type: AWS::IAM::Role
@@ -293,8 +238,6 @@ Resources:
         - arn:aws:iam::aws:policy/AWSAppMeshEnvoyAccess
         - arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerServiceforEC2Role
         - !ImportValue cfn-utilities:SecretsKeyDecryptPolicyArn
-        - !ImportValue cfn-utilities:SecretsKeyEncryptPolicyArn
-        - !ImportValue identity-certificates:CertificateReadPolicyArn
       AssumeRolePolicyDocument:
         Version: 2012-10-17
         Statement:
@@ -311,28 +254,13 @@ Resources:
       PolicyDocument:
         Version: 2012-10-17
         Statement:
-          - Effect: Allow
-            Action: ssm:GetParameter
-            Resource: 
-              - !Sub arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/brighid/*/account-link/start-url
+          - Sid: AllowGettingAnyS3Object
+            Effect: Allow
+            Action: s3:GetObject
+            Resource: "*"
 
   LogGroup:
     Type: AWS::Logs::LogGroup
     Properties:
-      LogGroupName: /brighid/identity
+      LogGroupName: /brighid/commands
       RetentionInDays: 14
-
-Outputs:
-  CloudFormationApplicationClientId:
-    Value: !Select [0, !Split ["\n", !GetAtt WaitConditionSignal.Result]]
-    Description: Client ID of the CloudFormation Brighid Identity Application
-  
-  CloudFormationApplicationEncryptedSecret:
-    Value: !Select [1, !Split ["\n", !GetAtt WaitConditionSignal.Result]]
-    Description: Encrypted Client Secret of the CloudFormation Brighid Identity Application
-
-  ApplicationTopicArn:
-    Value: !Ref ApplicationTopic
-    Description: ARN of the application topic used for creating/updating/deleting identity client applications.
-    Export:
-      Name: !Sub ${AWS::StackName}:ApplicationTopicArn

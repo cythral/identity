@@ -1,0 +1,72 @@
+name: Deploy
+on:
+  workflow_call:
+    secrets:
+      role:
+        description: Role to use when performing the deployment.
+        required: true
+
+      discord-webhook:
+        description: Webhook to notify of deployment failures.
+        required: true
+
+    inputs:
+      environment:
+        description: Environment to use for this deployment.
+        type: string
+        required: true
+
+      artifacts-location:
+        description: S3 URL to look for deployment artifacts at.
+        type: string
+        required: true
+
+env:
+  DOTNET_NOLOGO: "true"
+  CONFIGURATION: Release
+  DOTNET_SYSTEM_GLOBALIZATION_INVARIANT: "true"
+  DOTNET_SYSTEM_GLOBALIZATION_PREDEFINED_CULTURES_ONLY: "false"
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
+    concurrency: ${{ inputs.environment }}
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          role-to-assume: ${{ secrets.role }}
+          aws-region: us-east-1
+
+      - name: Setup .NET Core
+        uses: actions/setup-dotnet@v2
+
+      - name: Display .NET Info
+        run: dotnet --info
+
+      - name: Deploy
+        run: |
+          dotnet run \
+            --project cicd/Cicd.DeployDriver/Cicd.DeployDriver.csproj -- \
+            --artifacts-location ${{ inputs.artifacts-location }} \
+            --environment ${{ inputs.environment }}
+
+      - name: Notify Deployment Failure
+        uses: Ilshidur/action-discord@master
+        if: failure()
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.discord-webhook }}
+          DISCORD_EMBEDS: |
+            [
+              {
+                "title": "[${{ github.repository }}] ${{ inputs.environment }} Deployment Failure",
+                "url": "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}",
+                "description": "${{ github.repository }} failed to deploy to ${{ inputs.environment }}.",
+                "color": 12720135
+              }
+            ]

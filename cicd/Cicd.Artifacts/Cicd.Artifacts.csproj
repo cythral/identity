@@ -1,0 +1,11 @@
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <RootNamespace>Brighid.Identity.Artifacts</RootNamespace>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Amazon.CDK.Lib" Version="2.13.0" />
+        <PackageReference Include="Constructs" Version="10.0.71" />
+    </ItemGroup>
+</Project>

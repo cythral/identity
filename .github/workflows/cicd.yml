@@ -1,0 +1,94 @@
+name: Continuous Integration + Deployment
+
+on:
+  push:
+    branches:
+      - "master"
+    tags:
+      - "*"
+  workflow_dispatch:
+  pull_request:
+  schedule:
+    - cron: "0 0 * * *"
+
+env:
+  DOTNET_NOLOGO: "true"
+  CONFIGURATION: Release
+  DOTNET_SYSTEM_GLOBALIZATION_INVARIANT: "true"
+  DOTNET_SYSTEM_GLOBALIZATION_PREDEFINED_CULTURES_ONLY: "false"
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    outputs:
+      artifacts-location: ${{ steps.build.outputs.artifacts-location }}
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          role-to-assume: ${{ secrets.AWS_SHARED_ROLE }}
+          aws-region: us-east-1
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: "14"
+
+      - name: Install CDK
+        run: npm install --global cdk
+
+      - name: Setup .NET Core
+        uses: actions/setup-dotnet@v2
+
+      - name: Display .NET Info
+        run: dotnet --info
+
+      - name: Expose GitHub Runtime
+        uses: crazy-max/ghaction-github-runtime@v1
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Build
+        id: build
+        run: |
+          dotnet run \
+            --verbosity minimal \
+            --project cicd/Cicd.BuildDriver/Cicd.BuildDriver.csproj -- \
+            --version ${{ github.run_number }}
+
+      - name: Test
+        run: |
+          dotnet test \
+            --logger trx \
+            --no-build
+
+  deploy-dev:
+    uses: cythral/identity/.github/workflows/deploy.yml@master
+    needs: build
+    with:
+      environment: Development
+      artifacts-location: ${{ needs.build.outputs.artifacts-location }}
+    secrets:
+      role: ${{ secrets.AWS_DEV_ROLE }}
+      discord-webhook: ${{ secrets.DISCORD_WEBHOOK }}
+
+  deploy-prod:
+    uses: cythral/identity/.github/workflows/deploy.yml@master
+    if: ${{ format('refs/heads/{0}', github.event.repository.default_branch) == github.ref }}
+    needs:
+      - build
+      - deploy-dev
+    with:
+      environment: Production
+      artifacts-location: ${{ needs.build.outputs.artifacts-location }}
+    secrets:
+      role: ${{ secrets.AWS_PROD_ROLE }}
+      discord-webhook: ${{ secrets.DISCORD_WEBHOOK }}
