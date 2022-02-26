@@ -110,17 +110,8 @@ namespace Brighid.Identity
 
         public void ConfigureDatabaseOptions(DbContextOptionsBuilder options)
         {
-            var conn = $"Server={DatabaseConfig.Host};";
-            conn += $"Database={DatabaseConfig.Name};";
-            conn += $"User={DatabaseConfig.User};";
-            conn += $"Password=\"{DatabaseConfig.Password}\";";
-            conn += "GuidFormat=Binary16;";
-            conn += "UseCompression=true";
-
-            options
-            .UseMySql(conn, ServerVersion.AutoDetect(conn));
-
-            options.UseOpenIddict();
+            var factory = new DatabaseContextFactory(Configuration, ServerVersion.AutoDetect, options);
+            factory.Configure();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

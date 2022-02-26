@@ -65,8 +65,8 @@ namespace Brighid.Identity.Cicd.BuildDriver
                 Directory.SetCurrentDirectory(ProjectRootDirectoryAttribute.ThisAssemblyProjectRootDirectory);
                 var command = new Command("dotnet ef migrations bundle", new Dictionary<string, object>
                 {
-                    ["--project"] = "src/Server/Server.csproj",
-                    ["--msbuildprojectextensionspath"] = "obj/Server/",
+                    ["--project"] = "src/Database/Database.csproj",
+                    ["--msbuildprojectextensionspath"] = "obj/Database/",
                     ["--output"] = "bin/Cicd/migrator",
                     ["--target-runtime"] = "linux-musl-x64",
                     ["--self-contained"] = true,

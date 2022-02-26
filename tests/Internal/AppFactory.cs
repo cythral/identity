@@ -93,9 +93,6 @@ public class AppFactory : WebApplicationFactory<Startup>
         builder.ConfigureTestServices(services =>
         {
             services
-            .AddScoped<IItemRepository>(provider => null!)
-            .AddScoped<IItemMapper>(provider => null!)
-            .AddScoped<IItemService>(provider => null!)
             .AddMvc()
             .AddApplicationPart(typeof(AppFactory).Assembly)
             .AddControllersAsServices();
