@@ -21,7 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="../src/Server/Server.csproj" AdditionalProperties="Configuration=Release" />
+    <ProjectReference Include="../src/Server/Server.csproj" />
   </ItemGroup>
 
 </Project>
