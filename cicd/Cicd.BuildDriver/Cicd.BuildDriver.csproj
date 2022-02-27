@@ -28,7 +28,7 @@
         <MakeDir Directories="$(CicdOutputFolder)" />
     </Target>
 
-    <Target Name="RestoreTools" AfterTargets="Restore">
+    <Target Name="RestoreTools" BeforeTargets="BeforeBuild">
         <Exec Command="dotnet tool restore" ConsoleToMsBuild="true" />
     </Target>
 </Project>
