@@ -169,6 +169,7 @@ namespace Brighid.Identity.Users
                 controllerContext.ModelState.AddModelError(nameof(UserLogin.User), userError);
                 controller.ControllerContext = controllerContext;
 
+                Console.WriteLine(controller.ControllerContext.ModelState.IsValid);
                 var response = await controller.CreateLogin(id, request);
                 var result = response.Result;
 

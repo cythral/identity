@@ -53,7 +53,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <InternalsVisibleTo Include="IdentityTests" />
+    <InternalsVisibleTo Include="Tests" />
     <InternalsVisibleTo Include="DynamicProxyGenAssembly2" />
   </ItemGroup>
 </Project> 
