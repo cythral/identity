@@ -59,10 +59,14 @@ jobs:
       - name: Pull DB Image
         run: docker pull public.ecr.aws/bitnami/mariadb:10.4
 
+      - name: Restore
+        run: dotnet restore
+
       - name: Build
         id: build
         run: |
           dotnet run \
+            --no-restore \
             --verbosity minimal \
             --project cicd/Cicd.BuildDriver/Cicd.BuildDriver.csproj -- \
             --version ${{ github.run_number }}
