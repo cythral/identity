@@ -309,9 +309,3 @@ Outputs:
   CloudFormationApplicationEncryptedSecret:
     Value: !Select [1, !Split ["\n", !GetAtt WaitConditionSignal.Result]]
     Description: Encrypted Client Secret of the CloudFormation Brighid Identity Application
-
-  ApplicationTopicArn:
-    Value: !Ref ApplicationTopic
-    Description: ARN of the application topic used for creating/updating/deleting identity client applications.
-    Export:
-      Name: !Sub ${AWS::StackName}:ApplicationTopicArn
