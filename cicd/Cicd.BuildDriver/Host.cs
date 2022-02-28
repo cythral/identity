@@ -57,12 +57,22 @@ namespace Brighid.Identity.Cicd.BuildDriver
             cancellationToken.ThrowIfCancellationRequested();
             Directory.CreateDirectory(CicdOutputDirectory);
             var accountNumber = await GetCurrentAccountNumber(cancellationToken);
+            Directory.SetCurrentDirectory(ProjectRootDirectoryAttribute.ThisAssemblyProjectRootDirectory);
+
+            await Step("Publish Server", async () =>
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+
+                var command = new Command("dotnet publish src/Server/Server.csproj");
+                await command.RunOrThrowError(
+                    errorMessage: "Could not publish Server DLLs.",
+                    cancellationToken: cancellationToken
+                );
+            });
 
             await Step("Creating Migrations Bundle", async () =>
             {
                 cancellationToken.ThrowIfCancellationRequested();
-
-                Directory.SetCurrentDirectory(ProjectRootDirectoryAttribute.ThisAssemblyProjectRootDirectory);
                 var command = new Command("dotnet ef migrations bundle", new Dictionary<string, object>
                 {
                     ["--project"] = "src/Database/Database.csproj",
