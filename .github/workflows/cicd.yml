@@ -12,11 +12,11 @@ on:
     - cron: "0 0 * * *"
 
 env:
+  CI: "true"
   DOTNET_NOLOGO: "true"
   CONFIGURATION: Release
   DOTNET_SYSTEM_GLOBALIZATION_INVARIANT: "true"
   DOTNET_SYSTEM_GLOBALIZATION_PREDEFINED_CULTURES_ONLY: "false"
-  MSBUILDDISABLENODEREUSE: "1"
 
 permissions:
   contents: read
@@ -57,6 +57,9 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
 
+      - name: Pull DB Image
+        run: docker pull public.ecr.aws/bitnami/mariadb:10.4
+        
       - name: Build
         id: build
         run: |
@@ -68,8 +71,8 @@ jobs:
       - name: Test
         run: |
           dotnet test \
-            --logger trx \
-            --no-build
+            --no-build \
+            --logger trx
 
   deploy-dev:
     uses: cythral/identity/.github/workflows/deploy.yml@master

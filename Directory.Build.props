@@ -12,11 +12,11 @@
     </PropertyGroup>
 
     <PropertyGroup>
-        <RuntimeIdentifiers>osx-x64;linux-musl-x64</RuntimeIdentifiers>
+        <RuntimeIdentifiers>osx-x64;linux-x64;linux-musl-x64</RuntimeIdentifiers>
         <TargetFramework>net6.0</TargetFramework>
         <Configuration Condition="$(Configuration) == ''">Debug</Configuration>
         <Nullable>enable</Nullable>
-        <LangVersion>9.0</LangVersion>
+        <LangVersion>10</LangVersion>
         <EnableTrimAnalyzer>false</EnableTrimAnalyzer>
         <SuppressTrimAnalysisWarnings>true</SuppressTrimAnalysisWarnings>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>

@@ -60,7 +60,8 @@ namespace Brighid.Identity.Users
             }
             catch (ModelStateException e)
             {
-                return BadRequest(new { e.Message, e.Errors });
+#pragma warning disable IDE0037
+                return BadRequest(new { e.Message, Errors = e.Errors });
             }
         }
 

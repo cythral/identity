@@ -9,6 +9,10 @@ Parameters:
     Development: dev
     Production: prod
 
+  DomainName:
+    Development: identity.dev.brigh.id
+    Production: identity.brigh.id
+
   CookieDomain:
     Development: dev.brigh.id
     Production: brigh.id
@@ -34,8 +38,8 @@ Parameters:
     Production: 840364872350.dkr.ecr.us-east-1.amazonaws.com/aws-appmesh-envoy:v1.19.1.1-prod
 
   MeshNodeName:
-    Development: commands-dev
-    Production: commands-prod
+    Development: identity-dev
+    Production: identity-prod
 
   CertificateConfigurationParameterName:
     Development: /brighid/identity/signing-certificates

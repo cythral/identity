@@ -3,7 +3,8 @@
   <PropertyGroup>
     <RootNamespace>Brighid.Identity</RootNamespace>
     <TrimMode>copyused</TrimMode>
-    <PublishTrimmed Condition="'$(RuntimeIdentifier)' != ''">true</PublishTrimmed>
+    <RuntimeIdentifier>linux-musl-x64</RuntimeIdentifier>
+    <PublishTrimmed>true</PublishTrimmed>
     <PublishSelfContained>true</PublishSelfContained>
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
     <NoWarn>NETSDK1152</NoWarn>
@@ -18,17 +19,14 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.2" />
-    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="6.0.2" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="6.0.2" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="6.0.2" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.2" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="OpenIddict" Version="3.1.1" />
     <PackageReference Include="OpenIddict.AspNetCore" Version="3.1.1" />
     <PackageReference Include="OpenIddict.Server.AspNetCore" Version="3.1.1" />
-    <PackageReference Include="OpenIddict.EntityFrameworkCore" Version="3.1.1" />
   </ItemGroup>
 
   <ItemGroup>
@@ -40,13 +38,13 @@
 
   <ItemGroup>
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
-    <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="6.0.1" />
     <PackageReference Include="Serilog.AspNetCore" Version="5.0.0" />
     <PackageReference Include="Destructurama.Attributed" Version="3.0.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="../Common/Common.csproj" />
+    <ProjectReference Include="../Database/Database.csproj" />
     <ProjectReference Include="../Interface/Interface.csproj" />
   </ItemGroup>
 
@@ -55,16 +53,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <InternalsVisibleTo Include="IdentityTests" />
+    <InternalsVisibleTo Include="Tests" />
     <InternalsVisibleTo Include="DynamicProxyGenAssembly2" />
   </ItemGroup>
-
-  <Target Name="PublishLinuxMusl" AfterTargets="Build" Condition="'$(RuntimeIdentifier)' == ''">
-    <ItemGroup>
-      <ProjectsToPublish Include="$(MSBuildThisFile)" AdditionalProperties="RuntimeIdentifier=linux-musl-x64" />
-    </ItemGroup>
-
-    <MSBuild Projects="@(ProjectsToPublish)" Targets="Publish" BuildInParallel="false" />
-  </Target>
-
 </Project> 

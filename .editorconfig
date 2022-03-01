@@ -52,7 +52,7 @@ dotnet_diagnostic.IDE0007.severity = error
 dotnet_diagnostic.IDE0008.severity = none
 dotnet_diagnostic.IDE0022.severity = none
 
-[src/Server/Common/Database/Migrations/*.cs]
+[src/Database/Migrations/*.cs]
 dotnet_diagnostic.SA1413.severity = none
 
 [tests/**.{cs,csx}]
