@@ -71,6 +71,7 @@ jobs:
       - name: Test
         run: |
           dotnet test \
+            --no-build \
             --logger trx
 
   deploy-dev:
