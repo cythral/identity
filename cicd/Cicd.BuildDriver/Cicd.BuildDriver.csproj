@@ -6,6 +6,11 @@
         <ValidateExecutableReferencesMatchSelfContained>false</ValidateExecutableReferencesMatchSelfContained>
     </PropertyGroup>
 
+    <PropertyGroup>
+        <ServerTargets Condition="'$(CI)' != ''">Publish</ServerTargets>
+        <ServerTargets Condition="'$(CI)' == ''">Build</ServerTargets>
+    </PropertyGroup>
+
     <ItemGroup>
         <AssemblyAttribute Include="ProjectRootDirectory">
             <_Parameter1>$(ProjectRootDirectory)</_Parameter1>
@@ -19,8 +24,8 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="../../src/Server/Server.csproj" ReferenceOutputAssembly="false" Properties="SwaggerOutputPath=$(CicdOutputFolder)" />
-        <ProjectReference Include="../../tests/Tests.csproj" ReferenceOutputAssembly="false" />
+        <ProjectReference Include="../../src/Server/Server.csproj" Targets="$(ServerTargets)" ReferenceOutputAssembly="false" Properties="SwaggerOutputPath=$(CicdOutputFolder)" />
+        <ProjectReference Include="../../tests/Tests.csproj" Targets="$(ServerTargets)" ReferenceOutputAssembly="false" Properties="SwaggerOutputPath=$(CicdOutputFolder)" />
         <ProjectReference Include="../Cicd.Utils/Cicd.Utils.csproj" />
     </ItemGroup>
 

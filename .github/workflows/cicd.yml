@@ -12,6 +12,7 @@ on:
     - cron: "0 0 * * *"
 
 env:
+  CI: "true"
   DOTNET_NOLOGO: "true"
   CONFIGURATION: Release
   DOTNET_SYSTEM_GLOBALIZATION_INVARIANT: "true"
@@ -70,8 +71,7 @@ jobs:
       - name: Test
         run: |
           dotnet test \
-            --logger trx \
-            --no-build
+            --logger trx
 
   deploy-dev:
     uses: cythral/identity/.github/workflows/deploy.yml@master

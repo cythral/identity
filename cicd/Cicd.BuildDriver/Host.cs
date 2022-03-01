@@ -59,13 +59,13 @@ namespace Brighid.Identity.Cicd.BuildDriver
             var accountNumber = await GetCurrentAccountNumber(cancellationToken);
             Directory.SetCurrentDirectory(ProjectRootDirectoryAttribute.ThisAssemblyProjectRootDirectory);
 
-            await Step("Publish Server", async () =>
+            await Step("Publish Interface", async () =>
             {
                 cancellationToken.ThrowIfCancellationRequested();
 
-                var command = new Command("dotnet publish src/Server/Server.csproj");
+                var command = new Command("dotnet publish src/Interface/Interface.csproj");
                 await command.RunOrThrowError(
-                    errorMessage: "Could not publish Server DLLs.",
+                    errorMessage: "Could not publish Interface DLLs.",
                     cancellationToken: cancellationToken
                 );
             });
