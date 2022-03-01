@@ -63,7 +63,7 @@ jobs:
         id: build
         run: |
           dotnet run \
-            --verbosity minimal
+            --verbosity minimal \
             --project cicd/Cicd.BuildDriver/Cicd.BuildDriver.csproj -- \
             --version ${{ github.run_number }}
 
