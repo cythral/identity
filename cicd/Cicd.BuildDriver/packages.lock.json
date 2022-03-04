@@ -4,9 +4,9 @@
     "net6.0": {
       "AWSSDK.SecurityToken": {
         "type": "Direct",
-        "requested": "[3.7.1.123, )",
-        "resolved": "3.7.1.123",
-        "contentHash": "sFqcbdgxZN/qawemTA9qEhyeeHPSjeEiGSAEsTqNsI/rxW73VPu2UcWqW9cCwKjkDWkokffBN932v0jtrD+Gmw==",
+        "requested": "[3.7.1.124, )",
+        "resolved": "3.7.1.124",
+        "contentHash": "vKsIWc60QcwBNtoeGC9t0VnWwHYNcm4mvTR7revlFzp+lZnH9jrEs+mRWBWqtQOukdRS2xfGZEY6+UarD9GE5g==",
         "dependencies": {
           "AWSSDK.Core": "[3.7.8.6, 4.0.0)"
         }
