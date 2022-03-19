@@ -20,8 +20,8 @@ services:
       - "80"
       - "8736:8736"
     volumes:
-      - ./bin/Server/Debug/net6.0/linux-musl-x64:/app
-      - ./bin/Interface/Debug/net6.0/publish/wwwroot:/wwwroot
+      - ./bin/Server/Debug/linux-musl-x64:/app
+      - ./bin/Interface/Debug/publish/wwwroot:/wwwroot
       - ~/.aws:/home/brighid/.aws
       - ~/.vsdbg:/remote_debugger:rw
     environment:
@@ -29,6 +29,9 @@ services:
       CONFIGURATION: Debug
       DECRYPTION_DISABLED: "true"
       ASPNETCORE_HOSTINGSTARTUPASSEMBLIES: Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation
+      AWS_XRAY_DAEMON_ADDRESS: xray:2000
+      AWS_XRAY_TRACING_NAME: Identity
+      AWS_XRAY_CONTEXT_MISSING: LOG_ERROR
       Environment: local
       Database__Host: db
       Database__Name: ${DB_NAME}
@@ -55,6 +58,14 @@ services:
       MYSQL_RANDOM_ROOT_PASSWORD: "true"
     volumes:
       - my-db:/var/lib/mysql
+  
+  xray:
+    image: public.ecr.aws/xray/aws-xray-daemon:latest
+    command: -o
+    volumes:
+      - ~/.aws:/home/xray/.aws
+    environment:
+      AWS_REGION: us-east-1
 
 volumes:
   my-db:

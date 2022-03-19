@@ -44,3 +44,7 @@ Parameters:
   CertificateConfigurationParameterName:
     Development: /brighid/identity/signing-certificates
     Production: /brighid/identity/signing-certificates
+  
+  XrayImage:
+    Development: public.ecr.aws/xray/aws-xray-daemon:3.3.3
+    Production: public.ecr.aws/xray/aws-xray-daemon:3.3.3

@@ -44,6 +44,10 @@ Parameters:
     Type: String
     Description: Name of the parameter that contains certificate configuration.
 
+  XrayImage:
+    Type: String
+    Description: Image to use for the X-Ray Sidecar.
+
 Resources:
   MeshService:
     Type: AWS::AppMesh::VirtualService
@@ -191,6 +195,12 @@ Resources:
               awslogs-region: !Ref AWS::Region
               awslogs-stream-prefix: brighid
           Environment:
+            - Name: AWS_XRAY_DAEMON_ADDRESS
+              Value: xray:2000
+            - Name: AWS_XRAY_TRACING_NAME
+              Value: Identity
+            - Name: AWS_XRAY_CONTEXT_MISSING
+              Value: LOG_ERROR
             - Name: Database__Host
               Value: !Ref DatabaseHost
             - Name: Database__Name
@@ -245,6 +255,17 @@ Resources:
               Value: !Sub
                 - mesh/brighid-mesh@${SharedAccountId}/virtualNode/${MeshNode.VirtualNodeName}
                 - SharedAccountId: !ImportValue cfn-metadata:SharedAccountId
+        - Name: xray
+          Image: !Ref XrayImage
+          PortMappings:
+            - ContainerPort: 2000
+              Protocol: udp
+          LogConfiguration:
+            LogDriver: "awslogs"
+            Options:
+              awslogs-group: !Ref LogGroup
+              awslogs-region: !Ref AWS::Region
+              awslogs-stream-prefix: brighid
                   
   WaitConditionHandle:
     Type: AWS::CloudFormation::WaitConditionHandle

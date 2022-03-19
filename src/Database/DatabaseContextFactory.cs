@@ -27,12 +27,12 @@ namespace Brighid.Identity
             DbContextOptionsBuilder dbOptionsBuilder
         )
         {
-            this.options = configuration.GetSection("Database").Get<DatabaseConfig>() ?? new DatabaseConfig();
+            options = configuration.GetSection("Database").Get<DatabaseConfig>() ?? new DatabaseConfig();
             this.detectVersion = detectVersion;
             this.dbOptionsBuilder = dbOptionsBuilder;
         }
 
-        public void Configure()
+        public void Configure(Action<DbContextOptionsBuilder>? configure = null)
         {
             var conn = $"Server={options.Host};";
             conn += $"Database={options.Name};";
@@ -44,6 +44,8 @@ namespace Brighid.Identity
             var version = detectVersion(conn);
             dbOptionsBuilder.UseMySql(conn, version);
             dbOptionsBuilder.UseOpenIddict();
+
+            configure?.Invoke(dbOptionsBuilder);
         }
 
         public DatabaseContext CreateDbContext(string[] args)

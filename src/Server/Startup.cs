@@ -111,12 +111,13 @@ namespace Brighid.Identity
         public void ConfigureDatabaseOptions(DbContextOptionsBuilder options)
         {
             var factory = new DatabaseContextFactory(Configuration, ServerVersion.AutoDetect, options);
-            factory.Configure();
+            factory.Configure(options => options.AddXRayInterceptor());
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, DatabaseContext context)
         {
+            app.UseXRay("Identity");
             if (env.IsEnvironment(Environments.Local))
             {
                 context.Database.Migrate();

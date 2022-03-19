@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 
+using Amazon.XRay.Recorder.Handlers.AwsSdk;
+
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
@@ -15,6 +17,7 @@ namespace Brighid.Identity
     {
         public static async Task Main(string[] args)
         {
+            AWSSDKHandler.RegisterXRayForAllServices();
             await CreateHostBuilder(args).Build().RunAsync();
         }
 
