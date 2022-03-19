@@ -69,6 +69,8 @@ jobs:
             --version ${{ github.run_number }}
 
       - name: Test
+        env:
+          AWS_XRAY_CONTEXT_MISSING: LOG_ERROR
         run: |
           dotnet test \
             --no-build \
