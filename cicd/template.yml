@@ -292,6 +292,7 @@ Resources:
         - arn:aws:iam::aws:policy/CloudWatchLogsFullAccess
         - arn:aws:iam::aws:policy/AWSAppMeshEnvoyAccess
         - arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerServiceforEC2Role
+        - arn:aws:iam::aws:policy/AWSXRayDaemonWriteAccess
         - !ImportValue cfn-utilities:SecretsKeyDecryptPolicyArn
         - !ImportValue cfn-utilities:SecretsKeyEncryptPolicyArn
         - !ImportValue identity-certificates:CertificateReadPolicyArn
