@@ -4,11 +4,11 @@
     "net6.0": {
       "AWSSDK.SecurityToken": {
         "type": "Direct",
-        "requested": "[3.7.1.131, )",
-        "resolved": "3.7.1.131",
-        "contentHash": "Lpj7RMcuKhrv8AEwM0ZOugNKDX0kFpDwKUkycaC3ht25JvOnHg8rWvpH4UyARxTnDV3ZR/nD0efrJcnikxugOw==",
+        "requested": "[3.7.1.132, )",
+        "resolved": "3.7.1.132",
+        "contentHash": "IRP2UN6Kj8NDXkM4DCB/0ldOq3ZVVEQ7PBB0oshN6VsxXWJY0qgANj/z1R5dOSMbPRkabpJgR24YLfiVVyfHjg==",
         "dependencies": {
-          "AWSSDK.Core": "[3.7.9.1, 4.0.0)"
+          "AWSSDK.Core": "[3.7.9.2, 4.0.0)"
         }
       },
       "Microsoft.Extensions.Hosting": {
@@ -57,23 +57,23 @@
       },
       "AWSSDK.Core": {
         "type": "Transitive",
-        "resolved": "3.7.9.1",
-        "contentHash": "nSQvACQhCQ9Z2o6I9sIYUtgFSboOyXavuEjxO50r2UvGtCLNNYtcGie62FxcP/YubqlfRVid/HY7S/GcVI1SNw=="
+        "resolved": "3.7.9.2",
+        "contentHash": "nTtAWzlpf8l23o/XeqZKRax67SekmVJB1D5RedrSbEX/eUFA/+WIm5tIdIhoPiZeN0w3q9TRx/Ebj0rxM1DO5Q=="
       },
       "AWSSDK.ECR": {
         "type": "Transitive",
-        "resolved": "3.7.4.1",
-        "contentHash": "SRMLvt6nd0qucJ+9Ce0jMllflng0t5XoDP5Q/WBRF8Ps57i6+ei39+qLDp2hHugmJ07MXqiAn2qUREHG7P2pEA==",
+        "resolved": "3.7.4.2",
+        "contentHash": "9WcFxlbTj9gDjECbxK9ZMdDhrYmB24HT9x4652lr3kYEJrzvGZSYJ/td3LjmlvVB1wn3iFm9AcSNnWGXUk6XoA==",
         "dependencies": {
-          "AWSSDK.Core": "[3.7.9.1, 4.0.0)"
+          "AWSSDK.Core": "[3.7.9.2, 4.0.0)"
         }
       },
       "AWSSDK.ECRPublic": {
         "type": "Transitive",
-        "resolved": "3.7.0.139",
-        "contentHash": "k6TXPuuSTO1Mu0AxXDYmpV9lkrBTmDVZ0XK43AdKbBNtgSUhNxTJYKZs9vSD6aqbL3pcRBX21HypjijRAc/lNA==",
+        "resolved": "3.7.0.140",
+        "contentHash": "UYrN2N0NRt/SbE2GnH9W1jpvWqkQN39VImFGpjVetoc9t5sZq9Q1DW8WwJR1mSdCymVphxf3RBsqFLX6SnH7Yg==",
         "dependencies": {
-          "AWSSDK.Core": "[3.7.9.1, 4.0.0)"
+          "AWSSDK.Core": "[3.7.9.2, 4.0.0)"
         }
       },
       "Microsoft.Extensions.Configuration": {
@@ -354,8 +354,8 @@
       "cicd.utils": {
         "type": "Project",
         "dependencies": {
-          "AWSSDK.ECR": "3.7.4.1",
-          "AWSSDK.ECRPublic": "3.7.0.139"
+          "AWSSDK.ECR": "3.7.4.2",
+          "AWSSDK.ECRPublic": "3.7.0.140"
         }
       }
     },
