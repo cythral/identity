@@ -1,5 +1,6 @@
 using System;
 using System.Reflection;
+using System.Threading;
 using System.Threading.Tasks;
 
 using AutoFixture.AutoNSubstitute;
@@ -144,6 +145,60 @@ namespace Brighid.Identity.Users
                 var result = await service.CreateLogin(userId, loginInfo);
 
                 result.Should().Be(loginInfo);
+            }
+        }
+
+        [Category("Unit")]
+        public class SetDebugMode
+        {
+            [Test]
+            [Auto]
+            public async Task ShouldTurnOnDebugModeForUsersThatExist(
+                Guid userId,
+                [Frozen] User user,
+                [Frozen] IUserRepository repository,
+                [Target] DefaultUserService service,
+                CancellationToken cancellationToken
+            )
+            {
+                user.Flags = UserFlags.None;
+
+                await service.SetDebugMode(userId, true, cancellationToken);
+
+                await repository.Received().Save(Is<User>(user => user.Flags.HasFlag(UserFlags.Debug)), Is(cancellationToken));
+            }
+
+            [Test]
+            [Auto]
+            public async Task ShouldTurnOffDebugModeForUsersThatExist(
+                Guid userId,
+                [Frozen] User user,
+                [Frozen] IUserRepository repository,
+                [Target] DefaultUserService service,
+                CancellationToken cancellationToken
+            )
+            {
+                user.Flags = UserFlags.Debug;
+
+                await service.SetDebugMode(userId, false, cancellationToken);
+
+                await repository.Received().Save(Is<User>(user => !user.Flags.HasFlag(UserFlags.Debug)), Is(cancellationToken));
+            }
+
+            [Test]
+            [Auto]
+            public async Task ShouldThrowIfUserNotFound(
+                Guid userId,
+                [Frozen] IUserRepository repository,
+                [Target] DefaultUserService service,
+                CancellationToken cancellationToken
+            )
+            {
+                repository.FindById(Any<Guid>(), Any<CancellationToken>()).Returns(null as User);
+
+                Func<Task> func = () => service.SetDebugMode(userId, true, cancellationToken);
+
+                await func.Should().ThrowAsync<UserNotFoundException>();
             }
         }
     }

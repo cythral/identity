@@ -1,4 +1,5 @@
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 using AutoFixture.AutoNSubstitute;
@@ -105,15 +106,16 @@ namespace Brighid.Identity.Applications
                 Guid id,
                 Application application,
                 [Frozen, Substitute] IApplicationRepository repository,
-                [Target] DefaultApplicationService service
+                [Target] DefaultApplicationService service,
+                CancellationToken cancellationToken
             )
             {
-                repository.FindById(Any<Guid>(), Any<string>()).Returns<Application?>(x => throw new Exception());
+                repository.FindById(Any<Guid>(), Any<CancellationToken>()).Returns<Application?>(x => throw new Exception());
 
                 Func<Task<Application>> func = () => service.UpdateById(id, application);
 
                 await func.Should().ThrowAsync<Exception>();
-                await repository.Received().FindById(Is(id), Is("Roles"));
+                await repository.Received().FindById(Is(id), Is(cancellationToken));
             }
 
             [Test]
@@ -125,7 +127,7 @@ namespace Brighid.Identity.Applications
                 [Target] DefaultApplicationService service
             )
             {
-                repository.FindById(Any<Guid>(), Any<string>()).Returns((Application)null!);
+                repository.FindById(Any<Guid>(), Any<CancellationToken>()).Returns((Application)null!);
 
                 Func<Task<Application>> func = () => service.UpdateById(id, application);
 
@@ -146,7 +148,7 @@ namespace Brighid.Identity.Applications
             {
                 existingApp.Serial = serial;
                 application.Serial = serial;
-                repository.FindById(Any<Guid>(), Any<string>()).Returns(existingApp);
+                repository.FindById(Any<Guid>(), Any<CancellationToken>()).Returns(existingApp);
                 await service.UpdateById(id, application);
 
                 await repository.Received().Save(Is<Application>(app =>
@@ -168,7 +170,7 @@ namespace Brighid.Identity.Applications
             {
                 existingApp.Serial = serial;
                 application.Serial = serial;
-                repository.FindById(Any<Guid>(), Any<string>()).Returns(existingApp);
+                repository.FindById(Any<Guid>(), Any<CancellationToken>()).Returns(existingApp);
                 await service.UpdateById(id, application);
 
                 await repository.Received().Save(Is<Application>(app =>
@@ -189,7 +191,7 @@ namespace Brighid.Identity.Applications
             {
                 application.Serial.Should().NotBe(existingApp.Serial);
 
-                repository.FindById(Any<Guid>(), Any<string>()).Returns(existingApp);
+                repository.FindById(Any<Guid>(), Any<CancellationToken>()).Returns(existingApp);
                 await service.UpdateById(id, application);
 
                 var openIddictApplication = new OpenIddictEntityFrameworkCoreApplication { ClientId = id.ToString() };
@@ -219,7 +221,7 @@ namespace Brighid.Identity.Applications
 
                 generateRandomString(Any<int>()).Returns(secret);
                 encryptionService.Encrypt(Any<string>()).Returns(encryptedSecret);
-                repository.FindById(Any<Guid>(), Any<string>()).Returns(existingApp);
+                repository.FindById(Any<Guid>(), Any<CancellationToken>()).Returns(existingApp);
 
                 var openIddictApplication = new OpenIddictEntityFrameworkCoreApplication { ClientId = id.ToString() };
                 applicationManager.FindByClientIdAsync(Any<string>()).Returns(openIddictApplication);
@@ -253,7 +255,7 @@ namespace Brighid.Identity.Applications
                 generateRandomString(Any<int>()).Returns(secret);
                 encryptionService.Encrypt(Any<string>()).Returns(encryptedSecret);
 
-                repository.FindById(Any<Guid>(), Any<string>()).Returns(existingApp);
+                repository.FindById(Any<Guid>(), Any<CancellationToken>()).Returns(existingApp);
                 await service.UpdateById(id, application);
 
                 generateRandomString.DidNotReceive()(Is(128));
@@ -286,7 +288,7 @@ namespace Brighid.Identity.Applications
                 var openIddictApplication = new OpenIddictEntityFrameworkCoreApplication { ClientId = id.ToString() };
                 applicationManager.FindByClientIdAsync(Any<string>()).Returns(openIddictApplication);
 
-                repository.FindById(Any<Guid>(), Any<string>()).Returns(existingApp);
+                repository.FindById(Any<Guid>(), Any<CancellationToken>()).Returns(existingApp);
                 var result = await service.UpdateById(id, application);
 
                 result.Secret.Should().Be(secret);
@@ -312,7 +314,7 @@ namespace Brighid.Identity.Applications
                 generateRandomString(Any<int>()).Returns(secret);
                 encryptionService.Encrypt(Any<string>()).Returns(encryptedSecret);
 
-                repository.FindById(Any<Guid>(), Any<string>()).Returns(existingApp);
+                repository.FindById(Any<Guid>(), Any<CancellationToken>()).Returns(existingApp);
                 var result = await service.UpdateById(id, application);
 
                 result.Secret.Should().NotBe(secret);
@@ -338,7 +340,7 @@ namespace Brighid.Identity.Applications
                 var openIddictApplication = new OpenIddictEntityFrameworkCoreApplication { ClientId = id.ToString() };
                 applicationManager.FindByClientIdAsync(Any<string>()).Returns(openIddictApplication);
 
-                repository.FindById(Any<Guid>(), Any<string>()).Returns(existingApp);
+                repository.FindById(Any<Guid>(), Any<CancellationToken>()).Returns(existingApp);
                 var result = await service.UpdateById(id, application);
 
                 await applicationManager.Received().FindByClientIdAsync(Is(id.ToString()));

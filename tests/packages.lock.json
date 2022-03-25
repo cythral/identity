@@ -2462,7 +2462,8 @@
           "Microsoft.Extensions.Configuration.Binder": "6.0.0",
           "Microsoft.Extensions.Configuration.EnvironmentVariables": "6.0.1",
           "OpenIddict.EntityFrameworkCore": "3.1.1",
-          "Pomelo.EntityFrameworkCore.MySql": "6.0.1"
+          "Pomelo.EntityFrameworkCore.MySql": "6.0.1",
+          "System.Linq.Async": "6.0.1"
         }
       },
       "interface": {
