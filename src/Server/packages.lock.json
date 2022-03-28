@@ -22,9 +22,9 @@
       },
       "AWSSDK.SimpleSystemsManagement": {
         "type": "Direct",
-        "requested": "[3.7.13.1, )",
-        "resolved": "3.7.13.1",
-        "contentHash": "8Z+tjwwtPCW6TmJwU9Eavwm6g8msT/sda30GB3HWKEVGzXan1KaDkNCm1vBNrGdDCFRBK6uKKTvcRGLdMAa25Q==",
+        "requested": "[3.7.14, )",
+        "resolved": "3.7.14",
+        "contentHash": "RI04ppF7fkcIvij2XzlPcz0bTUP57sQ4AgEItOGuEuQCFn55MZO2seUC/19A+Af40XVFGV4koLNjsERUCeO6Zg==",
         "dependencies": {
           "AWSSDK.Core": "[3.7.9.2, 4.0.0)"
         }
