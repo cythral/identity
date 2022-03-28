@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Brighid.Identity
@@ -11,17 +12,17 @@ namespace Brighid.Identity
 
         Task<IEnumerable<TEntity>> List();
 
-        Task LoadCollection(TEntity entity, params string[] embeds);
+        Task LoadCollection(TEntity entity, string collection, CancellationToken cancellationToken = default);
 
         Task<TEntity> Add(TEntity entity);
 
         Task<TEntity?> TryAdd(TEntity entity);
 
-        Task<TEntity?> FindById(TPrimaryKeyType primaryKey, params string[] embeds);
+        Task<TEntity?> FindById(TPrimaryKeyType primaryKey, CancellationToken cancellationToken = default);
 
-        Task<bool> Exists(TPrimaryKeyType primaryKey);
+        Task<bool> Exists(TPrimaryKeyType primaryKey, CancellationToken cancellationToken = default);
 
-        Task<TEntity> Save(TEntity entity);
+        Task<TEntity> Save(TEntity entity, CancellationToken cancellationToken = default);
 
         Task<TEntity> Remove(TPrimaryKeyType primaryKey);
 

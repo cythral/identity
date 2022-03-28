@@ -17,8 +17,6 @@ namespace Brighid.Identity.Users
     })]
     public class UserController : Controller
     {
-        private readonly string[] embeds = new[] { "Roles", "Logins" };
-
         private readonly IUserRepository repository;
         private readonly IUserService service;
 
@@ -34,8 +32,30 @@ namespace Brighid.Identity.Users
         [HttpGet("{userId}")]
         public async Task<ActionResult<User>> Get(Guid userId)
         {
-            var result = await repository.FindById(userId, embeds);
-            return result == null ? NotFound() : Ok(result);
+            var result = await repository.FindById(userId);
+
+            if (result == null)
+            {
+                return NotFound();
+            }
+
+            await repository.LoadCollection(result, nameof(Users.User.Roles));
+            await repository.LoadCollection(result, nameof(Users.User.Logins));
+            return Ok(result);
+        }
+
+        [HttpPatch("{userId}/debug-mode", Name = "Users:SetDebugMode")]
+        public async Task<ActionResult> SetDebugMode(Guid userId, [FromBody] bool enabled)
+        {
+            try
+            {
+                await service.SetDebugMode(userId, enabled, HttpContext.RequestAborted);
+                return NoContent();
+            }
+            catch (UserNotFoundException exception)
+            {
+                return NotFound(new { exception.Message });
+            }
         }
 
         [HttpPost("{userId}/logins", Name = "Users:CreateLogin")]

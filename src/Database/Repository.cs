@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization;
+using System.Threading;
 using System.Threading.Tasks;
 
 using Microsoft.EntityFrameworkCore;
@@ -15,6 +16,12 @@ namespace Brighid.Identity
         where TEntity : class
         where TPrimaryKeyType : notnull
     {
+        private static readonly Func<DatabaseContext, TPrimaryKeyType, IAsyncEnumerable<TEntity>> FindByIdCompiledQuery = EF.CompileAsyncQuery<DatabaseContext, TPrimaryKeyType, TEntity>(
+            (context, primaryKey) => from entity in context.Set<TEntity>()
+                                     where EF.Property<TPrimaryKeyType>(entity, PrimaryKeyName!).Equals(primaryKey)
+                                     select entity
+        );
+
         public Repository(DatabaseContext context)
         {
             Context = context;
@@ -50,14 +57,10 @@ namespace Brighid.Identity
             return await All.ToListAsync();
         }
 
-        public virtual async Task LoadCollection(TEntity entity, params string[] embeds)
+        public virtual async Task LoadCollection(TEntity entity, string collection, CancellationToken cancellationToken = default)
         {
             var entry = Context.Entry(entity);
-
-            foreach (var embed in embeds)
-            {
-                await entry.Collection(embed).LoadAsync();
-            }
+            await entry.Collection(collection).LoadAsync(cancellationToken);
         }
 
         public virtual async Task<TEntity> Add(TEntity entity)
@@ -90,30 +93,20 @@ namespace Brighid.Identity
 #pragma warning restore CA1031
         }
 
-        public virtual async Task<TEntity?> FindById(TPrimaryKeyType primaryKey, params string[] embeds)
+        public virtual async Task<TEntity?> FindById(TPrimaryKeyType primaryKey, CancellationToken cancellationToken = default)
         {
-            var entitySet = embeds
-                .Aggregate(All, (query, embed) => query.Include(embed))
-                .AsQueryable();
-
-            var query = from entity in entitySet
-                        where EF.Property<TPrimaryKeyType>(entity, PrimaryKeyName!).Equals(primaryKey)
-                        select entity;
-
-            return await query.FirstOrDefaultAsync();
+            return await FindByIdCompiledQuery(Context, primaryKey).FirstOrDefaultAsync(cancellationToken);
         }
 
-        public virtual async Task<bool> Exists(TPrimaryKeyType primaryKey)
+        public virtual async Task<bool> Exists(TPrimaryKeyType primaryKey, CancellationToken cancellationToken = default)
         {
-            var query = from obj in All where EF.Property<TPrimaryKeyType>(obj, PrimaryKeyName!).Equals(primaryKey) select obj;
-            var count = await query.CountAsync();
-            return count > 0;
+            return await FindByIdCompiledQuery(Context, primaryKey).AnyAsync(cancellationToken);
         }
 
-        public virtual async Task<TEntity> Save(TEntity entity)
+        public virtual async Task<TEntity> Save(TEntity entity, CancellationToken cancellationToken = default)
         {
             Context.Attach(entity);
-            await Context.SaveChangesAsync();
+            await Context.SaveChangesAsync(cancellationToken);
             return entity;
         }
 

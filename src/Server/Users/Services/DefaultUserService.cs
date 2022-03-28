@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 using Brighid.Identity.Roles;
@@ -15,16 +16,19 @@ namespace Brighid.Identity.Users
     {
         private const string DefaultRole = nameof(BuiltInRole.Basic);
         private readonly UserManager<User> userManager;
+        private readonly IUserRepository userRepository;
         private readonly IRoleRepository roleRepository;
         private readonly IUserLoginRepository loginRepository;
 
         public DefaultUserService(
             UserManager<User> userManager,
+            IUserRepository userRepository,
             IRoleRepository roleRepository,
             IUserLoginRepository loginRepository
         )
         {
             this.userManager = userManager;
+            this.userRepository = userRepository;
             this.roleRepository = roleRepository;
             this.loginRepository = loginRepository;
         }
@@ -80,6 +84,19 @@ namespace Brighid.Identity.Users
             }
 
             return loginInfo;
+        }
+
+        /// <inheritdoc />
+        public async Task SetDebugMode(Guid userId, bool enabled, CancellationToken cancellationToken)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            var user = await userRepository.FindById(userId, cancellationToken) ?? throw new UserNotFoundException(userId);
+            user.Flags = enabled
+                ? user.Flags | UserFlags.Debug
+                : user.Flags ^ UserFlags.Debug;
+
+            await userRepository.Save(user, cancellationToken);
         }
     }
 }

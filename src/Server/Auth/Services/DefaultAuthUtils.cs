@@ -62,6 +62,10 @@ namespace Brighid.Identity.Auth
             result.AddClaim(Claims.Name, user.Email.ToString(), Destinations.IdentityToken, Destinations.AccessToken);
             result.AddClaim(Claims.Subject, user.Id.ToString(), Destinations.IdentityToken, Destinations.AccessToken);
 
+            var flagsClaim = new Claim("flg", ((long)user.Flags).ToString(), ClaimValueTypes.Integer64);
+            flagsClaim.SetDestinations(Destinations.AccessToken, Destinations.IdentityToken);
+            result.AddClaim(flagsClaim);
+
             var roles = await userRepository.FindRolesById(user.Id, cancellationToken);
             var roleNames = roles?.Select(role => $"\"{role.Name}\"") ?? Array.Empty<string>();
             var roleClaim = new Claim(Claims.Role, $"[{string.Join(',', roleNames)}]", JsonClaimValueTypes.JsonArray);

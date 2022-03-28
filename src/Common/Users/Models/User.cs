@@ -43,6 +43,11 @@ namespace Brighid.Identity.Users
         [JsonIgnore]
         public override string ConcurrencyStamp { get; set; } = Guid.NewGuid().ToString();
 
+        /// <summary>
+        /// Gets or sets the user's flags in a bit-packed field.
+        /// </summary>
+        public UserFlags Flags { get; set; } = UserFlags.None;
+
         public virtual ICollection<UserLogin> Logins { get; set; } = new List<UserLogin>();
 
         public virtual ICollection<UserClaim> Claims { get; set; } = new List<UserClaim>();

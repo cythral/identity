@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 using AutoFixture.AutoNSubstitute;
@@ -8,9 +9,11 @@ using AutoFixture.NUnit3;
 
 using FluentAssertions;
 
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 using NSubstitute;
+using NSubstitute.ExceptionExtensions;
 
 using NUnit.Framework;
 
@@ -32,13 +35,13 @@ namespace Brighid.Identity.Users
                 [Target] UserController controller
             )
             {
-                repository.FindById(Any<Guid>(), Any<string[]>()).Returns((User)null!);
+                repository.FindById(Any<Guid>(), Any<CancellationToken>()).Returns((User)null!);
 
                 var response = await controller.Get(id);
                 var result = response.Result;
 
                 result.Should().BeOfType<NotFoundResult>();
-                await repository.Received().FindById(Is(id), Any<string[]>());
+                await repository.Received().FindById(Is(id), Any<CancellationToken>());
             }
 
             [Test]
@@ -50,14 +53,69 @@ namespace Brighid.Identity.Users
                 [Target] UserController controller
             )
             {
-                repository.FindById(Any<Guid>(), Any<string[]>()).Returns(user);
+                repository.FindById(Any<Guid>(), Any<CancellationToken>()).Returns(user);
 
                 var response = await controller.Get(id);
                 var result = response.Result;
 
                 result.Should().BeOfType<OkObjectResult>();
                 result.As<OkObjectResult>().Value.Should().Be(user);
-                await repository.Received().FindById(Is(id), Any<string[]>());
+                await repository.Received().FindById(Is(id), Any<CancellationToken>());
+            }
+        }
+
+        [Category("Unit")]
+        public class SetDebugModeTests
+        {
+            [Test]
+            [Auto]
+            public async Task ShouldSetDebugMode(
+                Guid userId,
+                bool enabled,
+                HttpContext httpContext,
+                [Frozen] IUserService service,
+                [Target] UserController controller
+            )
+            {
+                controller.ControllerContext = new ControllerContext { HttpContext = httpContext };
+
+                await controller.SetDebugMode(userId, enabled);
+
+                await service.Received().SetDebugMode(Is(userId), Is(enabled), Is(httpContext.RequestAborted));
+            }
+
+            [Test]
+            [Auto]
+            public async Task ShouldReturnNoContentAfterSuccess(
+                Guid userId,
+                bool enabled,
+                HttpContext httpContext,
+                [Target] UserController controller
+            )
+            {
+                controller.ControllerContext = new ControllerContext { HttpContext = httpContext };
+
+                var result = await controller.SetDebugMode(userId, enabled);
+
+                result.Should().BeOfType<NoContentResult>();
+            }
+
+            [Test]
+            [Auto]
+            public async Task ShouldReturnNotFoundIfUserNotFoundExceptionIsThrown(
+                Guid userId,
+                bool enabled,
+                HttpContext httpContext,
+                [Frozen] IUserService service,
+                [Target] UserController controller
+            )
+            {
+                controller.ControllerContext = new ControllerContext { HttpContext = httpContext };
+                service.SetDebugMode(Any<Guid>(), Any<bool>(), Any<CancellationToken>()).Throws(new UserNotFoundException(userId));
+
+                var result = await controller.SetDebugMode(userId, enabled);
+
+                result.Should().BeOfType<NotFoundObjectResult>();
             }
         }
 
