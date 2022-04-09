@@ -16,11 +16,12 @@ services:
     image: brighid/identity
     working_dir: /app
     restart: unless-stopped
+    platform: linux/arm64
     ports:
       - "80"
       - "8736:8736"
     volumes:
-      - ./bin/Server/Debug/linux-musl-x64:/app
+      - ./bin/Server/Debug/linux-musl-arm64:/app
       - ./bin/Interface/Debug/publish/wwwroot:/wwwroot
       - ~/.aws:/home/brighid/.aws
       - ~/.vsdbg:/remote_debugger:rw
@@ -49,7 +50,7 @@ services:
       - traefik.http.services.adapter.loadbalancer.server.scheme=h2c
 
   db:
-    image: mariadb/server:10.5
+    image: mariadb:10.8
     restart: unless-stopped
     environment:
       MYSQL_DATABASE: ${DB_NAME}
@@ -58,7 +59,7 @@ services:
       MYSQL_RANDOM_ROOT_PASSWORD: "true"
     volumes:
       - my-db:/var/lib/mysql
-  
+
   xray:
     image: public.ecr.aws/xray/aws-xray-daemon:latest
     command: -o

@@ -3,7 +3,7 @@
   <PropertyGroup>
     <RootNamespace>Brighid.Identity</RootNamespace>
     <TrimMode>copyused</TrimMode>
-    <RuntimeIdentifier>linux-musl-x64</RuntimeIdentifier>
+    <RuntimeIdentifier>linux-musl-arm64</RuntimeIdentifier>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <PublishTrimmed>true</PublishTrimmed>
     <PublishSelfContained>true</PublishSelfContained>

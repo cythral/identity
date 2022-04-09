@@ -34,8 +34,8 @@ Parameters:
     Production: AQICAHj/2SUStzyXNMLx0/GX2lnjChwPoR4BUvoYRIybQNwYyQHLN0/A3+6CyTxJKwxz1WmsAAAAcjBwBgkqhkiG9w0BBwagYzBhAgEAMFwGCSqGSIb3DQEHATAeBglghkgBZQMEAS4wEQQMBRWaEelvFjKJWpKGAgEQgC9jdrJDOy4poC1Nkpgq8rgST4vTvjo+3O/fUFTeEvT2S+IdqcujUTtuCpiJczH2yQ==
 
   EnvoyImage:
-    Development: 840364872350.dkr.ecr.us-east-1.amazonaws.com/aws-appmesh-envoy:v1.19.1.1-prod
-    Production: 840364872350.dkr.ecr.us-east-1.amazonaws.com/aws-appmesh-envoy:v1.19.1.1-prod
+    Development: 840364872350.dkr.ecr.us-east-1.amazonaws.com/aws-appmesh-envoy:arm64-v1.21.1.0-prod
+    Production: 840364872350.dkr.ecr.us-east-1.amazonaws.com/aws-appmesh-envoy:arm64-v1.21.1.0-prod
 
   MeshNodeName:
     Development: identity-dev

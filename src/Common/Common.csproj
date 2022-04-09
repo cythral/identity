@@ -1,9 +1,9 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-        <RuntimeIdentifier>linux-musl-x64</RuntimeIdentifier>
+        <RuntimeIdentifier>linux-musl-arm64</RuntimeIdentifier>
         <PlatformTarget>AnyCPU</PlatformTarget>
     </PropertyGroup>
-    
+
     <ItemGroup>
         <InternalsVisibleTo Include="Interface" />
         <InternalsVisibleTo Include="Server" />
