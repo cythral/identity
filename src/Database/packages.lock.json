@@ -323,7 +323,6 @@
           "Microsoft.AspNetCore.Identity.EntityFrameworkCore": "6.0.3"
         }
       }
-    },
-    "net6.0/linux-musl-arm64": {}
+    }
   }
 }

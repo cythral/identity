@@ -1,9 +1,4 @@
 <Project Sdk="Microsoft.NET.Sdk">
-    <PropertyGroup>
-        <RuntimeIdentifier>linux-musl-arm64</RuntimeIdentifier>
-        <PlatformTarget>AnyCPU</PlatformTarget>
-    </PropertyGroup>
-
     <ItemGroup>
         <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.3" />
         <PackageReference Include="Microsoft.Extensions.Configuration" Version="6.0.1" />
