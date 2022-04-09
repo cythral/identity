@@ -130,6 +130,7 @@ namespace Brighid.Identity.Cicd.BuildDriver
                     options: new Dictionary<string, object>
                     {
                         ["--tag"] = tag,
+                        ["--platform"] = "linux/arm64",
                         ["--file"] = $"{ProjectRootDirectoryAttribute.ThisAssemblyProjectRootDirectory}Dockerfile",
                         ["--cache-from"] = "type=gha,scope=identity",
                         ["--cache-to"] = "type=gha,scope=identity",

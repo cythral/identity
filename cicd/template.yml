@@ -165,6 +165,9 @@ Resources:
       TaskRoleArn: !GetAtt TaskRole.Arn
       RequiresCompatibilities:
         - FARGATE
+      RuntimePlatform:
+        CpuArchitecture: ARM64
+        OperatingSystemFamily: LINUX
       ProxyConfiguration:
         Type: APPMESH
         ContainerName: envoy
