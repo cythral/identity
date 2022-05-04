@@ -4,29 +4,29 @@
     "net6.0": {
       "AWSSDK.KeyManagementService": {
         "type": "Direct",
-        "requested": "[3.7.3.1, )",
-        "resolved": "3.7.3.1",
-        "contentHash": "dfSkoN3SeIqtHssn+cpl2UUhk5u0UwMFMhN74/0jOiT3IJzr5GB6gO4u4uM6CqaCNxlxdNSR1eIyOxAvKwW6MQ==",
+        "requested": "[3.7.3.5, )",
+        "resolved": "3.7.3.5",
+        "contentHash": "0q9K+TnB7FcV8vFtIN16ZfPf2dIDdhrm5F01jQ3eTrmX6UyKFifT27O+wl1xHvTKdqHm0dYuTa7O5gyPrsrWFg==",
         "dependencies": {
-          "AWSSDK.Core": "[3.7.10.11, 4.0.0)"
+          "AWSSDK.Core": "[3.7.10.15, 4.0.0)"
         }
       },
       "AWSSDK.S3": {
         "type": "Direct",
-        "requested": "[3.7.8.23, )",
-        "resolved": "3.7.8.23",
-        "contentHash": "PV+mMf/WuabWEaVOgZtKH5Kpo7rnuU87DigmihxfV9j4+NyIx4LxEQt1N2eDuOG0x5UzM7ZKelsr9r0SNoPkng==",
+        "requested": "[3.7.8.27, )",
+        "resolved": "3.7.8.27",
+        "contentHash": "vVNcZ1VQpa3MZG10sxyl0ApTE12H3hRtYlWfpDu0eHFAXUb3ISskIK3JGRErCVaChrY4DgRnOv0Ck2ZtCpEDxQ==",
         "dependencies": {
-          "AWSSDK.Core": "[3.7.10.11, 4.0.0)"
+          "AWSSDK.Core": "[3.7.10.15, 4.0.0)"
         }
       },
       "AWSSDK.SimpleSystemsManagement": {
         "type": "Direct",
-        "requested": "[3.7.16, )",
-        "resolved": "3.7.16",
-        "contentHash": "G4bgZ8QlOy4QK/xnvlc96zAqZZZ5I07DDK+Rftt3BHWigyyPeS2DAeJ0OHMIF9bX9G2LijpMGsLgeeDdVQVvBA==",
+        "requested": "[3.7.17, )",
+        "resolved": "3.7.17",
+        "contentHash": "4B0Ioi6g+mILOoE9A9C4M/0FJlBoUx4WZqJ4wqg7pHeZQgZqC0HEz4RSH+rMx4tbbs94ldPtypZDgxCFU0Sbjw==",
         "dependencies": {
-          "AWSSDK.Core": "[3.7.10.11, 4.0.0)"
+          "AWSSDK.Core": "[3.7.10.15, 4.0.0)"
         }
       },
       "AWSXRayRecorder": {
@@ -214,8 +214,8 @@
       },
       "AWSSDK.Core": {
         "type": "Transitive",
-        "resolved": "3.7.10.11",
-        "contentHash": "B+M7ggPC0FogATRPQxDXL0eTusCQtXulW4zCuX39yiHV8+u9MEXRytcAw0ZA3zFBYYx6ovl9lklho6OQo1DRRQ=="
+        "resolved": "3.7.10.15",
+        "contentHash": "N3vXwGz15VpE2H5tW+ETUzuJXTIjoSr4Eerzqu/5iYRrHaPRIle9LACGfqJ6OfHbMcuXQVpKnTJ60N/fh4jyWg=="
       },
       "AWSXRayRecorder.Core": {
         "type": "Transitive",
