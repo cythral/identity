@@ -139,31 +139,31 @@
       },
       "AWSSDK.Core": {
         "type": "Transitive",
-        "resolved": "3.7.10.15",
-        "contentHash": "N3vXwGz15VpE2H5tW+ETUzuJXTIjoSr4Eerzqu/5iYRrHaPRIle9LACGfqJ6OfHbMcuXQVpKnTJ60N/fh4jyWg=="
+        "resolved": "3.7.10.16",
+        "contentHash": "Ra1fpAKTYrmx7Q3ovhaOu1odRF+Q7wBy65u+0JHqs3kf5WsCUhEt6SoVnsu8kolGTByq9yY9jcqss4ceCwtMfQ=="
       },
       "AWSSDK.KeyManagementService": {
         "type": "Transitive",
-        "resolved": "3.7.3.5",
-        "contentHash": "0q9K+TnB7FcV8vFtIN16ZfPf2dIDdhrm5F01jQ3eTrmX6UyKFifT27O+wl1xHvTKdqHm0dYuTa7O5gyPrsrWFg==",
+        "resolved": "3.7.3.6",
+        "contentHash": "U/6IdiA0NSaK7BXZdaOQWwc974a3UcbJ191aiCTFsUFS8aq0Z+f/uMBwF4s1638YG/JnQLPwwjhs4fAQhHrq9g==",
         "dependencies": {
-          "AWSSDK.Core": "[3.7.10.15, 4.0.0)"
+          "AWSSDK.Core": "[3.7.10.16, 4.0.0)"
         }
       },
       "AWSSDK.S3": {
         "type": "Transitive",
-        "resolved": "3.7.8.27",
-        "contentHash": "vVNcZ1VQpa3MZG10sxyl0ApTE12H3hRtYlWfpDu0eHFAXUb3ISskIK3JGRErCVaChrY4DgRnOv0Ck2ZtCpEDxQ==",
+        "resolved": "3.7.8.28",
+        "contentHash": "kOj0AywdZnsD6pkmLQeunWCYLhUpanjZGycBNeXgZqu9DTTTjlxmgRtyfc6NPuY9ar5jhpaga+rWKSRpmPl5FQ==",
         "dependencies": {
-          "AWSSDK.Core": "[3.7.10.15, 4.0.0)"
+          "AWSSDK.Core": "[3.7.10.16, 4.0.0)"
         }
       },
       "AWSSDK.SimpleSystemsManagement": {
         "type": "Transitive",
-        "resolved": "3.7.17",
-        "contentHash": "4B0Ioi6g+mILOoE9A9C4M/0FJlBoUx4WZqJ4wqg7pHeZQgZqC0HEz4RSH+rMx4tbbs94ldPtypZDgxCFU0Sbjw==",
+        "resolved": "3.7.17.1",
+        "contentHash": "NLqhTadxh5LONtFFVW59p+s6AM9jb4QLtsjpQ5TCvV4a+w0k1cN9RJ03SADa0Sx21u6QZ/OO4njNFDXZxXCjnw==",
         "dependencies": {
-          "AWSSDK.Core": "[3.7.10.15, 4.0.0)"
+          "AWSSDK.Core": "[3.7.10.16, 4.0.0)"
         }
       },
       "AWSXRayRecorder": {
@@ -2479,9 +2479,9 @@
       "server": {
         "type": "Project",
         "dependencies": {
-          "AWSSDK.KeyManagementService": "3.7.3.5",
-          "AWSSDK.S3": "3.7.8.27",
-          "AWSSDK.SimpleSystemsManagement": "3.7.17",
+          "AWSSDK.KeyManagementService": "3.7.3.6",
+          "AWSSDK.S3": "3.7.8.28",
+          "AWSSDK.SimpleSystemsManagement": "3.7.17.1",
           "AWSXrayRecorder": "2.10.1",
           "Common": "1.0.0",
           "Database": "1.0.0",
