@@ -1,4 +1,5 @@
 using System;
+using System.Net;
 using System.Threading.Tasks;
 
 using Brighid.Identity.Roles;
@@ -45,6 +46,7 @@ namespace Brighid.Identity.Users
         }
 
         [HttpPatch("{userId}/debug-mode", Name = "Users:SetDebugMode")]
+        [ProducesResponseType((int)HttpStatusCode.NoContent)]
         public async Task<ActionResult> SetDebugMode(Guid userId, [FromBody] bool enabled)
         {
             try
