@@ -12,20 +12,24 @@ namespace Brighid.Identity.Users
 {
     public class DefaultUserRepository : Repository<User, Guid>, IUserRepository
     {
+        private static readonly Func<DatabaseContext, string, string, IAsyncEnumerable<User?>> FindByLoginQuery = EF.CompileAsyncQuery<DatabaseContext, string, string, User?>(
+            (context, loginProvider, providerKey) =>
+                from user in context.Set<User>()
+                                     .Include(user => user.Logins)
+                                     .Include(user => user.Roles)
+                from login in user.Logins
+                where login.LoginProvider == loginProvider && login.ProviderKey == providerKey && login.Enabled
+                select user
+        );
+
         public DefaultUserRepository(DatabaseContext context)
             : base(context)
         {
         }
 
-        public async Task<User?> FindByLogin(string loginProvider, string providerKey, params string[] embeds)
+        public async Task<User?> FindByLogin(string loginProvider, string providerKey, CancellationToken cancellationToken)
         {
-            var collection = embeds.Aggregate(All, (query, embed) => query.Include(embed));
-            var query = from user in collection
-                        from login in user.Logins
-                        where login.LoginProvider == loginProvider && login.ProviderKey == providerKey
-                        select user;
-
-            return await query.FirstOrDefaultAsync();
+            return await FindByLoginQuery(Context, loginProvider, providerKey).FirstOrDefaultAsync(cancellationToken);
         }
 
         public async Task<IEnumerable<Role>?> FindRolesById(Guid id, CancellationToken cancellationToken = default)

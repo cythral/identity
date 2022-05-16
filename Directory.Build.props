@@ -15,7 +15,7 @@
         <TargetFramework>net6.0</TargetFramework>
         <Configuration Condition="$(Configuration) == ''">Debug</Configuration>
         <Nullable>enable</Nullable>
-        <LangVersion>10</LangVersion>
+        <LangVersion>preview</LangVersion>
         <EnableTrimAnalyzer>false</EnableTrimAnalyzer>
         <SuppressTrimAnalysisWarnings>true</SuppressTrimAnalysisWarnings>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>

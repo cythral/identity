@@ -1,11 +1,11 @@
+using System.Net;
+using System.Security;
 using System.Threading.Tasks;
 
 using Brighid.Identity.Roles;
 using Brighid.Identity.Users;
 
 using Microsoft.AspNetCore.Mvc;
-
-#pragma warning disable IDE0050
 
 namespace Brighid.Identity.LoginProviders
 {
@@ -17,22 +17,35 @@ namespace Brighid.Identity.LoginProviders
     })]
     public class LoginProviderController : Controller
     {
-        private readonly string[] userEmbeds = new[] { "Roles", "Logins" };
-
-        private readonly IUserRepository repository;
+        private readonly IUserService service;
 
         public LoginProviderController(
-            IUserRepository repository
+            IUserService service
         )
         {
-            this.repository = repository;
+            this.service = service;
         }
 
         [HttpGet("{loginProvider}/{providerKey}", Name = "LoginProviders:GetUserByLoginProviderKey")]
+        [ExceptionMapping<UserLoginNotFoundException>(HttpStatusCode.NotFound)]
         public async Task<ActionResult<User>> GetUserByLoginProviderKey(string loginProvider, string providerKey)
         {
-            var result = await repository.FindByLogin(loginProvider, providerKey, userEmbeds);
-            return result == null ? NotFound() : Ok(result);
+            HttpContext.RequestAborted.ThrowIfCancellationRequested();
+            var result = await service.GetByLoginProviderKey(loginProvider, providerKey, HttpContext.RequestAborted);
+            return Ok(result);
+        }
+
+        [HttpPut("{loginProvider}/{providerKey}/enabled", Name = "LoginProviders:SetLoginStatus")]
+        [ProducesResponseType((int)HttpStatusCode.NoContent)]
+        [ExceptionMapping<SecurityException>(HttpStatusCode.Forbidden)]
+        [ExceptionMapping<UserLoginNotFoundException>(HttpStatusCode.NotFound)]
+        [ExceptionMapping<InvalidPrincipalException>(HttpStatusCode.BadRequest)]
+
+        public async Task<ActionResult> SetLoginStatus(string loginProvider, string providerKey, [FromBody] bool enabled)
+        {
+            HttpContext.RequestAborted.ThrowIfCancellationRequested();
+            await service.SetLoginStatus(HttpContext.User, loginProvider, providerKey, enabled, HttpContext.RequestAborted);
+            return NoContent();
         }
     }
 }

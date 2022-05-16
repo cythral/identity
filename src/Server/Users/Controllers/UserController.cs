@@ -1,12 +1,11 @@
 using System;
 using System.Net;
+using System.Security;
 using System.Threading.Tasks;
 
 using Brighid.Identity.Roles;
 
 using Microsoft.AspNetCore.Mvc;
-
-#pragma warning disable IDE0050
 
 namespace Brighid.Identity.Users
 {
@@ -31,60 +30,37 @@ namespace Brighid.Identity.Users
         }
 
         [HttpGet("{userId}")]
+        [ExceptionMapping<UserNotFoundException>(HttpStatusCode.NotFound)]
         public async Task<ActionResult<User>> Get(Guid userId)
         {
-            var result = await repository.FindById(userId);
-
-            if (result == null)
-            {
-                return NotFound();
-            }
-
+            var result = await repository.FindById(userId) ?? throw new UserNotFoundException(userId);
             await repository.LoadCollection(result, nameof(Users.User.Roles));
             await repository.LoadCollection(result, nameof(Users.User.Logins));
             return Ok(result);
         }
 
-        [HttpPatch("{userId}/debug-mode", Name = "Users:SetDebugMode")]
+        [HttpPut("{userId}/debug-mode", Name = "Users:SetDebugMode")]
         [ProducesResponseType((int)HttpStatusCode.NoContent)]
+        [ExceptionMapping<UserNotFoundException>(HttpStatusCode.NotFound)]
+        [ExceptionMapping<SecurityException>(HttpStatusCode.Forbidden)]
         public async Task<ActionResult> SetDebugMode(Guid userId, [FromBody] bool enabled)
         {
-            try
-            {
-                await service.SetDebugMode(userId, enabled, HttpContext.RequestAborted);
-                return NoContent();
-            }
-            catch (UserNotFoundException exception)
-            {
-                return NotFound(new { exception.Message });
-            }
+            await service.SetDebugMode(HttpContext.User, userId, enabled, HttpContext.RequestAborted);
+            return NoContent();
         }
 
         [HttpPost("{userId}/logins", Name = "Users:CreateLogin")]
         [Policies(new[] { nameof(IdentityPolicy.RestrictedToSelfByUserId) })]
+        [ExceptionMapping<UserNotFoundException>(HttpStatusCode.NotFound)]
+        [ExceptionMapping<UserLoginAlreadyExistsException>(HttpStatusCode.Conflict)]
+        [ExceptionMapping<ModelStateException>(HttpStatusCode.BadRequest)]
         public async Task<ActionResult<UserLogin>> CreateLogin(Guid userId, [FromBody] CreateUserLoginRequest loginInfo)
         {
-            try
-            {
-                ModelState.Remove(nameof(UserLogin.User));
-                ThrowIfModelStateIsInvalid();
+            ModelState.Remove(nameof(UserLogin.User));
+            ThrowIfModelStateIsInvalid();
 
-                var result = await service.CreateLogin(userId, loginInfo);
-                return Ok(result);
-            }
-            catch (UserNotFoundException e)
-            {
-                return NotFound(new { e.Message });
-            }
-            catch (UserLoginAlreadyExistsException e)
-            {
-                return Conflict(new { e.Message });
-            }
-            catch (ModelStateException e)
-            {
-#pragma warning disable IDE0037
-                return BadRequest(new { e.Message, Errors = e.Errors });
-            }
+            var result = await service.CreateLogin(userId, loginInfo, HttpContext.RequestAborted);
+            return Ok(result);
         }
 
         private void ThrowIfModelStateIsInvalid()

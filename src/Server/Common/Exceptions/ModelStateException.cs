@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace Brighid.Identity
 {
-    public class ModelStateException : Exception
+    public class ModelStateException : Exception, IErrorException
     {
         public ModelStateException(ModelStateDictionary modelState)
             : base("One or more errors occurred.")
@@ -19,5 +19,7 @@ namespace Brighid.Identity
         }
 
         public IEnumerable<string> Errors { get; }
+
+        public object Error => new { Message, Errors };
     }
 }
