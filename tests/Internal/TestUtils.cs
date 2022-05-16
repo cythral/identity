@@ -1,6 +1,9 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+
+using Brighid.Identity;
 
 using NSubstitute;
 
@@ -15,6 +18,13 @@ internal static class TestUtils
         }
 
         field.SetValue(target, value);
+    }
+
+    internal static IEnumerable<IExceptionMapping> GetExceptionMappings<T>(this T target, string method)
+    {
+        var type = target!.GetType();
+        var decl = type.GetMethod(method)!;
+        return from attr in decl.GetCustomAttributes() where attr is IExceptionMapping select (IExceptionMapping)attr;
     }
 
     internal static TArg GetArg<TArg>(object target, string methodName, int arg)

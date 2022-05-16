@@ -1,5 +1,8 @@
 using System;
 using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Security;
+using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -12,6 +15,7 @@ using MySqlConnector;
 
 namespace Brighid.Identity.Users
 {
+    /// <inheritdoc />
     public class DefaultUserService : IUserService
     {
         private const string DefaultRole = nameof(BuiltInRole.Basic);
@@ -19,21 +23,25 @@ namespace Brighid.Identity.Users
         private readonly IUserRepository userRepository;
         private readonly IRoleRepository roleRepository;
         private readonly IUserLoginRepository loginRepository;
+        private readonly IPrincipalService principalService;
 
         public DefaultUserService(
             UserManager<User> userManager,
             IUserRepository userRepository,
             IRoleRepository roleRepository,
-            IUserLoginRepository loginRepository
+            IUserLoginRepository loginRepository,
+            IPrincipalService principalService
         )
         {
             this.userManager = userManager;
             this.userRepository = userRepository;
             this.roleRepository = roleRepository;
             this.loginRepository = loginRepository;
+            this.principalService = principalService;
         }
 
-        public async Task<User> Create(string username, string password, string? roleName = null)
+        /// <inheritdoc />
+        public async Task<User> Create(string username, string password, string? roleName = null, CancellationToken cancellationToken = default)
         {
             static void EnsureSucceeded(IdentityResult result)
             {
@@ -48,12 +56,7 @@ namespace Brighid.Identity.Users
 
             roleName ??= DefaultRole;
 
-            var role = await roleRepository.FindByName(roleName);
-            if (role == null)
-            {
-                throw new RoleNotFoundException(roleName);
-            }
-
+            var role = await roleRepository.FindByName(roleName, cancellationToken) ?? throw new RoleNotFoundException(roleName);
             var user = new User { UserName = username, Email = username };
             user.Roles.Add(role);
 
@@ -63,14 +66,10 @@ namespace Brighid.Identity.Users
             return user;
         }
 
-        public async Task<UserLogin> CreateLogin(Guid userId, UserLogin loginInfo)
+        /// <inheritdoc />
+        public async Task<UserLogin> CreateLogin(Guid userId, UserLogin loginInfo, CancellationToken cancellationToken)
         {
-            var user = await userManager.FindByIdAsync(userId.ToString());
-            if (user == null)
-            {
-                throw new UserNotFoundException(userId);
-            }
-
+            var user = await userManager.FindByIdAsync(userId.ToString()) ?? throw new UserNotFoundException(userId);
             loginInfo.User = user;
 
             try
@@ -87,9 +86,28 @@ namespace Brighid.Identity.Users
         }
 
         /// <inheritdoc />
-        public async Task SetDebugMode(Guid userId, bool enabled, CancellationToken cancellationToken)
+        public async Task<User> GetByLoginProviderKey(string loginProvider, string providerKey, CancellationToken cancellationToken)
+        {
+            var result = await userRepository.FindByLogin(loginProvider, providerKey, cancellationToken) ?? throw new UserLoginNotFoundException(loginProvider, providerKey);
+            return result!;
+        }
+
+        /// <inheritdoc />
+        public async Task SetLoginStatus(ClaimsPrincipal principal, string loginProvider, string providerKey, bool enabled, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
+            var login = await loginRepository.FindByProviderNameAndKey(loginProvider, providerKey, cancellationToken) ?? throw new UserLoginNotFoundException(loginProvider, providerKey);
+            EnsureUserIdMatches(principal, login.UserId, $"Insufficient permissions for enabling or disabling the user login {loginProvider}/{providerKey}.");
+
+            login.Enabled = enabled;
+            await loginRepository.Save(login, cancellationToken);
+        }
+
+        /// <inheritdoc />
+        public async Task SetDebugMode(ClaimsPrincipal principal, Guid userId, bool enabled, CancellationToken cancellationToken)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            EnsureUserIdMatches(principal, userId, $"Insufficient permissions for setting debug mode for user {userId}");
 
             var user = await userRepository.FindById(userId, cancellationToken) ?? throw new UserNotFoundException(userId);
             user.Flags = enabled
@@ -97,6 +115,15 @@ namespace Brighid.Identity.Users
                 : user.Flags ^ UserFlags.Debug;
 
             await userRepository.Save(user, cancellationToken);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void EnsureUserIdMatches(ClaimsPrincipal principal, Guid userId, string errorMessage)
+        {
+            if (userId != principalService.GetId(principal))
+            {
+                throw new SecurityException(errorMessage);
+            }
         }
     }
 }

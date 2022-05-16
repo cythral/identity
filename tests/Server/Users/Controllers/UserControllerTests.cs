@@ -1,6 +1,7 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -13,7 +14,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 using NSubstitute;
-using NSubstitute.ExceptionExtensions;
 
 using NUnit.Framework;
 
@@ -37,11 +37,8 @@ namespace Brighid.Identity.Users
             {
                 repository.FindById(Any<Guid>(), Any<CancellationToken>()).Returns((User)null!);
 
-                var response = await controller.Get(id);
-                var result = response.Result;
-
-                result.Should().BeOfType<NotFoundResult>();
-                await repository.Received().FindById(Is(id), Any<CancellationToken>());
+                Func<Task> func = () => controller.Get(id);
+                await func.Should().ThrowAsync<UserNotFoundException>();
             }
 
             [Test]
@@ -81,7 +78,7 @@ namespace Brighid.Identity.Users
 
                 await controller.SetDebugMode(userId, enabled);
 
-                await service.Received().SetDebugMode(Is(userId), Is(enabled), Is(httpContext.RequestAborted));
+                await service.Received().SetDebugMode(Is(httpContext.User), Is(userId), Is(enabled), Is(httpContext.RequestAborted));
             }
 
             [Test]
@@ -102,7 +99,7 @@ namespace Brighid.Identity.Users
 
             [Test]
             [Auto]
-            public async Task ShouldReturnNotFoundIfUserNotFoundExceptionIsThrown(
+            public void ShouldReturnNotFoundIfUserNotFoundExceptionIsThrown(
                 Guid userId,
                 bool enabled,
                 HttpContext httpContext,
@@ -110,12 +107,9 @@ namespace Brighid.Identity.Users
                 [Target] UserController controller
             )
             {
-                controller.ControllerContext = new ControllerContext { HttpContext = httpContext };
-                service.SetDebugMode(Any<Guid>(), Any<bool>(), Any<CancellationToken>()).Throws(new UserNotFoundException(userId));
-
-                var result = await controller.SetDebugMode(userId, enabled);
-
-                result.Should().BeOfType<NotFoundObjectResult>();
+                var method = typeof(UserController).GetMethod(nameof(UserController.SetDebugMode))!;
+                var attributes = from attr in method.GetCustomAttributes() where attr is IExceptionMapping select (IExceptionMapping)attr;
+                attributes.Should().Contain(attribute => attribute.Exception == typeof(UserNotFoundException) && attribute.StatusCode == (int)HttpStatusCode.NotFound);
             }
         }
 
@@ -144,43 +138,35 @@ namespace Brighid.Identity.Users
 
             [Test]
             [Auto]
-            public async Task ShouldReturnNotFoundIfUserDoesntExist(
+            public void ShouldReturnNotFoundIfUserDoesntExist(
                 Guid id,
                 CreateUserLoginRequest request,
                 [Frozen, Substitute] IUserService userService,
                 [Target] UserController controller
             )
             {
-                userService.CreateLogin(Any<Guid>(), Any<UserLogin>()).Returns<UserLogin>(x => throw new UserNotFoundException(id));
-
-                var response = await controller.CreateLogin(id, request);
-                var result = response.Result;
-
-                result.Should().BeOfType<NotFoundObjectResult>();
-                await userService.Received().CreateLogin(Is(id), Is(request));
+                var method = typeof(UserController).GetMethod(nameof(UserController.CreateLogin))!;
+                var attributes = from attr in method.GetCustomAttributes() where attr is IExceptionMapping select (IExceptionMapping)attr;
+                attributes.Should().Contain(attribute => attribute.Exception == typeof(UserNotFoundException) && attribute.StatusCode == (int)HttpStatusCode.NotFound);
             }
 
             [Test]
             [Auto]
-            public async Task ShouldReturnConflictIfLoginAlreadyExists(
+            public void ShouldReturnConflictIfLoginAlreadyExists(
                 Guid id,
                 CreateUserLoginRequest request,
                 [Frozen, Substitute] IUserService userService,
                 [Target] UserController controller
             )
             {
-                userService.CreateLogin(Any<Guid>(), Any<UserLogin>()).Returns<UserLogin>(x => throw new UserLoginAlreadyExistsException(request));
-
-                var response = await controller.CreateLogin(id, request);
-                var result = response.Result;
-
-                result.Should().BeOfType<ConflictObjectResult>();
-                await userService.Received().CreateLogin(Is(id), Is(request));
+                var method = typeof(UserController).GetMethod(nameof(UserController.CreateLogin))!;
+                var attributes = from attr in method.GetCustomAttributes() where attr is IExceptionMapping select (IExceptionMapping)attr;
+                attributes.Should().Contain(attribute => attribute.Exception == typeof(UserLoginAlreadyExistsException) && attribute.StatusCode == (int)HttpStatusCode.Conflict);
             }
 
             [Test]
             [Auto]
-            public async Task ShouldReturnBadRequestIfModelStateIsInvalid(
+            public void ShouldReturnBadRequestIfModelStateIsInvalid(
                 string error1,
                 string error2,
                 Guid id,
@@ -190,22 +176,9 @@ namespace Brighid.Identity.Users
                 [Target] UserController controller
             )
             {
-                userService.CreateLogin(Any<Guid>(), Any<UserLogin>()).Returns(loginInfo);
-
-                var controllerContext = new ControllerContext();
-                controllerContext.ModelState.AddModelError(string.Empty, error1);
-                controllerContext.ModelState.AddModelError(string.Empty, error2);
-                controller.ControllerContext = controllerContext;
-
-                var response = await controller.CreateLogin(id, request);
-                var result = response.Result;
-
-                result.Should().BeOfType<BadRequestObjectResult>();
-
-                dynamic value = result.As<ObjectResult>().Value!;
-                var errors = (IEnumerable<string>)value.Errors;
-                errors.Should().Contain(error1);
-                errors.Should().Contain(error2);
+                var method = typeof(UserController).GetMethod(nameof(UserController.CreateLogin))!;
+                var attributes = from attr in method.GetCustomAttributes() where attr is IExceptionMapping select (IExceptionMapping)attr;
+                attributes.Should().Contain(attribute => attribute.Exception == typeof(ModelStateException) && attribute.StatusCode == (int)HttpStatusCode.BadRequest);
             }
 
             [Test]
@@ -220,7 +193,7 @@ namespace Brighid.Identity.Users
                 [Target] UserController controller
             )
             {
-                userService.CreateLogin(Any<Guid>(), Any<UserLogin>()).Returns(loginInfo);
+                userService.CreateLogin(Any<Guid>(), Any<UserLogin>(), Any<CancellationToken>()).Returns(loginInfo);
 
                 var controllerContext = new ControllerContext();
                 controllerContext.ModelState.AddModelError(string.Empty, nonUserError);
@@ -228,15 +201,9 @@ namespace Brighid.Identity.Users
                 controller.ControllerContext = controllerContext;
 
                 Console.WriteLine(controller.ControllerContext.ModelState.IsValid);
-                var response = await controller.CreateLogin(id, request);
-                var result = response.Result;
-
-                result.Should().BeOfType<BadRequestObjectResult>();
-
-                dynamic value = result.As<ObjectResult>().Value!;
-                var errors = (IEnumerable<string>)value.Errors;
-                errors.Should().Contain(nonUserError);
-                errors.Should().NotContain(userError);
+                Func<Task> func = () => controller.CreateLogin(id, request);
+                await func.Should().ThrowAsync<ModelStateException>();
+                controllerContext.ModelState.Should().NotContain(error => error.Key == nameof(UserLogin.User));
             }
 
             [Test]
@@ -245,18 +212,20 @@ namespace Brighid.Identity.Users
                 Guid id,
                 CreateUserLoginRequest requestedLoginInfo,
                 UserLogin resultingLoginInfo,
+                HttpContext httpContext,
                 [Frozen, Substitute] IUserService userService,
                 [Target] UserController controller
             )
             {
-                userService.CreateLogin(Any<Guid>(), Any<UserLogin>()).Returns(resultingLoginInfo);
+                userService.CreateLogin(Any<Guid>(), Any<UserLogin>(), Any<CancellationToken>()).Returns(resultingLoginInfo);
 
+                controller.ControllerContext = new ControllerContext { HttpContext = httpContext };
                 var response = await controller.CreateLogin(id, requestedLoginInfo);
                 var result = response.Result;
 
                 result.Should().BeOfType<OkObjectResult>();
                 result.As<OkObjectResult>().Value.Should().Be(resultingLoginInfo);
-                await userService.Received().CreateLogin(Is(id), Is(requestedLoginInfo));
+                await userService.Received().CreateLogin(Is(id), Is(requestedLoginInfo), Is(httpContext.RequestAborted));
             }
         }
     }
