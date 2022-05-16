@@ -46,6 +46,7 @@ namespace Brighid.Identity.Users
         /// <summary>
         /// Gets or sets the user's flags in a bit-packed field.
         /// </summary>
+        [JsonConverter(typeof(UserFlagsConverter))]
         public UserFlags Flags { get; set; } = UserFlags.None;
 
         public virtual ICollection<UserLogin> Logins { get; set; } = new List<UserLogin>();

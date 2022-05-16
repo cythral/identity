@@ -39,7 +39,7 @@ namespace Brighid.Identity.Users
             return Ok(result);
         }
 
-        [HttpPatch("{userId}/debug-mode", Name = "Users:SetDebugMode")]
+        [HttpPut("{userId}/debug-mode", Name = "Users:SetDebugMode")]
         [ProducesResponseType((int)HttpStatusCode.NoContent)]
         [ExceptionMapping<UserNotFoundException>(HttpStatusCode.NotFound)]
         [ExceptionMapping<SecurityException>(HttpStatusCode.Forbidden)]
