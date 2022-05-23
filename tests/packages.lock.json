@@ -139,31 +139,31 @@
       },
       "AWSSDK.Core": {
         "type": "Transitive",
-        "resolved": "3.7.11.4",
-        "contentHash": "okJonF38zIiJc62FoQLypnwdcspnurGmPpssc4nzKkSuy/BTkWHhUld++XK1Uy8z6i+2zf7bzgAo35uj6TPIsQ=="
+        "resolved": "3.7.11.5",
+        "contentHash": "lmOw0KRuIoYop67Xqke7usxY1RZPHySFSsw0tb9wW0DNGOrIpBLw9RCQj3YYCNo5K9+5yZ8k42ojJcdLmZK75w=="
       },
       "AWSSDK.KeyManagementService": {
         "type": "Transitive",
-        "resolved": "3.7.3.12",
-        "contentHash": "XdeUKa/1HT5b2jr8kk1OCoREj2OgVQLEqMpizzyvsCtoyah9NS60h+QtI0FovXlOw1mEGMOlM/Aa6CNUnqEU+A==",
+        "resolved": "3.7.3.13",
+        "contentHash": "c6AHT1LXcLThEmZVh6pL5JMx2Cs5lUueWUSESgWeSLPXaLYSiPb2z4HA/6hgT0HzKYNYOHZLKi2RMbv0/NO2cQ==",
         "dependencies": {
-          "AWSSDK.Core": "[3.7.11.4, 4.0.0)"
+          "AWSSDK.Core": "[3.7.11.5, 4.0.0)"
         }
       },
       "AWSSDK.S3": {
         "type": "Transitive",
-        "resolved": "3.7.9.4",
-        "contentHash": "Dh/fT9MVc7SxU5W5AkovJ0BsQ5waRMgcgieWSikuIYicJOvY6yPwpw/jX2T2VHD5nTM2Po5ys7ww2hk/BTX+Kg==",
+        "resolved": "3.7.9.5",
+        "contentHash": "6MCsPsHwZBs790PtpEAWil1SWTL8snYjxwhrIvB5ORfubtsnpF3KUeRbHb56SbwQix4rqfaU7VUf5ZVsKXjBjA==",
         "dependencies": {
-          "AWSSDK.Core": "[3.7.11.4, 4.0.0)"
+          "AWSSDK.Core": "[3.7.11.5, 4.0.0)"
         }
       },
       "AWSSDK.SimpleSystemsManagement": {
         "type": "Transitive",
-        "resolved": "3.7.17.6",
-        "contentHash": "ThX4dnX2/1ZqG48OhDxUMBuGamYzE2e19xMXWUzZENHzzPfxPD35kBb/ULDVyjyqPA+UrynqNero9FT+r6KfHw==",
+        "resolved": "3.7.17.7",
+        "contentHash": "+ipWj4SurNpPV8QG503XGzepVbAmzrBu13Z8GYlfYG3DQmY0SjiHsbA6u4etXw4VrkBZ/g3DbkoJYMkDFaL7aQ==",
         "dependencies": {
-          "AWSSDK.Core": "[3.7.11.4, 4.0.0)"
+          "AWSSDK.Core": "[3.7.11.5, 4.0.0)"
         }
       },
       "AWSXRayRecorder": {
@@ -2487,9 +2487,9 @@
       "server": {
         "type": "Project",
         "dependencies": {
-          "AWSSDK.KeyManagementService": "3.7.3.12",
-          "AWSSDK.S3": "3.7.9.4",
-          "AWSSDK.SimpleSystemsManagement": "3.7.17.6",
+          "AWSSDK.KeyManagementService": "3.7.3.13",
+          "AWSSDK.S3": "3.7.9.5",
+          "AWSSDK.SimpleSystemsManagement": "3.7.17.7",
           "AWSXrayRecorder": "2.10.1",
           "Common": "1.0.0",
           "Database": "1.0.0",
