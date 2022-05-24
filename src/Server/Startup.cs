@@ -89,7 +89,8 @@ namespace Brighid.Identity
             {
                 options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
             });
-
+            
+            services.Configure<AppConfig>(Configuration.GetSection("App"));
             services.Configure<EncryptionOptions>(Configuration.GetSection("EncryptionOptions"));
             services.ConfigureUsersServices();
             services.ConfigureRolesServices();
