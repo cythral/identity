@@ -24,13 +24,15 @@ namespace Brighid.Identity.Users
         private readonly IRoleRepository roleRepository;
         private readonly IUserLoginRepository loginRepository;
         private readonly IPrincipalService principalService;
+        private readonly IUserCacheService cacheService;
 
         public DefaultUserService(
             UserManager<User> userManager,
             IUserRepository userRepository,
             IRoleRepository roleRepository,
             IUserLoginRepository loginRepository,
-            IPrincipalService principalService
+            IPrincipalService principalService,
+            IUserCacheService cacheService
         )
         {
             this.userManager = userManager;
@@ -38,6 +40,7 @@ namespace Brighid.Identity.Users
             this.roleRepository = roleRepository;
             this.loginRepository = loginRepository;
             this.principalService = principalService;
+            this.cacheService = cacheService;
         }
 
         /// <inheritdoc />
@@ -115,6 +118,7 @@ namespace Brighid.Identity.Users
                 : user.Flags ^ UserFlags.Debug;
 
             await userRepository.Save(user, cancellationToken);
+            await cacheService.ClearExternalUserCache(userId, cancellationToken);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

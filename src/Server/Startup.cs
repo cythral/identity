@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 
 using Amazon.KeyManagementService;
 using Amazon.S3;
+using Amazon.SimpleNotificationService;
 using Amazon.SimpleSystemsManagement;
 
 using Brighid.Identity.Applications;
@@ -98,6 +99,7 @@ namespace Brighid.Identity
 
             services.AddSingleton<IAmazonKeyManagementService, AmazonKeyManagementServiceClient>();
             services.AddSingleton<IAmazonSimpleSystemsManagement, AmazonSimpleSystemsManagementClient>();
+            services.AddSingleton<IAmazonSimpleNotificationService, AmazonSimpleNotificationServiceClient>();
             services.AddSingleton<IAmazonS3, AmazonS3Client>();
             services.AddSingleton<IEncryptionService, DefaultEncryptionService>();
 

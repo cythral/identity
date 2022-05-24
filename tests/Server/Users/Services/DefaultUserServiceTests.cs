@@ -357,6 +357,24 @@ namespace Brighid.Identity.Users
 
                 await func.Should().ThrowAsync<UserNotFoundException>();
             }
+
+            [Test]
+            [Auto]
+            public async Task ShouldExpireTheUserCacheForTheGivenUser(
+                Guid userId,
+                ClaimsPrincipal principal,
+                [Frozen] IPrincipalService principalService,
+                [Frozen] IUserCacheService cacheService,
+                [Target] DefaultUserService service,
+                CancellationToken cancellationToken
+            )
+            {
+                principalService.GetId(Any<ClaimsPrincipal>()).Returns(userId);
+
+                await service.SetDebugMode(principal, userId, false, cancellationToken);
+
+                await cacheService.Received().ClearExternalUserCache(Is(userId), Is(cancellationToken));
+            }
         }
     }
 }
