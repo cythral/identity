@@ -13,6 +13,7 @@ using Amazon.SimpleSystemsManagement;
 
 using Brighid.Identity.Applications;
 using Brighid.Identity.Roles;
+using Brighid.Identity.Users;
 
 using Destructurama;
 
@@ -83,7 +84,10 @@ namespace Brighid.Identity
 
             services.AddHealthChecks();
             services.AddDbContextPool<DatabaseContext>(ConfigureDatabaseOptions);
-            services.AddSwaggerGen();
+            services.AddSwaggerGen(options =>
+            {
+                options.MapType<UserFlags>(() => new OpenApiSchema { Type = "integer", Format = "int64" });
+            });
 
             services.Configure<ForwardedHeadersOptions>(options =>
             {
