@@ -7,6 +7,11 @@ namespace Brighid.Identity
     public class AppConfig
     {
         /// <summary>
+        /// Gets or sets the ARN of the cache topic.
+        /// </summary>
+        public string CacheTopic { get; set; } = string.Empty;
+
+        /// <summary>
         /// Gets or sets a value indicating whether or not to use HTTPS.
         /// </summary>
         public bool UseHttps { get; set; } = true;

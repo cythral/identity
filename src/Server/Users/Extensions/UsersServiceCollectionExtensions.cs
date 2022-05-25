@@ -10,6 +10,7 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddScoped<IUserRepository, DefaultUserRepository>();
             services.AddScoped<IUserLoginRepository, DefaultUserLoginRepository>();
             services.AddScoped<IPrincipalService, DefaultPrincipalService>();
+            services.AddScoped<IUserCacheService, DefaultUserCacheService>();
         }
     }
 }

@@ -104,7 +104,7 @@ Resources:
 
   ServiceRegistryRecord:
     Type: AWS::ServiceDiscovery::Service
-    Properties: 
+    Properties:
       Description: Internal Discovery Service for Brighid
       DnsConfig:
         RoutingPolicy: MULTIVALUE
@@ -224,6 +224,8 @@ Resources:
               Value: !Ref WaitConditionHandle
             - Name: App__Image
               Value: !Ref Image
+            - Name: App__CacheTopic
+              Value: !ImportValue brighid-infrastructure:CacheExpirationTopic
             - Name: Environment
               Value: !Ref EnvironmentName
             - Name: Auth__CertificateConfigurationParameterName
@@ -269,10 +271,10 @@ Resources:
               awslogs-group: !Ref LogGroup
               awslogs-region: !Ref AWS::Region
               awslogs-stream-prefix: brighid
-                  
+
   WaitConditionHandle:
     Type: AWS::CloudFormation::WaitConditionHandle
-      
+
   WaitCondition:
     Type: AWS::CloudFormation::WaitCondition
     DependsOn: Service
@@ -316,8 +318,12 @@ Resources:
         Version: 2012-10-17
         Statement:
           - Effect: Allow
+            Action: sns:Publish
+            Resource: !ImportValue brighid-infrastructure:CacheExpirationTopic
+            
+          - Effect: Allow
             Action: ssm:GetParameter
-            Resource: 
+            Resource:
               - !Sub arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/brighid/*/account-link/start-url
 
   LogGroup:
@@ -330,7 +336,7 @@ Outputs:
   CloudFormationApplicationClientId:
     Value: !Select [0, !Split ["\n", !GetAtt WaitConditionSignal.Result]]
     Description: Client ID of the CloudFormation Brighid Identity Application
-  
+
   CloudFormationApplicationEncryptedSecret:
     Value: !Select [1, !Split ["\n", !GetAtt WaitConditionSignal.Result]]
     Description: Encrypted Client Secret of the CloudFormation Brighid Identity Application
