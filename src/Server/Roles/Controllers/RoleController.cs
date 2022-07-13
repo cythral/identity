@@ -6,14 +6,12 @@ using System.Threading.Tasks;
 
 using Microsoft.AspNetCore.Mvc;
 
+using static Brighid.Identity.Roles.BuiltInRole;
+
 namespace Brighid.Identity.Roles
 {
     [Route(BasePath)]
-    [Roles(new[]
-    {
-        nameof(BuiltInRole.RoleManager),
-        nameof(BuiltInRole.Administrator),
-    })]
+
     public class RoleController : Controller
     {
         public const string BasePath = "/api/roles";
@@ -27,6 +25,7 @@ namespace Brighid.Identity.Roles
         }
 
         [HttpGet]
+        [Roles(new[] { nameof(Basic) })]
         public async Task<ActionResult<IEnumerable<Role>>> List()
         {
             var results = await service.List(HttpContext.RequestAborted);
@@ -34,6 +33,7 @@ namespace Brighid.Identity.Roles
         }
 
         [HttpGet("{id:guid}")]
+        [Roles(new[] { nameof(Basic) })]
         public virtual async Task<ActionResult<Role>> GetById(Guid id)
         {
             var result = await service.GetById(id, HttpContext.RequestAborted);
@@ -41,6 +41,7 @@ namespace Brighid.Identity.Roles
         }
 
         [HttpGet("{name}")]
+        [Roles(new[] { nameof(Basic) })]
         public async Task<ActionResult<Role>> GetByName(string name)
         {
             var role = await service.GetByName(name, HttpContext.RequestAborted);
@@ -49,6 +50,7 @@ namespace Brighid.Identity.Roles
 
         [HttpPost]
         [ProducesResponseType(typeof(Role), (int)HttpStatusCode.Created)]
+        [Roles(new[] { nameof(RoleManager), nameof(Administrator) })]
         public async Task<ActionResult<Role>> Create([FromBody] RoleRequest request)
         {
             try
@@ -74,6 +76,7 @@ namespace Brighid.Identity.Roles
         }
 
         [HttpPut("{id:guid}")]
+        [Roles(new[] { nameof(RoleManager), nameof(Administrator) })]
         public virtual async Task<ActionResult<Role>> UpdateById(Guid id, [FromBody] RoleRequest request)
         {
             try
@@ -98,6 +101,7 @@ namespace Brighid.Identity.Roles
         }
 
         [HttpDelete("{id:guid}")]
+        [Roles(new[] { nameof(RoleManager), nameof(Administrator) })]
         public virtual async Task<ActionResult<Role>> DeleteById(Guid id)
         {
             var result = await service.DeleteById(id);
