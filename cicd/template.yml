@@ -82,7 +82,7 @@ Resources:
           AWSCloudMap:
             NamespaceName: !ImportValue brighid-infrastructure:ServiceRegistryName
             ServiceName: identity
-            IpPreference: IPv4_PREFERRED
+            IpPreference: IPv6_PREFERRED
 
   MeshGatewayRoute:
     Type: Custom::MeshGatewayRoute
