@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -92,6 +93,9 @@ namespace Brighid.Identity
             services.Configure<ForwardedHeadersOptions>(options =>
             {
                 options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+                options.KnownNetworks.Add(new IPNetwork(IPAddress.Parse("2600:1f18:22e4:7b00::"), 56));
+                options.KnownNetworks.Add(new IPNetwork(IPAddress.Parse("2600:1f18:2323:b900::"), 56));
+                options.KnownNetworks.Add(new IPNetwork(IPAddress.Parse("2600:1f18:24a8:e000::"), 56));
             });
 
             services.Configure<AppConfig>(Configuration.GetSection("App"));
