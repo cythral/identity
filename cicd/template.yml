@@ -103,7 +103,7 @@ Resources:
             Hostname:
               Exact: !Ref DomainName
 
-  ServiceRegistryRecord:
+  ServiceRegistry:
     Type: AWS::ServiceDiscovery::Service
     Properties:
       Description: Internal Discovery Service for Brighid
@@ -112,6 +112,8 @@ Resources:
         DnsRecords:
           - TTL: 60
             Type: A
+          - TTL: 60
+            Type: AAAA
           - TTL: 60
             Type: SRV
       HealthCheckCustomConfig:
@@ -144,7 +146,7 @@ Resources:
             - !ImportValue cfn-utilities:EnvoySecurityGroupId
           AssignPublicIp: ENABLED
       ServiceRegistries:
-        - RegistryArn: !GetAtt ServiceRegistryRecord.Arn
+        - RegistryArn: !GetAtt ServiceRegistry.Arn
           Port: 80
       TaskDefinition: !Ref TaskDefinition
       DesiredCount: 1
