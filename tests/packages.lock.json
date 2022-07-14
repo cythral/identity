@@ -176,70 +176,65 @@
       },
       "AWSXRayRecorder": {
         "type": "Transitive",
-        "resolved": "2.10.1",
-        "contentHash": "HPhpKik+CLnnySnBekuaKten6oNGPYxFXHzXm7bSovbCUjEWJD8ckxCtoMoOom91Q1TAvwNEnn80Dj+KekaLzA==",
+        "resolved": "2.11.0",
+        "contentHash": "SCBj1nXFmJAN/DiJETVFXR4HNgkkb4odbqqTqxrq5LEbslu7wHlxqKCC+EeOJZQmo5NsU9KhwA2z719pEOA0Bw==",
         "dependencies": {
-          "AWSXRayRecorder.Core": "2.10.1",
-          "AWSXRayRecorder.Handlers.AspNetCore": "2.7.3",
-          "AWSXRayRecorder.Handlers.AwsSdk": "2.8.3",
-          "AWSXRayRecorder.Handlers.EntityFramework": "1.1.1",
-          "AWSXRayRecorder.Handlers.SqlServer": "2.7.3",
-          "AWSXRayRecorder.Handlers.System.Net": "2.7.3"
+          "AWSXRayRecorder.Core": "2.11.0",
+          "AWSXRayRecorder.Handlers.AspNetCore": "2.8.0",
+          "AWSXRayRecorder.Handlers.AwsSdk": "2.9.0",
+          "AWSXRayRecorder.Handlers.EntityFramework": "1.2.0",
+          "AWSXRayRecorder.Handlers.SqlServer": "2.8.0",
+          "AWSXRayRecorder.Handlers.System.Net": "2.8.0"
         }
       },
       "AWSXRayRecorder.Core": {
         "type": "Transitive",
-        "resolved": "2.10.1",
-        "contentHash": "agTXfOBrOsUnOfCtlm+Lz/TX93W51KrWIvAOIInI4uNKUWgSEcP/EDfYppFc0Dbws47IJXLVH/lWkCpsE9yBlw==",
+        "resolved": "2.11.0",
+        "contentHash": "j+Ab1uwbYhipib/GeQXQYkAeOhtTo5w7d2dULr2XrKdV6xXcZ7ySF38n8F5u4g5DWKKgYDDxWKOL5Q8n4VAX2g==",
         "dependencies": {
-          "AWSSDK.Core": "3.3.25.1",
-          "Microsoft.AspNetCore.Http": "2.0.0",
-          "Microsoft.Extensions.Configuration": "2.0.0",
-          "System.Net.Http": "4.3.4"
+          "AWSSDK.Core": "3.3.25.1"
         }
       },
       "AWSXRayRecorder.Handlers.AspNetCore": {
         "type": "Transitive",
-        "resolved": "2.7.3",
-        "contentHash": "hq5n1EPhqm8fUTcUai5uE7NswarsDmkiuiJxnnrlgjeid7etisu6ij/aEs2mKcpcGsKw+2R3LVC9Pu6PaSQ+0w==",
+        "resolved": "2.8.0",
+        "contentHash": "tTPUq5iaI/XtK4bR5UxA0C1amghx70zYEYoVWA+2hMdSLje8i1WhfzuT6oCecgwU6rs1e+TPloM3dN+ljSUNGg==",
         "dependencies": {
-          "AWSXRayRecorder.Core": "2.10.1",
-          "Microsoft.AspNetCore.Http.Extensions": "2.0.0",
-          "Microsoft.AspNetCore.Mvc.Abstractions": "2.0.0"
+          "AWSXRayRecorder.Core": "2.11.0"
         }
       },
       "AWSXRayRecorder.Handlers.AwsSdk": {
         "type": "Transitive",
-        "resolved": "2.8.3",
-        "contentHash": "E9OuBvqVTd1HDWfXnAve0RjZUzWQxXm9HQGyo3XbnCCd4noTUJaLSJJN4InqJDS3Xf+JfqStkrIelMbRmgMmyQ==",
+        "resolved": "2.9.0",
+        "contentHash": "VgtfrEgyNpjlwn7/Ka/FhxhjXKNm0aRXlkfNQc889RbIOOcyMhPkW+8NoyMHOmeUIE82IE4FDgEYPD6Hc58itQ==",
         "dependencies": {
-          "AWSXRayRecorder.Core": "2.10.1"
+          "AWSXRayRecorder.Core": "2.11.0"
         }
       },
       "AWSXRayRecorder.Handlers.EntityFramework": {
         "type": "Transitive",
-        "resolved": "1.1.1",
-        "contentHash": "4iIRGj7iNcnDyrVWKVu+qrMd0Fte8W1tM+NVLMBxZez1J/qgzNkD3gS8uyNa7zIciBjsD1/wZmiK3nGIXIVb7w==",
+        "resolved": "1.2.0",
+        "contentHash": "FJo8P4ASq6LAtKEO0reIn0xZ2pJ8fX12ZSQ0wRNs20Tv4DdGZBEYnbj31UPP1GLiZ+zYdYOEy8zsczt5rgSjZA==",
         "dependencies": {
-          "AWSXRayRecorder.Core": "2.10.1",
-          "Microsoft.EntityFrameworkCore.Relational": "3.1.0"
+          "AWSXRayRecorder.Core": "2.11.0",
+          "Microsoft.EntityFrameworkCore.Relational": "6.0.0"
         }
       },
       "AWSXRayRecorder.Handlers.SqlServer": {
         "type": "Transitive",
-        "resolved": "2.7.3",
-        "contentHash": "jGrguy7HxnDBNAZLx2oLLfUYyw5YCtyeziKXz7QuneG8E8gNqx4N/mKA+5uBgx7VXG2dbrkt44PhIv50XRNdIw==",
+        "resolved": "2.8.0",
+        "contentHash": "+eFXkeVCZ2BAq/U/BxV3J0qqnhuBqXVp2SvSMj2PzFDPPInyh1y1NqpjIvn7SR4Bv4Dlorf+kNE7azMPL3LJzA==",
         "dependencies": {
-          "AWSXRayRecorder.Core": "2.10.1",
+          "AWSXRayRecorder.Core": "2.11.0",
           "System.Data.SqlClient": "4.4.0"
         }
       },
       "AWSXRayRecorder.Handlers.System.Net": {
         "type": "Transitive",
-        "resolved": "2.7.3",
-        "contentHash": "FRqvIuMLCqxrYAN84CyfCXmFWAhN7RbYs6O7Ungs7+d2yVSp8xApbGkXsUQugdS0u02CMqIFI2CMuYLkAUaafw==",
+        "resolved": "2.8.0",
+        "contentHash": "LuSCiQOiGvuUkTss5VE8AWlWYFc9Rd0cu2H40dQSpp23qpsaCFODaoe/QHAQlB23UgAIs5tFCLBAlJ9ULmmdug==",
         "dependencies": {
-          "AWSXRayRecorder.Core": "2.10.1"
+          "AWSXRayRecorder.Core": "2.11.0"
         }
       },
       "Castle.Core": {
@@ -379,46 +374,6 @@
           "Microsoft.AspNetCore.Cryptography.Internal": "6.0.7"
         }
       },
-      "Microsoft.AspNetCore.Http": {
-        "type": "Transitive",
-        "resolved": "2.0.0",
-        "contentHash": "2YNhcHrGxo2YufA8TYGyaEMIJwikyisZqEzHCRpIuI0D6ZXkA47U/3NJg2r/x5/gGHNM3TXO7DsqH88qRda+yg==",
-        "dependencies": {
-          "Microsoft.AspNetCore.Http.Abstractions": "2.0.0",
-          "Microsoft.AspNetCore.WebUtilities": "2.0.0",
-          "Microsoft.Extensions.ObjectPool": "2.0.0",
-          "Microsoft.Extensions.Options": "2.0.0",
-          "Microsoft.Net.Http.Headers": "2.0.0"
-        }
-      },
-      "Microsoft.AspNetCore.Http.Abstractions": {
-        "type": "Transitive",
-        "resolved": "2.0.0",
-        "contentHash": "pblZLY7IfNqhQ5wwGQ0vNq2mG6W5YgZI1fk7suEuwZsGxGEADNBAyNlTALM9L8nMXdvbp6aHP/t4wHrFpcL3Sw==",
-        "dependencies": {
-          "Microsoft.AspNetCore.Http.Features": "2.0.0",
-          "System.Text.Encodings.Web": "4.4.0"
-        }
-      },
-      "Microsoft.AspNetCore.Http.Extensions": {
-        "type": "Transitive",
-        "resolved": "2.0.0",
-        "contentHash": "lA7Bwvur19MhXrlW0w+WBXONJMSFYY5kNazflz4MNwMZMtzwHxNA6fC5sQsssYd/XvA0gMyKwp52s68uuKLR1w==",
-        "dependencies": {
-          "Microsoft.AspNetCore.Http.Abstractions": "2.0.0",
-          "Microsoft.Extensions.FileProviders.Abstractions": "2.0.0",
-          "Microsoft.Net.Http.Headers": "2.0.0",
-          "System.Buffers": "4.4.0"
-        }
-      },
-      "Microsoft.AspNetCore.Http.Features": {
-        "type": "Transitive",
-        "resolved": "2.0.0",
-        "contentHash": "yk62muzFTZTKCQuo3nmVPkPvGBlM2qbdSxbX62TufuONuKQrTGQ/SwhwBbYutk5/YY7u4HETu0n9BKOn7mMgmA==",
-        "dependencies": {
-          "Microsoft.Extensions.Primitives": "2.0.0"
-        }
-      },
       "Microsoft.AspNetCore.Identity.EntityFrameworkCore": {
         "type": "Transitive",
         "resolved": "6.0.7",
@@ -432,15 +387,6 @@
         "type": "Transitive",
         "resolved": "6.0.7",
         "contentHash": "lRYA9dAPRhstA1x9RN0Y7O+28SeIwjASRL64mtuAb4Lywe7GykgFM2sK4cDrNedCOiCt2R6FretfNGjFeP9pRA=="
-      },
-      "Microsoft.AspNetCore.Mvc.Abstractions": {
-        "type": "Transitive",
-        "resolved": "2.0.0",
-        "contentHash": "SnotrRhgn/Z1yse9vOSiRLy0FfZ7l+84zBYM9XitShM4rFJuKxNvZK2Hf0pacNvVvUzgJ1Ab88Np4D1Gi1Stcg==",
-        "dependencies": {
-          "Microsoft.AspNetCore.Routing.Abstractions": "2.0.0",
-          "Microsoft.Net.Http.Headers": "2.0.0"
-        }
       },
       "Microsoft.AspNetCore.Mvc.Razor.Extensions": {
         "type": "Transitive",
@@ -465,14 +411,6 @@
         "type": "Transitive",
         "resolved": "6.0.7",
         "contentHash": "mMtNBAkvcmX3KLcEEk9mWrIPB7GWFn9SR/tG0zXh9J3WUskOAu14y6asCgjaRBgNiXFcNH4Kpwa5YlPbGHXGUA=="
-      },
-      "Microsoft.AspNetCore.Routing.Abstractions": {
-        "type": "Transitive",
-        "resolved": "2.0.0",
-        "contentHash": "Kr5Zr8QESkB1Hb234BRZhvhwVgZLcbQtKHQlDPMj/+ZJpbAetKBLW5qWLiQpG4USoa/8kZ8jZtoQ0WcMO2JDag==",
-        "dependencies": {
-          "Microsoft.AspNetCore.Http.Abstractions": "2.0.0"
-        }
       },
       "Microsoft.AspNetCore.TestHost": {
         "type": "Transitive",
@@ -909,11 +847,6 @@
           "Microsoft.Extensions.Options": "5.0.0",
           "Microsoft.Extensions.Primitives": "5.0.0"
         }
-      },
-      "Microsoft.Extensions.ObjectPool": {
-        "type": "Transitive",
-        "resolved": "2.0.0",
-        "contentHash": "drOmgNZCJiNEqFM/TvyqwtogS8wqoWGQCW5KB/CVGKL6VXHw8OOMdaHyspp8HPstP9UDnrnuq+8eaCaAcQg6tA=="
       },
       "Microsoft.Extensions.Options": {
         "type": "Transitive",
@@ -1905,10 +1838,10 @@
       },
       "System.Net.Http": {
         "type": "Transitive",
-        "resolved": "4.3.4",
-        "contentHash": "aOa2d51SEbmM+H+Csw7yJOuNZoHkrP2XnAurye5HWYgGVVU54YZDvsLUYRv6h18X3sPnjNCANmN7ZhIPiqMcjA==",
+        "resolved": "4.3.3",
+        "contentHash": "7rCqIbkC/P2+A00NoDH5gnvFhADmX7Dc4INvsOajbU1MVhktE9vZNrjPtF82N6Uo7obK+yzlrPUv/M+snnN/9w==",
         "dependencies": {
-          "Microsoft.NETCore.Platforms": "1.1.1",
+          "Microsoft.NETCore.Platforms": "1.1.0",
           "System.Collections": "4.3.0",
           "System.Diagnostics.Debug": "4.3.0",
           "System.Diagnostics.DiagnosticSource": "4.3.0",
@@ -2499,7 +2432,7 @@
           "AWSSDK.S3": "3.7.9.23",
           "AWSSDK.SimpleNotificationService": "3.7.3.79",
           "AWSSDK.SimpleSystemsManagement": "3.7.17.25",
-          "AWSXrayRecorder": "2.10.1",
+          "AWSXrayRecorder": "2.11.0",
           "Common": "1.0.0",
           "Database": "1.0.0",
           "Destructurama.Attributed": "3.0.0",
