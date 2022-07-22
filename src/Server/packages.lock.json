@@ -40,16 +40,16 @@
       },
       "AWSXRayRecorder": {
         "type": "Direct",
-        "requested": "[2.11.0, )",
-        "resolved": "2.11.0",
-        "contentHash": "SCBj1nXFmJAN/DiJETVFXR4HNgkkb4odbqqTqxrq5LEbslu7wHlxqKCC+EeOJZQmo5NsU9KhwA2z719pEOA0Bw==",
+        "requested": "[2.11.1, )",
+        "resolved": "2.11.1",
+        "contentHash": "zR78FJDFMmyMDZu9M4GgO0XXO/9Rq6SgzDn9jhuAp+I3rDheTeIDhPubgt8eanRvMTby/Ns2nBXaVUqpwFPwig==",
         "dependencies": {
-          "AWSXRayRecorder.Core": "2.11.0",
-          "AWSXRayRecorder.Handlers.AspNetCore": "2.8.0",
-          "AWSXRayRecorder.Handlers.AwsSdk": "2.9.0",
-          "AWSXRayRecorder.Handlers.EntityFramework": "1.2.0",
-          "AWSXRayRecorder.Handlers.SqlServer": "2.8.0",
-          "AWSXRayRecorder.Handlers.System.Net": "2.8.0"
+          "AWSXRayRecorder.Core": "2.11.1",
+          "AWSXRayRecorder.Handlers.AspNetCore": "2.8.1",
+          "AWSXRayRecorder.Handlers.AwsSdk": "2.9.1",
+          "AWSXRayRecorder.Handlers.EntityFramework": "1.2.1",
+          "AWSXRayRecorder.Handlers.SqlServer": "2.8.1",
+          "AWSXRayRecorder.Handlers.System.Net": "2.8.1"
         }
       },
       "Destructurama.Attributed": {
@@ -228,52 +228,52 @@
       },
       "AWSXRayRecorder.Core": {
         "type": "Transitive",
-        "resolved": "2.11.0",
-        "contentHash": "j+Ab1uwbYhipib/GeQXQYkAeOhtTo5w7d2dULr2XrKdV6xXcZ7ySF38n8F5u4g5DWKKgYDDxWKOL5Q8n4VAX2g==",
+        "resolved": "2.11.1",
+        "contentHash": "eCNoLdvtAuookHh5Plz0y6sgsP0p8PnSKc1xcPnBKaWkepymCs7ZOHtzj31rk9R1Qrkn+lgoK3zNkRuRooKS3g==",
         "dependencies": {
           "AWSSDK.Core": "3.3.25.1"
         }
       },
       "AWSXRayRecorder.Handlers.AspNetCore": {
         "type": "Transitive",
-        "resolved": "2.8.0",
-        "contentHash": "tTPUq5iaI/XtK4bR5UxA0C1amghx70zYEYoVWA+2hMdSLje8i1WhfzuT6oCecgwU6rs1e+TPloM3dN+ljSUNGg==",
+        "resolved": "2.8.1",
+        "contentHash": "ILeYhBL1ykw7bJYRoQvh4W4ljn8pkJl3bhSjZ9TWfwqlryvYPk8EId16w3mDh/UlVzxhfy7xGxzc+w7ZUrpbHQ==",
         "dependencies": {
-          "AWSXRayRecorder.Core": "2.11.0"
+          "AWSXRayRecorder.Core": "2.11.1"
         }
       },
       "AWSXRayRecorder.Handlers.AwsSdk": {
         "type": "Transitive",
-        "resolved": "2.9.0",
-        "contentHash": "VgtfrEgyNpjlwn7/Ka/FhxhjXKNm0aRXlkfNQc889RbIOOcyMhPkW+8NoyMHOmeUIE82IE4FDgEYPD6Hc58itQ==",
+        "resolved": "2.9.1",
+        "contentHash": "1f5LESOwV5cWZfwr55DamD/zrBq674EZx+dF3Ci6a7GCG4Mj8gC2y50q5GbNZXlzHCsqmrGJ+BOZILAqfe+/1Q==",
         "dependencies": {
-          "AWSXRayRecorder.Core": "2.11.0"
+          "AWSXRayRecorder.Core": "2.11.1"
         }
       },
       "AWSXRayRecorder.Handlers.EntityFramework": {
         "type": "Transitive",
-        "resolved": "1.2.0",
-        "contentHash": "FJo8P4ASq6LAtKEO0reIn0xZ2pJ8fX12ZSQ0wRNs20Tv4DdGZBEYnbj31UPP1GLiZ+zYdYOEy8zsczt5rgSjZA==",
+        "resolved": "1.2.1",
+        "contentHash": "hJRp1u7qSFhMQsunq5OcjG9xL6PEO7nm6X2dYH4xkqcyD3pWk2To4p33owqYvFc9GU1wnJPC1GZDSTkVTim5aw==",
         "dependencies": {
-          "AWSXRayRecorder.Core": "2.11.0",
+          "AWSXRayRecorder.Core": "2.11.1",
           "Microsoft.EntityFrameworkCore.Relational": "6.0.0"
         }
       },
       "AWSXRayRecorder.Handlers.SqlServer": {
         "type": "Transitive",
-        "resolved": "2.8.0",
-        "contentHash": "+eFXkeVCZ2BAq/U/BxV3J0qqnhuBqXVp2SvSMj2PzFDPPInyh1y1NqpjIvn7SR4Bv4Dlorf+kNE7azMPL3LJzA==",
+        "resolved": "2.8.1",
+        "contentHash": "aHw9cHJkHnmTaTWN+Zi+Hw5XgQWsxRTSBpxfpwgS5+ze9bSY+kBI8E5mpHX6d40yUXIFaC7kpoeNz3fZzg2INw==",
         "dependencies": {
-          "AWSXRayRecorder.Core": "2.11.0",
+          "AWSXRayRecorder.Core": "2.11.1",
           "System.Data.SqlClient": "4.4.0"
         }
       },
       "AWSXRayRecorder.Handlers.System.Net": {
         "type": "Transitive",
-        "resolved": "2.8.0",
-        "contentHash": "LuSCiQOiGvuUkTss5VE8AWlWYFc9Rd0cu2H40dQSpp23qpsaCFODaoe/QHAQlB23UgAIs5tFCLBAlJ9ULmmdug==",
+        "resolved": "2.8.1",
+        "contentHash": "0R+kca6tm5bVosI6qiwGjcggdF7tSJOv0KNyLuQkO1m8+bQhI1jsMju2oWHMzEQhIY1VNoQ4kaN5PHdt3XREHQ==",
         "dependencies": {
-          "AWSXRayRecorder.Core": "2.11.0"
+          "AWSXRayRecorder.Core": "2.11.1"
         }
       },
       "Humanizer.Core": {
