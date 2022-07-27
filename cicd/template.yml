@@ -259,6 +259,10 @@ Resources:
               awslogs-region: !Ref AWS::Region
               awslogs-stream-prefix: brighid
           Environment:
+            - Name: APPMESH_DUALSTACK_ENDPOINT
+              Value: "1"
+            - Name: ENVOY_ADMIN_ACCESS_ENABLE_IPV6
+              Value: "1"
             - Name: APPMESH_RESOURCE_ARN
               Value: !Sub
                 - mesh/brighid-mesh@${SharedAccountId}/virtualNode/${MeshNode.VirtualNodeName}
