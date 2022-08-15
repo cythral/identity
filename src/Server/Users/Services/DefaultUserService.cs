@@ -104,6 +104,7 @@ namespace Brighid.Identity.Users
 
             login.Enabled = enabled;
             await loginRepository.Save(login, cancellationToken);
+            await cacheService.ClearExternalUserCache(login.UserId, cancellationToken);
         }
 
         /// <inheritdoc />
