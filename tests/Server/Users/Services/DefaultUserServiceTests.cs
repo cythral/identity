@@ -277,6 +277,27 @@ namespace Brighid.Identity.Users
                 await repository.Received().Save(Is(userLogin), Is(cancellationToken));
                 userLogin.Enabled.Should().Be(enabled);
             }
+
+            [Test]
+            [Auto]
+            public async Task ShouldClearExternalUserCache(
+                ClaimsPrincipal principal,
+                string loginProvider,
+                string providerKey,
+                bool enabled,
+                [Frozen] UserLogin userLogin,
+                [Frozen] IPrincipalService principalService,
+                [Frozen] IUserCacheService cacheService,
+                [Target] DefaultUserService service,
+                CancellationToken cancellationToken
+            )
+            {
+                userLogin.Enabled = !enabled;
+                principalService.GetId(Any<ClaimsPrincipal>()).Returns(userLogin.UserId);
+                await service.SetLoginStatus(principal, loginProvider, providerKey, enabled, cancellationToken);
+
+                await cacheService.Received().ClearExternalUserCache(Is(userLogin.UserId), Is(cancellationToken));
+            }
         }
 
         [Category("Unit")]
