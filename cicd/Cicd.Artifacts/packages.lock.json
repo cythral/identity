@@ -14,11 +14,11 @@
       },
       "Constructs": {
         "type": "Direct",
-        "requested": "[10.1.67, )",
-        "resolved": "10.1.67",
-        "contentHash": "OgYU+9N15pbI5IZU9Bbrq4aIGJhjupGhIG59+c8I2czAKaFYpB3ZVBefSMG1FJuMieLUYVUINqIq130UMqMkNg==",
+        "requested": "[10.1.77, )",
+        "resolved": "10.1.77",
+        "contentHash": "kFScpYERSa6Ise7vfOgN8YvCR1gyn7yFjYh2P6iyRRsFGgT4yrccRba87AorT4xvGu5Dw1Uo4tPblZR2AbjrBA==",
         "dependencies": {
-          "Amazon.JSII.Runtime": "[1.63.2, 2.0.0)"
+          "Amazon.JSII.Runtime": "[1.64.0, 2.0.0)"
         }
       },
       "StyleCop.Analyzers": {
@@ -32,8 +32,8 @@
       },
       "Amazon.JSII.Runtime": {
         "type": "Transitive",
-        "resolved": "1.63.2",
-        "contentHash": "zZcIfq5JCvmqi4TsFFKdgQnokI9V8tGAJ3TmpIe5uMgKk7psLGBHGV3zN6mAOcA5fjuydwus8l2jSDFiTBroow==",
+        "resolved": "1.64.0",
+        "contentHash": "eYg7fXtGgNmPYl6ZOr23XokA8JNfWU8VoMiCdCNQyKv1tkaDa9ga81W3yhnG/1sUxHo5hHUgJzpRsh5P6O1iOQ==",
         "dependencies": {
           "Microsoft.Extensions.DependencyInjection": "6.0.0",
           "Microsoft.Extensions.Logging": "5.0.0",
