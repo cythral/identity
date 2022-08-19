@@ -212,7 +212,7 @@ namespace Microsoft.Extensions.DependencyInjection
             var configServiceLogger = loggerFactory.CreateLogger<DefaultCertificateConfigurationService>();
             var updaterLogger = loggerFactory.CreateLogger<DefaultCertificateUpdater>();
 
-            var s3Client = new AmazonS3Client();
+            var s3Client = new AmazonS3Client(new AmazonS3Config { UseDualstackEndpoint = true });
             var ssmClient = new AmazonSimpleSystemsManagementClient();
 
             var fetcher = new DefaultCertificateFetcher(s3Client, fetcherLogger);
