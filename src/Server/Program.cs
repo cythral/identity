@@ -5,8 +5,11 @@ using System.Threading.Tasks;
 
 using Amazon.XRay.Recorder.Handlers.AwsSdk;
 
+using Brighid.Identity.Auth;
+
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
 using Serilog;
@@ -18,7 +21,12 @@ namespace Brighid.Identity
         public static async Task Main(string[] args)
         {
             AWSSDKHandler.RegisterXRayForAllServices();
-            await CreateHostBuilder(args).Build().RunAsync();
+            var host = CreateHostBuilder(args).Build();
+
+            var certificateUpdater = host.Services.GetRequiredService<ICertificateUpdater>();
+            await certificateUpdater.UpdateCertificates();
+
+            await host.RunAsync();
         }
 
         private static IHostBuilder CreateHostBuilder(string[] args)
