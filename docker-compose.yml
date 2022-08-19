@@ -42,7 +42,7 @@ services:
       Auth__DomainName: localhost
       Auth__CookieDomain: localhost
       App__UseHttps: "false"
-      Auth__CertificateConfigurationParameterName: ${AUTH_CERTIFICATE_PARAM_NAME}
+      Auth__CertificateConfigurationParameterName: /brighid/identity/signing-certificates
     labels:
       - traefik.enable=true
       - traefik.http.routers.adapter.rule=Host(`localhost`)

@@ -1,10 +1,6 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Security.Principal;
-
-using Amazon.S3;
-using Amazon.SimpleSystemsManagement;
 
 using Brighid.Identity;
 using Brighid.Identity.Auth;
@@ -17,7 +13,6 @@ using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 
 using OpenIddict.Server;
@@ -47,9 +42,8 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddSingleton<IHostedService, CertificateUpdateTimer>();
             services.AddHttpContextAccessor();
 
-            var startupCertificates = GetStartupCertificates(authConfig);
             services.AddAspNetCoreIdentity();
-            services.AddOpenIdServer(authConfig, startupCertificates);
+            services.AddOpenIdServer(authConfig);
             services.AddOpenIdAuth(authConfig);
             services.AddAuthorizationPolicies();
         }
@@ -80,8 +74,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// </summary>
         /// <param name="services">The service collection to configure.</param>
         /// <param name="authConfig">Auth config to use.</param>
-        /// <param name="startupCertificates">Certificates to use for signing/validation.</param>
-        public static void AddOpenIdServer(this IServiceCollection services, AuthConfig authConfig, List<SigningCredentials> startupCertificates)
+        public static void AddOpenIdServer(this IServiceCollection services, AuthConfig authConfig)
         {
             services.Configure<IdentityOptions>(options =>
             {
@@ -121,12 +114,7 @@ namespace Microsoft.Extensions.DependencyInjection
 
                 options.DisableAccessTokenEncryption();
                 options.AddEphemeralEncryptionKey();
-
-                foreach (var credential in startupCertificates)
-                {
-                    options.AddSigningCredentials(credential);
-                }
-
+                options.AddEphemeralSigningKey();
                 options.Configure(serverOptions =>
                 {
                     ConfigureTokenValidationParameters(serverOptions.TokenValidationParameters, authConfig);
@@ -200,36 +188,6 @@ namespace Microsoft.Extensions.DependencyInjection
             });
 
             services.AddSingleton<IAuthorizationHandler, RestrictedToSelfPolicyHandler>();
-        }
-
-        private static List<SigningCredentials> GetStartupCertificates(AuthConfig config)
-        {
-            var result = new List<SigningCredentials>();
-            var options = Options.Options.Create(config);
-
-            var loggerFactory = LoggerFactory.Create(options => options.AddConsole());
-            var fetcherLogger = loggerFactory.CreateLogger<DefaultCertificateFetcher>();
-            var configServiceLogger = loggerFactory.CreateLogger<DefaultCertificateConfigurationService>();
-            var updaterLogger = loggerFactory.CreateLogger<DefaultCertificateUpdater>();
-
-            var s3Client = new AmazonS3Client(new AmazonS3Config { UseDualstackEndpoint = true });
-            var ssmClient = new AmazonSimpleSystemsManagementClient();
-
-            var fetcher = new DefaultCertificateFetcher(s3Client, fetcherLogger);
-            var manager = new StartupCertificateManager(result);
-            var configService = new DefaultCertificateConfigurationService(ssmClient, options, configServiceLogger);
-            var updater = new DefaultCertificateUpdater(configService, fetcher, manager, updaterLogger);
-
-            try
-            {
-                updater.UpdateCertificates().GetAwaiter().GetResult();
-                return result;
-            }
-            catch (Exception)
-            {
-                result.Add(new SigningCredentials(Utils.GenerateDevelopmentSecurityKey(), "RS256"));
-                return result;
-            }
         }
 
         private static void ConfigureTokenValidationParameters(TokenValidationParameters parameters, AuthConfig authConfig)
