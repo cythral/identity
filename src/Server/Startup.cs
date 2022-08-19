@@ -109,7 +109,7 @@ namespace Brighid.Identity
             services.AddSingleton<IAmazonKeyManagementService, AmazonKeyManagementServiceClient>();
             services.AddSingleton<IAmazonSimpleSystemsManagement, AmazonSimpleSystemsManagementClient>();
             services.AddSingleton<IAmazonSimpleNotificationService, AmazonSimpleNotificationServiceClient>();
-            services.AddSingleton<IAmazonS3, AmazonS3Client>();
+            services.AddSingleton<IAmazonS3>(new AmazonS3Client(new AmazonS3Config { UseDualstackEndpoint = true }));
             services.AddSingleton<IEncryptionService, DefaultEncryptionService>();
 
             services.AddSingleton<GenerateRandomString>(Utils.GenerateRandomString);
