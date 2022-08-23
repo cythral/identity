@@ -22,9 +22,9 @@
       },
       "AWSSDK.SimpleNotificationService": {
         "type": "Direct",
-        "requested": "[3.7.3.95, )",
-        "resolved": "3.7.3.95",
-        "contentHash": "SAwtFYA1JMwQmvo35dOEDXu+gZwKOttH7Pt2HF/uNFK+F7A0HdDKbUc5tNXPZy0ydqvlPJyThE6Y3CG2ChtgFQ==",
+        "requested": "[3.7.3.96, )",
+        "resolved": "3.7.3.96",
+        "contentHash": "9iFecR19vDCreqXxRuyZ2yeUeErWuRiKUVVT9RXPGeZITdmbBQkd8aRj3wY29RLV36IdIXhBuPfbinhpMekKRA==",
         "dependencies": {
           "AWSSDK.Core": "[3.7.12.24, 4.0.0)"
         }
