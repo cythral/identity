@@ -12,10 +12,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="AWSSDK.KeyManagementService" Version="3.7.4.13" />
-    <PackageReference Include="AWSSDK.S3" Version="3.7.9.42" />
-    <PackageReference Include="AWSSDK.SimpleNotificationService" Version="3.7.3.96" />
-    <PackageReference Include="AWSSDK.SimpleSystemsManagement" Version="3.7.17.41" />
+    <PackageReference Include="AWSSDK.KeyManagementService" Version="3.7.4.14" />
+    <PackageReference Include="AWSSDK.S3" Version="3.7.9.43" />
+    <PackageReference Include="AWSSDK.SimpleNotificationService" Version="3.7.3.97" />
+    <PackageReference Include="AWSSDK.SimpleSystemsManagement" Version="3.7.17.42" />
     <PackageReference Include="AWSXrayRecorder" Version="2.11.1" />
     <PackageReference Include="Serilog.Filters.Expressions" Version="2.1.0" />
   </ItemGroup>
