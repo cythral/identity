@@ -4,9 +4,9 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="AWSSDK.CloudFormation" Version="3.7.11.26" />
-        <PackageReference Include="AWSSDK.ECS" Version="3.7.5.74" />
-        <PackageReference Include="AWSSDK.S3" Version="3.7.9.50" />
+        <PackageReference Include="AWSSDK.CloudFormation" Version="3.7.11.27" />
+        <PackageReference Include="AWSSDK.ECS" Version="3.7.5.75" />
+        <PackageReference Include="AWSSDK.S3" Version="3.7.9.51" />
         <PackageReference Include="Microsoft.Extensions.Hosting" Version="6.0.1" />
     </ItemGroup>
 
