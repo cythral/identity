@@ -13,9 +13,9 @@
       },
       "AWSSDK.ECS": {
         "type": "Direct",
-        "requested": "[3.7.5.77, )",
-        "resolved": "3.7.5.77",
-        "contentHash": "zPFYZQMyY6MVxY/wAyfvR7UJuEAfur0qmyNiW6braDajfrFjQASdsixyt3FfkNMNo+IJsIFGnFiAUtclG1a54Q==",
+        "requested": "[3.7.5.78, )",
+        "resolved": "3.7.5.78",
+        "contentHash": "osXNUmudgUx5KyjnqVEJTcNvfHb4GliS9ZPRJ9QjkYjZb5PplMU3uwhze1FejgvVySFXJ24wZG0zbh1aNR2uog==",
         "dependencies": {
           "AWSSDK.Core": "[3.7.13.4, 4.0.0)"
         }
