@@ -4,38 +4,38 @@
     "net6.0": {
       "AWSSDK.KeyManagementService": {
         "type": "Direct",
-        "requested": "[3.7.4.26, )",
-        "resolved": "3.7.4.26",
-        "contentHash": "4GkDa3JT0KmDFTOwYV9J7oJh2g8NrpOHCLlhax9n47TfoVLfINBXcdGju9/kTL07hSoPQ/0Dt+I7MvEFfxauBw==",
+        "requested": "[3.7.4.27, )",
+        "resolved": "3.7.4.27",
+        "contentHash": "4K+iljUYKR8B7ISDR0Y6XzV6d0VItJx5R4477mV6OhSGTQVYimw7oJcgRMz99H/L1fBeidYkz1r0g49Zu/qdsA==",
         "dependencies": {
-          "AWSSDK.Core": "[3.7.13.6, 4.0.0)"
+          "AWSSDK.Core": "[3.7.13.7, 4.0.0)"
         }
       },
       "AWSSDK.S3": {
         "type": "Direct",
-        "requested": "[3.7.9.55, )",
-        "resolved": "3.7.9.55",
-        "contentHash": "eX+QPLN8HPKefq4z9OXmjn8fVfIxgEhGnsWTEfRPpCwhzLndB1dQY5mnGN0YDCXxxzKCOSglhICnZ5KCznhRoQ==",
+        "requested": "[3.7.9.56, )",
+        "resolved": "3.7.9.56",
+        "contentHash": "eK2vE69naXnC+XfyI3W1PFzc+JhqIlyk3mBCFag1i3VBWmI8uOWQkh9DBQ6L4M2Zao8iDrZo0hPHHfixEXpg9w==",
         "dependencies": {
-          "AWSSDK.Core": "[3.7.13.6, 4.0.0)"
+          "AWSSDK.Core": "[3.7.13.7, 4.0.0)"
         }
       },
       "AWSSDK.SimpleNotificationService": {
         "type": "Direct",
-        "requested": "[3.7.4.8, )",
-        "resolved": "3.7.4.8",
-        "contentHash": "3R4TO36F6Ypa8su/P+B+vLhA49vYK9wlEXs3NwCpF0TgZk3LJXW0Ynlm3WEN9FvHub2gcRQEr1Vat0gZsgNrSQ==",
+        "requested": "[3.7.4.9, )",
+        "resolved": "3.7.4.9",
+        "contentHash": "QOAnzQhd/w5KIc9mOuJVoMLwcilPz0h40tc5j1vFwhXlNHcd/u7TYAsTYJwWB1i9fLTP7THaoiU9S4AoTHFUaw==",
         "dependencies": {
-          "AWSSDK.Core": "[3.7.13.6, 4.0.0)"
+          "AWSSDK.Core": "[3.7.13.7, 4.0.0)"
         }
       },
       "AWSSDK.SimpleSystemsManagement": {
         "type": "Direct",
-        "requested": "[3.7.18.7, )",
-        "resolved": "3.7.18.7",
-        "contentHash": "4FUKRBpbvg9KAkc4mBUlz4rmh6hiWYnn8LhjYM0mzM5MVZfTzTDTg2bXjy/RNlzANbNiw12yj7kcvv24Ir7mDQ==",
+        "requested": "[3.7.18.8, )",
+        "resolved": "3.7.18.8",
+        "contentHash": "EU6dBMdXJh0yUgupjAVWaxO6nQwyIIMNE1IBQquqq1N01hXvNof90jp3uGPGcTaQCroPxBlWI3CelRrLOV2qCA==",
         "dependencies": {
-          "AWSSDK.Core": "[3.7.13.6, 4.0.0)"
+          "AWSSDK.Core": "[3.7.13.7, 4.0.0)"
         }
       },
       "AWSXRayRecorder": {
@@ -223,8 +223,8 @@
       },
       "AWSSDK.Core": {
         "type": "Transitive",
-        "resolved": "3.7.13.6",
-        "contentHash": "acIMaaZCVOH3DrQN09LJJwvnshBpgI9eKMVwTF7syEKxBRam2Y6B0s0T5Kdm8uDhJ/18OqfUYMxYPokHyluNBw=="
+        "resolved": "3.7.13.7",
+        "contentHash": "ivB1bTUTChhvSgFbR0YnRE1K6fZ5dtukntWEW21ZFBgLWFqTwit6MmWKkTb4I9KjgZga3sT5IApiBIRC+X+RYQ=="
       },
       "AWSXRayRecorder.Core": {
         "type": "Transitive",
