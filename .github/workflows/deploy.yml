@@ -44,7 +44,7 @@ jobs:
           aws-region: us-east-1
 
       - name: Setup .NET Core
-        uses: actions/setup-dotnet@v2
+        uses: actions/setup-dotnet@v3
 
       - name: Display .NET Info
         run: dotnet --info
