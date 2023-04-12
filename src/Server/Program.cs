@@ -50,7 +50,7 @@ namespace Brighid.Identity
             .ConfigureAppConfiguration(configure =>
             {
                 configure.AddEnvironmentVariables();
-                configure.AddInMemoryCollection(new Dictionary<string, string>
+                configure.AddInMemoryCollection(new Dictionary<string, string?>
                 {
                     [WebHostDefaults.StaticWebAssetsKey] = "StaticWebAssets.xml",
                 });

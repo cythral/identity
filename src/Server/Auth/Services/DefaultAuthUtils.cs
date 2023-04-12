@@ -44,8 +44,13 @@ namespace Brighid.Identity.Auth
         {
             var result = new ClaimsIdentity(OpenIddictServerAspNetCoreDefaults.AuthenticationScheme, Claims.Name, Claims.Role);
 
-            result.AddClaim(Claims.Name, applicationId.ToString(), Destinations.AccessToken, Destinations.IdentityToken);
-            result.AddClaim(Claims.Subject, applicationId.ToString(), Destinations.AccessToken, Destinations.IdentityToken);
+            var nameClaim = new Claim(Claims.Name, applicationId.ToString());
+            nameClaim.SetDestinations(Destinations.AccessToken, Destinations.IdentityToken);
+            result.AddClaim(nameClaim);
+
+            var subClaim = new Claim(Claims.Subject, applicationId.ToString());
+            subClaim.SetDestinations(Destinations.AccessToken, Destinations.IdentityToken);
+            result.AddClaim(subClaim);
 
             var roles = (await applicationRepository.FindRolesById(applicationId))!;
             var roleNames = roles.Select(role => $"\"{role.Name}\"");
@@ -59,8 +64,14 @@ namespace Brighid.Identity.Auth
         public async Task<ClaimsIdentity> CreateClaimsIdentityForUser(User user, CancellationToken cancellationToken = default)
         {
             var result = new ClaimsIdentity(IdentityConstants.ApplicationScheme, Claims.Name, Claims.Role);
-            result.AddClaim(Claims.Name, user.Email.ToString(), Destinations.IdentityToken, Destinations.AccessToken);
-            result.AddClaim(Claims.Subject, user.Id.ToString(), Destinations.IdentityToken, Destinations.AccessToken);
+
+            var nameClaim = new Claim(Claims.Name, user.Email?.ToString() ?? string.Empty);
+            nameClaim.SetDestinations(Destinations.IdentityToken, Destinations.AccessToken);
+            result.AddClaim(nameClaim);
+
+            var subjectClaim = new Claim(Claims.Subject, user.Id.ToString());
+            subjectClaim.SetDestinations(Destinations.IdentityToken, Destinations.AccessToken);
+            result.AddClaim(subjectClaim);
 
             var flagsClaim = new Claim("flg", ((long)user.Flags).ToString(), ClaimValueTypes.Integer64);
             flagsClaim.SetDestinations(Destinations.AccessToken, Destinations.IdentityToken);
@@ -80,14 +91,16 @@ namespace Brighid.Identity.Auth
             IEnumerable<string>? scopes = null,
             Uri? redirectUri = null,
             string authenticationScheme = OpenIddictServerAspNetCoreDefaults.AuthenticationScheme,
-            string[]? resources = null
+            string?[]? resources = null
         )
         {
             resources ??= new[] { "identity.brigh.id" };
             scopes ??= Array.Empty<string>();
 
             var principal = new ClaimsPrincipal(claimsIdentity);
-            principal.SetResources(resources);
+
+            var filteredResources = (from resource in resources where resource != null select resource).ToArray();
+            principal.SetResources(filteredResources);
             principal.SetScopes(scopes);
 
             var authProps = new AuthenticationProperties() { RedirectUri = redirectUri?.ToString() };

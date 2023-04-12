@@ -35,14 +35,14 @@ namespace Brighid.Identity.Roles
         /// </summary>
         /// <value>The roles' normalized name.</value>
         [JsonIgnore]
-        public override string NormalizedName { get; set; } = string.Empty;
+        public override string? NormalizedName { get; set; } = string.Empty;
 
         /// <summary>
         /// Gets or sets the concurrency stamp for this entity.
         /// </summary>
         /// <value>The role's concurrency stamp.</value>
         [JsonIgnore]
-        public override string ConcurrencyStamp { get; set; } = Guid.NewGuid().ToString();
+        public override string? ConcurrencyStamp { get; set; } = Guid.NewGuid().ToString();
 
         /// <summary>
         /// Gets or sets the description of the role.

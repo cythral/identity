@@ -55,12 +55,7 @@ namespace Brighid.Identity.Applications
 
         public async Task<Application> UpdateById(Guid id, Application application)
         {
-            var existingApp = await appRepository.FindById(id);
-            if (existingApp == null)
-            {
-                throw new UpdateApplicationException($"Application with ID={id} does not exist.");
-            }
-
+            var existingApp = await appRepository.FindById(id) ?? throw new UpdateApplicationException($"Application with ID={id} does not exist.");
             await appRepository.LoadCollection(existingApp, nameof(Application.Roles));
 
             var serialChanged = existingApp.Serial != application.Serial;

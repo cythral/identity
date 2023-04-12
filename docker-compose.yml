@@ -21,7 +21,7 @@ services:
       - "80"
       - "8736:8736"
     volumes:
-      - ./bin/Server/Debug/linux-musl-arm64:/app
+      - ./bin/Server/Debug/linux-musl-arm64/publish:/app
       - ./bin/Interface/Debug/publish/wwwroot:/wwwroot
       - ~/.aws:/home/brighid/.aws
       - ~/.vsdbg:/remote_debugger:rw

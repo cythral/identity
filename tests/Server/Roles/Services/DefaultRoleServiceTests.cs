@@ -186,7 +186,7 @@ namespace Brighid.Identity.Roles
                 await repository.Received().Add(Is<Role>(receivedRole =>
                     receivedRole.Id == role.Id &&
                     receivedRole.Name == role.Name &&
-                    receivedRole.NormalizedName == role.Name.ToUpper(CultureInfo.InvariantCulture)
+                    receivedRole.NormalizedName == role.Name!.ToUpper(CultureInfo.InvariantCulture)
                 ));
             }
 

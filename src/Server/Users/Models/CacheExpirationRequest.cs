@@ -1,6 +1,6 @@
 namespace Brighid.Identity.Users
 {
-    public struct CacheExpirationRequest
+    public readonly struct CacheExpirationRequest
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="CacheExpirationRequest" /> struct.
