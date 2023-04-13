@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RunSettings>
+    <RunConfiguration>
+        <EnvironmentVariables>
+            <AWS_XRAY_CONTEXT_MISSING>LOG_ERROR</AWS_XRAY_CONTEXT_MISSING>
+        </EnvironmentVariables>
+    </RunConfiguration>
+</RunSettings>

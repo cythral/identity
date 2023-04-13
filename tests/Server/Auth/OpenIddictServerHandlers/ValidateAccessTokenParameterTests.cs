@@ -40,7 +40,7 @@ namespace Brighid.Identity.Auth
             [Test]
             [Auto]
             public async Task ShouldRejectIfTheAccessTokenIsInvalid(
-                [Substitute] ValidateTokenRequestContext context,
+                ValidateTokenRequestContext context,
                 [Frozen, Substitute] IAuthService authService,
                 [Target] ValidateAccessTokenParameter validator
             )
@@ -50,7 +50,7 @@ namespace Brighid.Identity.Auth
 
                 await validator.HandleAsync(context);
 
-                context.Received().Reject(Any<string>(), Any<string>(), Any<string>());
+                context.IsRejected.Should().BeTrue();
                 authService.Received().ExtractPrincipalFromRequestContext(Is(context));
             }
 
@@ -58,7 +58,7 @@ namespace Brighid.Identity.Auth
             [Auto]
             public async Task ShouldSetTheContextPrincipal(
                 ClaimsPrincipal principal,
-                [Substitute] ValidateTokenRequestContext context,
+                ValidateTokenRequestContext context,
                 [Frozen, Substitute] IAuthService authService,
                 [Target] ValidateAccessTokenParameter validator
             )
@@ -74,8 +74,8 @@ namespace Brighid.Identity.Auth
             [Test]
             [Auto]
             public async Task ShouldRejectIfUserDoesntHaveImpersonatorRole(
+                ValidateTokenRequestContext context,
                 [Frozen] ClaimsPrincipal principal,
-                [Substitute] ValidateTokenRequestContext context,
                 [Frozen, Substitute] IRoleService roleService,
                 [Target] ValidateAccessTokenParameter validator
             )
@@ -85,14 +85,14 @@ namespace Brighid.Identity.Auth
 
                 await validator.HandleAsync(context);
 
-                context.Received().Reject(Any<string>(), Any<string>(), Any<string>());
+                context.IsRejected.Should().BeTrue();
                 roleService.Received().ValidateUserHasRoles(Is<IEnumerable<string>>(roles => roles.Contains(nameof(BuiltInRole.Impersonator))), Is(principal));
             }
 
             [Test]
             [Auto]
             public async Task ShouldNotExtractPrincipalIfGrantTypeIsNotImpersonate(
-                [Substitute] ValidateTokenRequestContext context,
+                ValidateTokenRequestContext context,
                 [Frozen, Substitute] IAuthService authService,
                 [Target] ValidateAccessTokenParameter validator
             )

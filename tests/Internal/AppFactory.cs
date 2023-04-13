@@ -40,7 +40,7 @@ public class AppFactory : WebApplicationFactory<Startup>
             endpoint = (IPEndPoint)socket.LocalEndPoint!;
         }
 
-        var hostBuilder = CreateHostBuilder();
+        var hostBuilder = CreateHostBuilder()!;
         host = hostBuilder.ConfigureWebHostDefaults(webHostBuilder =>
         {
             SetContentRoot(webHostBuilder);

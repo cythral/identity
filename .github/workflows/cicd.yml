@@ -60,7 +60,7 @@ jobs:
 
       - name: Pull DB Image
         run: docker pull public.ecr.aws/bitnami/mariadb:10.4
-        
+
       - name: Build
         id: build
         run: |
@@ -70,8 +70,6 @@ jobs:
             --version ${{ github.run_number }}
 
       - name: Test
-        env:
-          AWS_XRAY_CONTEXT_MISSING: LOG_ERROR
         run: |
           dotnet test \
             --no-build \
@@ -88,7 +86,7 @@ jobs:
 
   deploy-dev:
     uses: cythral/identity/.github/workflows/deploy.yml@master
-    needs: 
+    needs:
       - build
       - start-dev-db
     with:

@@ -1,17 +1,12 @@
 using System;
 using System.Threading.Tasks;
 
-using AutoFixture.AutoNSubstitute;
-
 using FluentAssertions;
-
-using NSubstitute;
 
 using NUnit.Framework;
 
 using OpenIddict.Abstractions;
 
-using static NSubstitute.Arg;
 using static OpenIddict.Server.OpenIddictServerEvents;
 
 namespace Brighid.Identity.Auth
@@ -37,7 +32,7 @@ namespace Brighid.Identity.Auth
             [Auto]
             public async Task ShouldNotRejectWhenClientIdIsNotNull(
                 string clientId,
-                [Substitute] ValidateTokenRequestContext context,
+                ValidateTokenRequestContext context,
                 [Target] ValidateClientIdParameter validator
             )
             {
@@ -46,13 +41,13 @@ namespace Brighid.Identity.Auth
 
                 await validator.HandleAsync(context);
 
-                context.DidNotReceive().Reject(Any<string>(), Any<string>(), Any<string>());
+                context.IsRejected.Should().BeFalse();
             }
 
             [Test]
             [Auto]
             public async Task ShouldNotRejectWhenGrantTypeIsImpersonate(
-                [Substitute] ValidateTokenRequestContext context,
+                ValidateTokenRequestContext context,
                 [Target] ValidateClientIdParameter validator
             )
             {
@@ -62,13 +57,13 @@ namespace Brighid.Identity.Auth
 
                 await validator.HandleAsync(context);
 
-                context.DidNotReceive().Reject(Any<string>(), Any<string>(), Any<string>());
+                context.IsRejected.Should().BeFalse();
             }
 
             [Test]
             [Auto]
             public async Task ShouldNotRejectWhenAcceptingAnonymousClients(
-                [Substitute] ValidateTokenRequestContext context,
+                ValidateTokenRequestContext context,
                 [Target] ValidateClientIdParameter validator
             )
             {
@@ -78,13 +73,13 @@ namespace Brighid.Identity.Auth
 
                 await validator.HandleAsync(context);
 
-                context.DidNotReceive().Reject(Any<string>(), Any<string>(), Any<string>());
+                context.IsRejected.Should().BeFalse();
             }
 
             [Test]
             [Auto]
             public async Task ShouldRejectWhenGrantTypeIsCode(
-                [Substitute] ValidateTokenRequestContext context,
+                ValidateTokenRequestContext context,
                 [Target] ValidateClientIdParameter validator
             )
             {
@@ -94,7 +89,7 @@ namespace Brighid.Identity.Auth
 
                 await validator.HandleAsync(context);
 
-                context.Received().Reject(Any<string>(), Any<string>(), Any<string>());
+                context.IsRejected.Should().BeTrue();
             }
         }
     }
