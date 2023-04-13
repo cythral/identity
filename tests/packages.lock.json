@@ -1377,8 +1377,8 @@
       },
       "Serilog.AspNetCore": {
         "type": "Transitive",
-        "resolved": "6.0.1",
-        "contentHash": "5XW90k62V7G9I0D/j9Iz+NyRBB6/SnoFpHUPeLnV40gONV2vs2A/ewWi91QVjQmyHBfzFeqIrkvE/DJMZ0alTg==",
+        "resolved": "6.1.0",
+        "contentHash": "iMwFUJDN+/yWIPz4TKCliagJ1Yn//SceCYCzgdPwe/ECYUwb5/WUL8cTzRKV+tFwxGjLEV/xpm0GupS5RwbhSQ==",
         "dependencies": {
           "Microsoft.Extensions.DependencyInjection": "5.0.0",
           "Microsoft.Extensions.Logging": "5.0.0",
@@ -2482,7 +2482,7 @@
           "OpenIddict": "[4.2.0, )",
           "OpenIddict.AspNetCore": "[4.2.0, )",
           "OpenIddict.Server.AspNetCore": "[4.2.0, )",
-          "Serilog.AspNetCore": "[6.0.1, )",
+          "Serilog.AspNetCore": "[6.1.0, )",
           "Serilog.Filters.Expressions": "[2.1.0, )",
           "Swashbuckle.AspNetCore": "[6.4.0, )",
           "System.IdentityModel.Tokens.Jwt": "[6.23.1, )",
