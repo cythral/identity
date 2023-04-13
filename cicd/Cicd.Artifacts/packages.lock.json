@@ -4,11 +4,14 @@
     "net7.0": {
       "Amazon.CDK.Lib": {
         "type": "Direct",
-        "requested": "[2.43.1, )",
-        "resolved": "2.43.1",
-        "contentHash": "mTiJLIBTppfo98MSVnI3Sw7LCOVKFBgEQsOU/1xUFycK0rhlc2beYWmhSWCOA4j5URaDBMan40DPK4m6IMMZ9g==",
+        "requested": "[2.74.0, )",
+        "resolved": "2.74.0",
+        "contentHash": "/+fryI/zp5fimvmH7zZHxmvqSb1HlfbCcFb++j9NF0kSMycy18k2JT7hOvhoGARBjGqaxpUqG3Wn62vfssTOlQ==",
         "dependencies": {
-          "Amazon.JSII.Runtime": "[1.68.0, 2.0.0)",
+          "Amazon.CDK.Asset.AwsCliV1": "[2.2.97, 3.0.0)",
+          "Amazon.CDK.Asset.KubectlV20": "[2.1.1, 3.0.0)",
+          "Amazon.CDK.Asset.NodeProxyAgentV5": "[2.0.77, 3.0.0)",
+          "Amazon.JSII.Runtime": "[1.78.1, 2.0.0)",
           "Constructs": "[10.0.0, 11.0.0)"
         }
       },
@@ -28,6 +31,30 @@
         "contentHash": "o2r6o6TVTb6VdTtWEYT88/SgixcujjZ3gXMktvI/aNkA3y0CxUSVZEL23OjFe4/sDiTvldkdhKEyAQP9Z8r5wA==",
         "dependencies": {
           "StyleCop.Analyzers.Unstable": "1.2.0.333"
+        }
+      },
+      "Amazon.CDK.Asset.AwsCliV1": {
+        "type": "Transitive",
+        "resolved": "2.2.97",
+        "contentHash": "iSAh0DugtD6XO5FL+g+O+yGgQQ0mxkmeISKKXdapAB938VQ1S+jwEopDBl68POxqFq/OxFNXFDuq1oOHGKWPrA==",
+        "dependencies": {
+          "Amazon.JSII.Runtime": "[1.77.0, 2.0.0)"
+        }
+      },
+      "Amazon.CDK.Asset.KubectlV20": {
+        "type": "Transitive",
+        "resolved": "2.1.1",
+        "contentHash": "d/Dtwp4PQ30awCAdGIueWC2H1+WI9F8vXFdUMkrTjTevNvMvW+L9r8xDXdxLwHJPswL6t+33/LMyKx1QmGtaTw==",
+        "dependencies": {
+          "Amazon.JSII.Runtime": "[1.70.0, 2.0.0)"
+        }
+      },
+      "Amazon.CDK.Asset.NodeProxyAgentV5": {
+        "type": "Transitive",
+        "resolved": "2.0.77",
+        "contentHash": "8SfKP8R8UcaHytTo60WFVmbiBJ1uwvYSA90kwioQ9yHfxGMRV8qTIyPYx+B/gmWtYCAQvrY+CdWE3Ll3X0o/zQ==",
+        "dependencies": {
+          "Amazon.JSII.Runtime": "[1.77.0, 2.0.0)"
         }
       },
       "Amazon.JSII.Runtime": {
