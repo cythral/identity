@@ -128,6 +128,11 @@
           "StyleCop.Analyzers.Unstable": "1.2.0.333"
         }
       },
+      "Amazon.Lambda.SQSEvents": {
+        "type": "Transitive",
+        "resolved": "2.1.0",
+        "contentHash": "a1xaCIuXDleJ8iRE3vHWWhtPqUiURmoQUS68INMEQmtfHr4wTz837TQZONo4cyubv5sZj78DDrYessZEzgFRGQ=="
+      },
       "AutoFixture": {
         "type": "Transitive",
         "resolved": "4.18.0",
@@ -176,65 +181,66 @@
       },
       "AWSXRayRecorder": {
         "type": "Transitive",
-        "resolved": "2.11.1",
-        "contentHash": "zR78FJDFMmyMDZu9M4GgO0XXO/9Rq6SgzDn9jhuAp+I3rDheTeIDhPubgt8eanRvMTby/Ns2nBXaVUqpwFPwig==",
+        "resolved": "2.14.0",
+        "contentHash": "IGND9fst3DSKf4Y209ExPa0g5gbbSKQpNZSZ+2GtD091vcUGFGKBIsD4biMTeqBtSFZZMHzCKCTpQ4NSIE9y3Q==",
         "dependencies": {
-          "AWSXRayRecorder.Core": "2.11.1",
-          "AWSXRayRecorder.Handlers.AspNetCore": "2.8.1",
-          "AWSXRayRecorder.Handlers.AwsSdk": "2.9.1",
-          "AWSXRayRecorder.Handlers.EntityFramework": "1.2.1",
-          "AWSXRayRecorder.Handlers.SqlServer": "2.8.1",
-          "AWSXRayRecorder.Handlers.System.Net": "2.8.1"
+          "AWSXRayRecorder.Core": "2.14.0",
+          "AWSXRayRecorder.Handlers.AspNetCore": "2.11.0",
+          "AWSXRayRecorder.Handlers.AwsSdk": "2.12.0",
+          "AWSXRayRecorder.Handlers.EntityFramework": "1.5.0",
+          "AWSXRayRecorder.Handlers.SqlServer": "2.11.0",
+          "AWSXRayRecorder.Handlers.System.Net": "2.11.0"
         }
       },
       "AWSXRayRecorder.Core": {
         "type": "Transitive",
-        "resolved": "2.11.1",
-        "contentHash": "eCNoLdvtAuookHh5Plz0y6sgsP0p8PnSKc1xcPnBKaWkepymCs7ZOHtzj31rk9R1Qrkn+lgoK3zNkRuRooKS3g==",
+        "resolved": "2.14.0",
+        "contentHash": "Ze+j7Pt+PCCP3zx17ncHGaRoWzIDsDsD2Pjawrxz2eox9ClNEWO36HCsRRXrZ63NVZ/J7AxXuD/x2hXrdgdUIQ==",
         "dependencies": {
-          "AWSSDK.Core": "3.3.25.1"
+          "AWSSDK.Core": "3.3.25.1",
+          "Amazon.Lambda.SQSEvents": "2.1.0"
         }
       },
       "AWSXRayRecorder.Handlers.AspNetCore": {
         "type": "Transitive",
-        "resolved": "2.8.1",
-        "contentHash": "ILeYhBL1ykw7bJYRoQvh4W4ljn8pkJl3bhSjZ9TWfwqlryvYPk8EId16w3mDh/UlVzxhfy7xGxzc+w7ZUrpbHQ==",
+        "resolved": "2.11.0",
+        "contentHash": "hmnaVhn2OOs1L4RjxVzbvfOvmLSYa5Q5rXIyP9hFp4BwW3TSNHz12E2IsgUns5wvkQ20ezsFhiifc/UnFhSFpg==",
         "dependencies": {
-          "AWSXRayRecorder.Core": "2.11.1"
+          "AWSXRayRecorder.Core": "2.14.0"
         }
       },
       "AWSXRayRecorder.Handlers.AwsSdk": {
         "type": "Transitive",
-        "resolved": "2.9.1",
-        "contentHash": "1f5LESOwV5cWZfwr55DamD/zrBq674EZx+dF3Ci6a7GCG4Mj8gC2y50q5GbNZXlzHCsqmrGJ+BOZILAqfe+/1Q==",
+        "resolved": "2.12.0",
+        "contentHash": "KqnFSk0lRCw97acEZpcRo3mKt2wodIsKJrHOPtF8bsRaXgVx6Avhg+erggksgWKvTTI1ytbZVsOKXeRda3E+kw==",
         "dependencies": {
-          "AWSXRayRecorder.Core": "2.11.1"
+          "AWSXRayRecorder.Core": "2.14.0"
         }
       },
       "AWSXRayRecorder.Handlers.EntityFramework": {
         "type": "Transitive",
-        "resolved": "1.2.1",
-        "contentHash": "hJRp1u7qSFhMQsunq5OcjG9xL6PEO7nm6X2dYH4xkqcyD3pWk2To4p33owqYvFc9GU1wnJPC1GZDSTkVTim5aw==",
+        "resolved": "1.5.0",
+        "contentHash": "CXVn21rxADC3koZV52BEcCATusjaP8BJNPS7IiJHK0lDLPuv66DPwz8geEoXQxuZmP182S1ZwQj1wXZiXEVnPA==",
         "dependencies": {
-          "AWSXRayRecorder.Core": "2.11.1",
+          "AWSXRayRecorder.Core": "2.14.0",
           "Microsoft.EntityFrameworkCore.Relational": "6.0.0"
         }
       },
       "AWSXRayRecorder.Handlers.SqlServer": {
         "type": "Transitive",
-        "resolved": "2.8.1",
-        "contentHash": "aHw9cHJkHnmTaTWN+Zi+Hw5XgQWsxRTSBpxfpwgS5+ze9bSY+kBI8E5mpHX6d40yUXIFaC7kpoeNz3fZzg2INw==",
+        "resolved": "2.11.0",
+        "contentHash": "o6IUQLwPiiz+OkywM/E4Ga8yalR0tqyj60zheWvMnyg6tzJD6GfTKgxMXXVbbHnbN5c2Yf4kAWX8EAWhfA29QQ==",
         "dependencies": {
-          "AWSXRayRecorder.Core": "2.11.1",
+          "AWSXRayRecorder.Core": "2.14.0",
           "System.Data.SqlClient": "4.4.0"
         }
       },
       "AWSXRayRecorder.Handlers.System.Net": {
         "type": "Transitive",
-        "resolved": "2.8.1",
-        "contentHash": "0R+kca6tm5bVosI6qiwGjcggdF7tSJOv0KNyLuQkO1m8+bQhI1jsMju2oWHMzEQhIY1VNoQ4kaN5PHdt3XREHQ==",
+        "resolved": "2.11.0",
+        "contentHash": "MIT0MDN/cka41CkW+ddQZg8yYVpVfT7X15tx1032rb9+axMzUKjxx/MTKjWcmkutwSJ76UqhlR894wygcnLa4g==",
         "dependencies": {
-          "AWSXRayRecorder.Core": "2.11.1"
+          "AWSXRayRecorder.Core": "2.14.0"
         }
       },
       "Castle.Core": {
@@ -2465,7 +2471,7 @@
           "AWSSDK.S3": "[3.7.103.48, )",
           "AWSSDK.SimpleNotificationService": "[3.7.101.47, )",
           "AWSSDK.SimpleSystemsManagement": "[3.7.104.14, )",
-          "AWSXrayRecorder": "[2.11.1, )",
+          "AWSXrayRecorder": "[2.14.0, )",
           "Common": "[1.0.0, )",
           "Database": "[1.0.0, )",
           "Destructurama.Attributed": "[3.0.0, )",
