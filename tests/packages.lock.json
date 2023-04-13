@@ -24,13 +24,13 @@
       },
       "Docker.DotNet": {
         "type": "Direct",
-        "requested": "[3.125.2, )",
-        "resolved": "3.125.2",
-        "contentHash": "Q1HbOwp7l5DNQO4IUOvwVd50cOAIgzmTIt8w7zoZhGefIvDTaGhyEWyvukBAQJFXhn90aEXwDVAXbEyFQpUsGg==",
+        "requested": "[3.125.13, )",
+        "resolved": "3.125.13",
+        "contentHash": "p1DrW2Sw4ND2jFlIvpHB8/pY5o5HIkDalbGAI8tUvqjJR6n0/ubos7kDGWI+Xbx9+L3US3SUR8r59Zwq+ZxBvw==",
         "dependencies": {
-          "Newtonsoft.Json": "9.0.1",
-          "System.Buffers": "4.4.0",
-          "System.ValueTuple": "4.4.0"
+          "Newtonsoft.Json": "13.0.1",
+          "System.Buffers": "4.5.1",
+          "System.Threading.Tasks.Extensions": "4.5.4"
         }
       },
       "FluentAssertions": {
@@ -1509,8 +1509,8 @@
       },
       "System.Buffers": {
         "type": "Transitive",
-        "resolved": "4.4.0",
-        "contentHash": "AwarXzzoDwX6BgrhjoJsk6tUezZEozOT5Y9QKF94Gl4JK91I4PIIBkBco9068Y9/Dra8Dkbie99kXB8+1BaYKw=="
+        "resolved": "4.5.1",
+        "contentHash": "Rw7ijyl1qqRS0YQD/WycNst8hUUMgrMH4FCn1nNm27M4VxchZ1js3fVjQaANHO5f3sN4isvP4a+Met9Y4YomAg=="
       },
       "System.CodeDom": {
         "type": "Transitive",
@@ -2355,11 +2355,6 @@
           "System.Runtime": "4.3.0",
           "System.Runtime.Handles": "4.3.0"
         }
-      },
-      "System.ValueTuple": {
-        "type": "Transitive",
-        "resolved": "4.4.0",
-        "contentHash": "BahUww/+mdP4ARCAh2RQhQTg13wYLVrBb9SYVgW8ZlrwjraGCXHGjo0oIiUfZ34LUZkMMR+RAzR7dEY4S1HeQQ=="
       },
       "System.Xml.ReaderWriter": {
         "type": "Transitive",
