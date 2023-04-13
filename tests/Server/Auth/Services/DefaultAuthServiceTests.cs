@@ -389,7 +389,7 @@ namespace Brighid.Identity.Auth
                 var transaction = new OpenIddictServerTransaction { Options = new() };
                 var context = new ValidateTokenRequestContext(transaction)
                 {
-                    Issuer = new Uri("http://valid-issuer/"),
+                    BaseUri = new Uri("http://valid-issuer/"),
                     Request = new() { AccessToken = token },
                 };
                 context.Options.TokenValidationParameters.ValidateIssuerSigningKey = false;
@@ -412,7 +412,7 @@ namespace Brighid.Identity.Auth
                 var transaction = new OpenIddictServerTransaction { Options = new() };
                 var context = new ValidateTokenRequestContext(transaction)
                 {
-                    Issuer = new Uri("http://valid-issuer/"),
+                    BaseUri = new Uri("http://valid-issuer/"),
                     Request = new() { AccessToken = token },
                 };
                 context.Options.TokenValidationParameters.ValidateAudience = true;
@@ -436,7 +436,7 @@ namespace Brighid.Identity.Auth
                 var transaction = new OpenIddictServerTransaction { Options = new() };
                 var context = new ValidateTokenRequestContext(transaction)
                 {
-                    Issuer = new Uri("http://valid-issuer/"),
+                    BaseUri = new Uri("http://valid-issuer/"),
                     Request = new() { AccessToken = token },
                 };
                 context.Options.TokenValidationParameters.ValidateIssuer = true;
@@ -460,7 +460,7 @@ namespace Brighid.Identity.Auth
                 var transaction = new OpenIddictServerTransaction { Options = new() };
                 var context = new ValidateTokenRequestContext(transaction)
                 {
-                    Issuer = new Uri("http://valid-issuer/"),
+                    BaseUri = new Uri("http://valid-issuer/"),
                     Request = new() { AccessToken = token },
                 };
                 context.Options.TokenValidationParameters.ValidateIssuer = true;

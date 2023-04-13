@@ -18,7 +18,7 @@ namespace Brighid.Identity.Auth
 
         Task<ClaimsIdentity> CreateClaimsIdentityForUser(User user, CancellationToken cancellationToken = default);
 
-        AuthenticationTicket CreateAuthTicket(ClaimsIdentity claimsIdentity, IEnumerable<string>? scopes = null, Uri? redirectUri = null, string authenticationScheme = OpenIddictServerAspNetCoreDefaults.AuthenticationScheme, string[]? resources = null);
+        AuthenticationTicket CreateAuthTicket(ClaimsIdentity claimsIdentity, IEnumerable<string>? scopes = null, Uri? redirectUri = null, string authenticationScheme = OpenIddictServerAspNetCoreDefaults.AuthenticationScheme, string?[]? resources = null);
 
         /// <summary>
         /// Generates an access token for an authentication ticket.

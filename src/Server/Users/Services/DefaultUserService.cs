@@ -79,9 +79,11 @@ namespace Brighid.Identity.Users
             {
                 await loginRepository.Add(loginInfo);
             }
+#pragma warning disable IDE0260
             catch (DbUpdateException e)
                 when ((e.InnerException as MySqlException)?.ErrorCode == MySqlErrorCode.DuplicateKeyEntry)
             {
+#pragma warning restore IDE0260
                 throw new UserLoginAlreadyExistsException(loginInfo);
             }
 

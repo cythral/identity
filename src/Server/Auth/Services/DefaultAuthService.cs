@@ -64,7 +64,7 @@ namespace Brighid.Identity.Auth
 
             RequireAuthParameter(request, "user_id", out var userId);
             var user = await userManager.FindByIdAsync(userId);
-            var identity = await authUtils.CreateClaimsIdentityForUser(user, cancellationToken);
+            var identity = await authUtils.CreateClaimsIdentityForUser(user!, cancellationToken);
             var ticket = authUtils.CreateAuthTicket(identity, DefaultScopes, resources: request.Audiences);
             return ticket;
         }
@@ -100,8 +100,8 @@ namespace Brighid.Identity.Auth
         public ClaimsPrincipal ExtractPrincipalFromRequestContext(ValidateTokenRequestContext context)
         {
             var parameters = context.Options.TokenValidationParameters.Clone();
-            parameters.ValidIssuer ??= context.Issuer?.AbsoluteUri;
-            parameters.ValidAudience = context.Issuer?.AbsoluteUri;
+            parameters.ValidIssuer ??= context.BaseUri?.AbsoluteUri;
+            parameters.ValidAudience = context.BaseUri?.AbsoluteUri;
             parameters.ValidateLifetime = true;
 
             var result = context.Options.JsonWebTokenHandler.ValidateToken(context.Request.AccessToken, parameters);

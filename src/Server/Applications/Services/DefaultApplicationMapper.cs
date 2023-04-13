@@ -29,7 +29,7 @@ namespace Brighid.Identity.Applications
             };
 
             var roles = (await roleRepository.FindAllByName(request.Roles, cancellationToken)).ToList();
-            var roleDict = roles.ToDictionary(role => role.Name, role => role);
+            var roleDict = roles.ToDictionary(role => role.Name!, role => role);
             var missingRoles = new List<RoleNotFoundException>();
 
             foreach (var role in request.Roles)

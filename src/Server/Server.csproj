@@ -2,7 +2,6 @@
 
   <PropertyGroup>
     <RootNamespace>Brighid.Identity</RootNamespace>
-    <TrimMode>copyused</TrimMode>
     <RuntimeIdentifier>linux-musl-arm64</RuntimeIdentifier>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <PublishTrimmed>true</PublishTrimmed>
@@ -21,15 +20,15 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.9" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="6.0.9" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="6.0.9" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="7.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="7.0.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="OpenIddict" Version="3.1.1" />
-    <PackageReference Include="OpenIddict.AspNetCore" Version="3.1.1" />
-    <PackageReference Include="OpenIddict.Server.AspNetCore" Version="3.1.1" />
+    <PackageReference Include="OpenIddict" Version="4.2.0" />
+    <PackageReference Include="OpenIddict.AspNetCore" Version="4.2.0" />
+    <PackageReference Include="OpenIddict.Server.AspNetCore" Version="4.2.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -53,6 +52,14 @@
 
   <ItemGroup>
     <Content Remove="packages.lock.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <TrimmerRootAssembly Include="Common" />
+    <TrimmerRootAssembly Include="Database" />
+    <TrimmerRootAssembly Include="Server" />
+    <TrimmerRootAssembly Include="Interface" />
+    <TrimmerRootDescriptor Include="ILLink.Descriptors.xml" />
   </ItemGroup>
 
   <ItemGroup>

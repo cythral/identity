@@ -209,7 +209,7 @@ namespace Brighid.Identity.Auth
                 var result = await authUtils.CreateClaimsIdentityForUser(user);
 
                 var nameClaim = result.GetClaim(Claims.Name);
-                nameClaim.Should().Be(user.Email.ToString());
+                nameClaim.Should().Be(user.Email!.ToString());
             }
 
             [Test]

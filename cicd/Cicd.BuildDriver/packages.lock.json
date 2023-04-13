@@ -1,7 +1,7 @@
 {
   "version": 1,
   "dependencies": {
-    "net6.0": {
+    "net7.0": {
       "AWSSDK.SecurityToken": {
         "type": "Direct",
         "requested": "[3.7.1.204, )",
@@ -354,8 +354,8 @@
       "cicd.utils": {
         "type": "Project",
         "dependencies": {
-          "AWSSDK.ECR": "3.7.4.73",
-          "AWSSDK.ECRPublic": "3.7.0.211"
+          "AWSSDK.ECR": "[3.7.4.73, )",
+          "AWSSDK.ECRPublic": "[3.7.0.211, )"
         }
       }
     }

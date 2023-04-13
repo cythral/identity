@@ -69,13 +69,15 @@ namespace Brighid.Identity.Roles
 
             try
             {
-                role.NormalizedName = role.Name.ToUpper(CultureInfo.InvariantCulture);
+                role.NormalizedName = role.Name?.ToUpper(CultureInfo.InvariantCulture) ?? throw new Exception("Name cannot be empty.");
                 var result = await repository.Add(role);
                 return result;
             }
+#pragma warning disable IDE0260
             catch (DbUpdateException e)
                 when ((e.InnerException as MySqlException)?.ErrorCode == MySqlErrorCode.DuplicateKeyEntry)
             {
+#pragma warning restore IDE0260
                 throw new EntityAlreadyExistsException($"A Role already exists with the name {role.Name}");
             }
         }
@@ -84,11 +86,7 @@ namespace Brighid.Identity.Roles
         public async Task<Role> UpdateById(Guid id, RoleRequest updatedRoleInfo, CancellationToken cancellationToken = default)
         {
             cancellationToken.ThrowIfCancellationRequested();
-            var existingRole = await repository.FindById(id);
-            if (existingRole == null)
-            {
-                throw new EntityNotFoundException($"A Role with ID {id} was not found.");
-            }
+            var existingRole = await repository.FindById(id, cancellationToken) ?? throw new EntityNotFoundException($"A Role with ID {id} was not found.");
 
             if (existingRole.Name != updatedRoleInfo.Name)
             {
@@ -96,7 +94,7 @@ namespace Brighid.Identity.Roles
             }
 
             existingRole.Description = updatedRoleInfo.Description;
-            return await repository.Save(existingRole);
+            return await repository.Save(existingRole, cancellationToken);
         }
 
         /// <inheritdoc />

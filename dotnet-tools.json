@@ -4,11 +4,15 @@
   "tools": {
     "dotnet-format": {
       "version": "5.0.142002",
-      "commands": ["dotnet-format"]
+      "commands": [
+        "dotnet-format"
+      ]
     },
     "dotnet-ef": {
-      "version": "6.0.1",
-      "commands": ["dotnet-ef"]
+      "version": "7.0.2",
+      "commands": [
+        "dotnet-ef"
+      ]
     }
   }
 }

@@ -40,7 +40,7 @@ public class AppFactory : WebApplicationFactory<Startup>
             endpoint = (IPEndPoint)socket.LocalEndPoint!;
         }
 
-        var hostBuilder = CreateHostBuilder();
+        var hostBuilder = CreateHostBuilder()!;
         host = hostBuilder.ConfigureWebHostDefaults(webHostBuilder =>
         {
             SetContentRoot(webHostBuilder);
@@ -76,7 +76,7 @@ public class AppFactory : WebApplicationFactory<Startup>
         builder.UseEnvironment(Environments.Local);
         builder.ConfigureAppConfiguration((options) =>
             options
-            .AddInMemoryCollection(new Dictionary<string, string>
+            .AddInMemoryCollection(new Dictionary<string, string?>
             {
                 ["App:ContentPaths"] = string.Empty,
                 ["Database:Host"] = databaseServerAddress,

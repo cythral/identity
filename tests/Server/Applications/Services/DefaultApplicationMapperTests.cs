@@ -63,7 +63,7 @@ namespace Brighid.Identity.Applications
 
                 (await func.Should().ThrowAsync<AggregateException>())
                 .And
-                .InnerExceptions.Should().ContainEquivalentOf(new RoleNotFoundException(missingRole.Name));
+                .InnerExceptions.Should().ContainEquivalentOf(new RoleNotFoundException(missingRole.Name!));
             }
         }
     }

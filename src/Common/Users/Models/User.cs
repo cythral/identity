@@ -26,22 +26,22 @@ namespace Brighid.Identity.Users
 
         [NotMapped]
         [JsonIgnore]
-        public string Name => UserName;
+        public string? Name => UserName;
 
         [JsonIgnore]
-        public override string NormalizedUserName { get; set; } = string.Empty;
+        public override string? NormalizedUserName { get; set; } = string.Empty;
 
         [JsonIgnore]
-        public override string NormalizedEmail { get; set; } = string.Empty;
+        public override string? NormalizedEmail { get; set; } = string.Empty;
 
         [JsonIgnore]
-        public override string PasswordHash { get; set; } = string.Empty;
+        public override string? PasswordHash { get; set; } = string.Empty;
 
         [JsonIgnore]
-        public override string SecurityStamp { get; set; } = Guid.NewGuid().ToString();
+        public override string? SecurityStamp { get; set; } = Guid.NewGuid().ToString();
 
         [JsonIgnore]
-        public override string ConcurrencyStamp { get; set; } = Guid.NewGuid().ToString();
+        public override string? ConcurrencyStamp { get; set; } = Guid.NewGuid().ToString();
 
         /// <summary>
         /// Gets or sets the user's flags in a bit-packed field.

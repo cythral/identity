@@ -223,7 +223,7 @@ namespace Brighid.Identity.Auth
 
                 request.GrantType = "unknown";
 
-                Func<Task> func = async () => await authController.Exchange();
+                Func<Task> func = authController.Exchange;
                 await func.Should().ThrowAsync<InvalidOperationException>();
 
                 await authService.DidNotReceive().ClientExchange(Any<OpenIddictRequest>(), Any<CancellationToken>());

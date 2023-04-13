@@ -21,7 +21,7 @@ services:
       - "80"
       - "8736:8736"
     volumes:
-      - ./bin/Server/Debug/linux-musl-arm64:/app
+      - ./bin/Server/Debug/linux-musl-arm64/publish:/app
       - ./bin/Interface/Debug/publish/wwwroot:/wwwroot
       - ~/.aws:/home/brighid/.aws
       - ~/.vsdbg:/remote_debugger:rw
@@ -38,7 +38,7 @@ services:
       Database__Name: ${DB_NAME}
       Database__User: ${DB_USER}
       Database__Password: ${DB_PASSWORD}
-      EncryptionOptions__KmsKeyId: ${ENCRYPTION_KEY_ID}
+      EncryptionOptions__KmsKeyId: alias/SecretsKey
       Auth__DomainName: localhost
       Auth__CookieDomain: localhost
       App__UseHttps: "false"
