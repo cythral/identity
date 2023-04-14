@@ -1,6 +1,6 @@
 ARG CONFIGURATION=Release
 
-FROM public.ecr.aws/cythral/brighid/base:0.3.0
+FROM public.ecr.aws/cythral/brighid/base:0.3.0.10
 ARG CONFIGURATION
 
 EXPOSE 80
