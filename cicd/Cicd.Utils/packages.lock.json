@@ -13,11 +13,11 @@
       },
       "AWSSDK.ECRPublic": {
         "type": "Direct",
-        "requested": "[3.7.102.2, )",
-        "resolved": "3.7.102.2",
-        "contentHash": "kh55w1mXBzINZxGMIGaDgdQDzQVFyaoDTyP2GSFNaN7RMr4WiI8+Vn7ToakIxYeUvQWnWsmfBm2wNTkxDgvUJA==",
+        "requested": "[3.7.102.3, )",
+        "resolved": "3.7.102.3",
+        "contentHash": "d4RgFhgMV+Mpghupv1HbyIvL+EIUUnitlHZmTdc1FbKTFUH1+X+h9hMo9x72A/oeVL34LUIl8bsgi5SlHwlclg==",
         "dependencies": {
-          "AWSSDK.Core": "[3.7.106.19, 4.0.0)"
+          "AWSSDK.Core": "[3.7.106.20, 4.0.0)"
         }
       },
       "StyleCop.Analyzers": {
