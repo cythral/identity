@@ -58,15 +58,15 @@
       },
       "AWSSDK.Core": {
         "type": "Transitive",
-        "resolved": "3.7.106.19",
-        "contentHash": "7/JZSWai/49J8thcOJozvfkBw1YX5jPXgeWgklU4P5xQkhCamu2aOZoYS+U+rKDCP/7FiHmEkUfLAiNR4LCnyw=="
+        "resolved": "3.7.106.20",
+        "contentHash": "0dA8hxej6qUGR5r+D96kckj6R3f5d7n9QRqoZDMbgOlgc/CllSCSMmjrme2rm8O/7KxmRkEKHNkKJGdMJeQTPA=="
       },
       "AWSSDK.ECR": {
         "type": "Transitive",
-        "resolved": "3.7.100.112",
-        "contentHash": "/szZ3WSNt82KzD3Ke6taU6+gqP2H/u+S3VS/WxScmTHzKbXamMefYdwXpFo18x0hJa5jEagYYqhgYcg08rwPOg==",
+        "resolved": "3.7.100.113",
+        "contentHash": "ksJGgjpmW39PkbWtCH/hnCjDKONee77/k8Q7Rvw6LyKScVrfZB4MlJEdzu5eYsTnqEUalvH2tblB5uiWtZdPZw==",
         "dependencies": {
-          "AWSSDK.Core": "[3.7.106.19, 4.0.0)"
+          "AWSSDK.Core": "[3.7.106.20, 4.0.0)"
         }
       },
       "AWSSDK.ECRPublic": {
@@ -337,7 +337,7 @@
       "cicd.utils": {
         "type": "Project",
         "dependencies": {
-          "AWSSDK.ECR": "[3.7.100.112, )",
+          "AWSSDK.ECR": "[3.7.100.113, )",
           "AWSSDK.ECRPublic": "[3.7.102.2, )"
         }
       }
