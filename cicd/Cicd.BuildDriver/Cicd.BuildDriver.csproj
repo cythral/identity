@@ -20,7 +20,7 @@
     <ItemGroup>
         <PackageReference Include="AWSSDK.SecurityToken" Version="3.7.101.48" />
         <PackageReference Include="Microsoft.Extensions.Hosting" Version="7.0.1" />
-        <PackageReference Include="YamlDotNet" Version="13.0.2" />
+        <PackageReference Include="YamlDotNet" Version="13.1.0" />
     </ItemGroup>
 
     <ItemGroup>
