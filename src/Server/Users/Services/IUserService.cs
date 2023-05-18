@@ -39,6 +39,16 @@ namespace Brighid.Identity.Users
         Task<UserLogin> CreateLogin(Guid id, UserLogin loginInfo, CancellationToken cancellationToken);
 
         /// <summary>
+        /// Deletes a user login given the user's id and login provider name.
+        /// </summary>
+        /// <param name="principal">The id of the user to delete a login for.</param>
+        /// <param name="loginProvider">Name of the login provider to delete for the user.</param>
+        /// <param name="providerKey">The ID of the user within the login provider's system (id the discord user id).</param>
+        /// <param name="cancellationToken">Token used to cancel the operation.</param>
+        /// <returns>The resulting task.</returns>
+        Task DeleteLogin(ClaimsPrincipal principal, string loginProvider, string providerKey, CancellationToken cancellationToken);
+
+        /// <summary>
         /// Disables a user login based on the login provider and provider key.
         /// </summary>
         /// <param name="principal">The user requesting the operation.</param>
