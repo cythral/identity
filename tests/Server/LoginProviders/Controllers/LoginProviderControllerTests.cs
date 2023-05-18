@@ -137,5 +137,82 @@ namespace Brighid.Identity.LoginProviders
                 mappings.Should().Contain(mapping => mapping.Exception == typeof(InvalidPrincipalException) && mapping.StatusCode == (int)HttpStatusCode.BadRequest);
             }
         }
+
+        [Category("Unit")]
+        public class DeleteLogin
+        {
+            [Test]
+            [Auto]
+            public async Task ShouldDeleteTheLogin(
+                string loginProvider,
+                string providerKey,
+                HttpContext httpContext,
+                [Frozen, Substitute] IUserService service,
+                [Target] LoginProviderController controller
+            )
+            {
+                controller.ControllerContext = new ControllerContext { HttpContext = httpContext };
+                await controller.DeleteLogin(loginProvider, providerKey);
+
+                await service.Received().DeleteLogin(Is(httpContext.User), Is(loginProvider), Is(providerKey), Is(httpContext.RequestAborted));
+            }
+
+            [Test]
+            [Auto]
+            public async Task ShouldReturnNoContent(
+                string loginProvider,
+                string providerKey,
+                HttpContext httpContext,
+                [Target] LoginProviderController controller
+            )
+            {
+                controller.ControllerContext = new ControllerContext { HttpContext = httpContext };
+                var result = await controller.DeleteLogin(loginProvider, providerKey);
+
+                result.Should().BeOfType<NoContentResult>();
+            }
+
+            [Test]
+            [Auto]
+            public void ShouldReturnForbiddenIfSecurityExceptionIsThrown(
+                string loginProvider,
+                string providerKey,
+                bool enabled,
+                HttpContext httpContext,
+                [Target] LoginProviderController controller
+            )
+            {
+                var mappings = controller.GetExceptionMappings(nameof(LoginProviderController.DeleteLogin));
+                mappings.Should().Contain(mapping => mapping.Exception == typeof(SecurityException) && mapping.StatusCode == (int)HttpStatusCode.Forbidden);
+            }
+
+            [Test]
+            [Auto]
+            public void ShouldReturnNotFoundIfLoginNotFoundIsThrown(
+                string loginProvider,
+                string providerKey,
+                bool enabled,
+                HttpContext httpContext,
+                [Target] LoginProviderController controller
+            )
+            {
+                var mappings = controller.GetExceptionMappings(nameof(LoginProviderController.DeleteLogin));
+                mappings.Should().Contain(mapping => mapping.Exception == typeof(UserLoginNotFoundException) && mapping.StatusCode == (int)HttpStatusCode.NotFound);
+            }
+
+            [Test]
+            [Auto]
+            public void ShouldReturnBadRequestIfInvalidPrincipalIsThrown(
+                string loginProvider,
+                string providerKey,
+                bool enabled,
+                HttpContext httpContext,
+                [Target] LoginProviderController controller
+            )
+            {
+                var mappings = controller.GetExceptionMappings(nameof(LoginProviderController.DeleteLogin));
+                mappings.Should().Contain(mapping => mapping.Exception == typeof(InvalidPrincipalException) && mapping.StatusCode == (int)HttpStatusCode.BadRequest);
+            }
+        }
     }
 }

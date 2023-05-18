@@ -47,5 +47,17 @@ namespace Brighid.Identity.LoginProviders
             await service.SetLoginStatus(HttpContext.User, loginProvider, providerKey, enabled, HttpContext.RequestAborted);
             return NoContent();
         }
+
+        [HttpDelete("{loginProvider}/{providerKey}", Name = "LoginProviders:DeleteLogin")]
+        [ProducesResponseType((int)HttpStatusCode.NoContent)]
+        [ExceptionMapping<SecurityException>(HttpStatusCode.Forbidden)]
+        [ExceptionMapping<UserLoginNotFoundException>(HttpStatusCode.NotFound)]
+        [ExceptionMapping<InvalidPrincipalException>(HttpStatusCode.BadRequest)]
+        public async Task<ActionResult> DeleteLogin(string loginProvider, string providerKey)
+        {
+            HttpContext.RequestAborted.ThrowIfCancellationRequested();
+            await service.DeleteLogin(HttpContext.User, loginProvider, providerKey, HttpContext.RequestAborted);
+            return NoContent();
+        }
     }
 }

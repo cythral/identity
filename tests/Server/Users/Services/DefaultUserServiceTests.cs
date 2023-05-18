@@ -193,6 +193,106 @@ namespace Brighid.Identity.Users
         }
 
         [Category("Unit")]
+        public class DeleteLogin
+        {
+            [Test]
+            [Auto]
+            public async Task ShouldSearchRepositoryForUserLogin(
+                ClaimsPrincipal principal,
+                string loginProvider,
+                string providerKey,
+                [Frozen] UserLogin userLogin,
+                [Frozen] IUserLoginRepository repository,
+                [Frozen] IPrincipalService principalService,
+                [Target] DefaultUserService service,
+                CancellationToken cancellationToken
+            )
+            {
+                principalService.GetId(Any<ClaimsPrincipal>()).Returns(userLogin.UserId);
+
+                await service.DeleteLogin(principal, loginProvider, providerKey, cancellationToken);
+
+                await repository.Received().FindByProviderNameAndKey(loginProvider, providerKey, cancellationToken);
+            }
+
+            [Test]
+            [Auto]
+            public async Task ShouldThrowIfLoginWasNotFound(
+                ClaimsPrincipal principal,
+                string loginProvider,
+                string providerKey,
+                [Frozen] UserLogin userLogin,
+                [Frozen] IPrincipalService principalService,
+                [Frozen] IUserLoginRepository repository,
+                [Target] DefaultUserService service,
+                CancellationToken cancellationToken
+            )
+            {
+                principalService.GetId(Any<ClaimsPrincipal>()).Returns(userLogin.UserId);
+                repository.FindByProviderNameAndKey(Any<string>(), Any<string>(), Any<CancellationToken>()).ReturnsNull();
+
+                Func<Task> func = () => service.DeleteLogin(principal, loginProvider, providerKey, cancellationToken);
+
+                var result = (await func.Should().ThrowAsync<UserLoginNotFoundException>()).Which;
+                result.LoginProvider.Should().Be(loginProvider);
+                result.ProviderKey.Should().Be(providerKey);
+            }
+
+            [Test]
+            [Auto]
+            public async Task ShouldThrowIfLoginProviderDoesNotBelongToTheUser(
+                ClaimsPrincipal principal,
+                string loginProvider,
+                string providerKey,
+                [Target] DefaultUserService service,
+                CancellationToken cancellationToken
+            )
+            {
+                Func<Task> func = () => service.DeleteLogin(principal, loginProvider, providerKey, cancellationToken);
+
+                await func.Should().ThrowAsync<SecurityException>();
+            }
+
+            [Test]
+            [Auto]
+            public async Task ShouldDeleteTheLogin(
+                ClaimsPrincipal principal,
+                string loginProvider,
+                string providerKey,
+                [Frozen] UserLogin userLogin,
+                [Frozen] IPrincipalService principalService,
+                [Frozen] IUserLoginRepository repository,
+                [Target] DefaultUserService service,
+                CancellationToken cancellationToken
+            )
+            {
+                principalService.GetId(Any<ClaimsPrincipal>()).Returns(userLogin.UserId);
+                await service.DeleteLogin(principal, loginProvider, providerKey, cancellationToken);
+
+                await repository.Received().Remove(Is(userLogin));
+            }
+
+            [Test]
+            [Auto]
+            public async Task ShouldClearExternalUserCache(
+                ClaimsPrincipal principal,
+                string loginProvider,
+                string providerKey,
+                [Frozen] UserLogin userLogin,
+                [Frozen] IPrincipalService principalService,
+                [Frozen] IUserCacheService cacheService,
+                [Target] DefaultUserService service,
+                CancellationToken cancellationToken
+            )
+            {
+                principalService.GetId(Any<ClaimsPrincipal>()).Returns(userLogin.UserId);
+                await service.DeleteLogin(principal, loginProvider, providerKey, cancellationToken);
+
+                await cacheService.Received().ClearExternalUserCache(Is(userLogin.UserId), Is(cancellationToken));
+            }
+        }
+
+        [Category("Unit")]
         public class SetLoginStatus
         {
             [Test]

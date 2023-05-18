@@ -98,11 +98,20 @@ namespace Brighid.Identity.Users
         }
 
         /// <inheritdoc />
+        public async Task DeleteLogin(ClaimsPrincipal principal, string loginProvider, string providerKey, CancellationToken cancellationToken)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            var login = await GetLoginProviderByKey(principal, loginProvider, providerKey, $"Insufficient permissions for deleting the user login {loginProvider}/{providerKey}", cancellationToken);
+
+            await loginRepository.Remove(login);
+            await cacheService.ClearExternalUserCache(login.UserId, cancellationToken);
+        }
+
+        /// <inheritdoc />
         public async Task SetLoginStatus(ClaimsPrincipal principal, string loginProvider, string providerKey, bool enabled, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
-            var login = await loginRepository.FindByProviderNameAndKey(loginProvider, providerKey, cancellationToken) ?? throw new UserLoginNotFoundException(loginProvider, providerKey);
-            EnsureUserIdMatches(principal, login.UserId, $"Insufficient permissions for enabling or disabling the user login {loginProvider}/{providerKey}.");
+            var login = await GetLoginProviderByKey(principal, loginProvider, providerKey, $"Insufficient permissions for enabling or disabling the user login {loginProvider}/{providerKey}.", cancellationToken);
 
             login.Enabled = enabled;
             await loginRepository.Save(login, cancellationToken);
@@ -122,6 +131,15 @@ namespace Brighid.Identity.Users
 
             await userRepository.Save(user, cancellationToken);
             await cacheService.ClearExternalUserCache(userId, cancellationToken);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public async Task<UserLogin> GetLoginProviderByKey(ClaimsPrincipal principal, string loginProvider, string providerKey, string errorMessage, CancellationToken cancellationToken)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            var login = await loginRepository.FindByProviderNameAndKey(loginProvider, providerKey, cancellationToken) ?? throw new UserLoginNotFoundException(loginProvider, providerKey);
+            EnsureUserIdMatches(principal, login.UserId, errorMessage);
+            return login;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

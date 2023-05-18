@@ -43,6 +43,7 @@ services:
       Auth__CookieDomain: localhost
       App__UseHttps: "false"
       Auth__CertificateConfigurationParameterName: /brighid/identity/signing-certificates
+      App__CacheTopic: ${CACHE_TOPIC}
     labels:
       - traefik.enable=true
       - traefik.http.routers.adapter.rule=Host(`localhost`)
