@@ -28,6 +28,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       artifacts-location: ${{ steps.build.outputs.artifacts-location }}
+      version: ${{ steps.build.outputs.version }}
     steps:
       - uses: actions/checkout@v3
         with:
