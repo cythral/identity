@@ -7,7 +7,7 @@
     </PropertyGroup>
 
     <PropertyGroup>
-        <ServerTargets Condition="'$(CI)' != ''">Publish</ServerTargets>
+        <ServerTargets Condition="'$(CI)' != ''">Build;Publish</ServerTargets>
         <ServerTargets Condition="'$(CI)' == ''">Build</ServerTargets>
     </PropertyGroup>
 
