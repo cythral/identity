@@ -36,4 +36,5 @@
     "!Split",
     "!Split sequence"
   ],
+  "ansible.python.interpreterPath": "/usr/bin/python3",
 }

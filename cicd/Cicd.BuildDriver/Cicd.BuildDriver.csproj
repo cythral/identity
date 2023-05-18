@@ -24,7 +24,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="../../src/Server/Server.csproj" Targets="$(ServerTargets)" ReferenceOutputAssembly="false" Properties="SwaggerOutputPath=$(CicdOutputFolder)" />
+        <ProjectReference Include="../../src/Server/Server.csproj" Targets="$(ServerTargets)" Properties="SwaggerOutputPath=$(CicdOutputFolder)" />
         <ProjectReference Include="../../tests/Tests.csproj" Targets="$(ServerTargets)" ReferenceOutputAssembly="false" Properties="SwaggerOutputPath=$(CicdOutputFolder)" />
         <ProjectReference Include="../Cicd.Utils/Cicd.Utils.csproj" />
     </ItemGroup>

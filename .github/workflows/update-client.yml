@@ -1,0 +1,52 @@
+name: Update Client
+on:
+  workflow_call:
+    secrets:
+      role:
+        description: Role to use when updating the client.
+        required: true
+
+      token:
+        description: Github Token to use for pushing commits to the client repository.
+        required: true
+
+    inputs:
+      version:
+        description: The version of the client to use.
+        type: string
+        required: true
+
+      artifacts-location:
+        description: S3 URL to look for deployment artifacts at.
+        type: string
+        required: true
+
+jobs:
+  update-client:
+    runs-on: ubuntu-latest
+    concurrency: update-client
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          role-to-assume: ${{ secrets.role }}
+          aws-region: us-east-1
+
+      - name: Setup .NET Core
+        uses: actions/setup-dotnet@v3
+
+      - name: Display .NET Info
+        run: dotnet --info
+
+      - name: Update Client
+        env:
+          GH_TOKEN: ${{ secrets.token }}
+        run: |
+          dotnet run \
+            --project cicd/Cicd.ClientUpdateDriver/Cicd.ClientUpdateDriver.csproj -- \
+            --artifacts-location ${{ inputs.artifacts-location }} \
+            --version ${{ inputs.version }}
