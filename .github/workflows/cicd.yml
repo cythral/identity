@@ -99,12 +99,24 @@ jobs:
       role: ${{ secrets.AWS_DEV_ROLE }}
       discord-webhook: ${{ secrets.DISCORD_WEBHOOK }}
 
+  update-client:
+    uses: cythral/identity/.github/workflows/update-client.yml@master
+    if: ${{ format('refs/heads/{0}', github.event.repository.default_branch) == github.ref }}
+    needs: build
+    with:
+      version: ${{ needs.build.outputs.version }}
+      artifacts-location: ${{ needs.build.outputs.artifacts-location }}
+    secrets:
+      role: ${{ secrets.AWS_SHARED_ROLE }}
+      token: ${{ secrets.GH_TOKEN }}
+
   deploy-prod:
     uses: cythral/identity/.github/workflows/deploy.yml@master
     if: ${{ format('refs/heads/{0}', github.event.repository.default_branch) == github.ref }}
     needs:
       - build
       - deploy-dev
+      - update-client
     with:
       environment: Production
       artifacts-location: ${{ needs.build.outputs.artifacts-location }}

@@ -9,8 +9,14 @@ using Amazon.SecurityToken;
 
 using Brighid.Identity.Cicd.Utils;
 
+using Microsoft.AspNetCore;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
+using Microsoft.OpenApi.Writers;
+
+using Swashbuckle.AspNetCore.Swagger;
 
 using YamlDotNet.Serialization;
 
@@ -58,6 +64,12 @@ namespace Brighid.Identity.Cicd.BuildDriver
             Directory.CreateDirectory(CicdOutputDirectory);
             var accountNumber = await GetCurrentAccountNumber(cancellationToken);
             Directory.SetCurrentDirectory(ProjectRootDirectoryAttribute.ThisAssemblyProjectRootDirectory);
+
+            await Step("Generating Swagger", async () =>
+            {
+                await CreateSwagger();
+                Console.WriteLine($"Wrote swagger to {CicdOutputDirectory}swagger.json");
+            });
 
             await Step("Creating Migrations Bundle", async () =>
             {
@@ -292,6 +304,21 @@ namespace Brighid.Identity.Cicd.BuildDriver
             Console.ResetColor();
 
             await action();
+        }
+
+        private static async Task CreateSwagger()
+        {
+            var serviceProvider = WebHost.CreateDefaultBuilder()
+                .UseStartup<Startup>()
+                .Build()
+                .Services;
+
+            var swaggerProvider = serviceProvider.GetRequiredService<ISwaggerProvider>();
+            var swagger = swaggerProvider.GetSwagger("v1", "https://identity.brigh.id");
+            using var fileWriter = File.CreateText("bin/Cicd/swagger.json");
+            var swaggerWriter = new OpenApiJsonWriter(fileWriter);
+            swagger.SerializeAsV3(swaggerWriter);
+            await fileWriter.FlushAsync();
         }
     }
 }

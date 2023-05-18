@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <ProjectRootDirectory>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)../../'))</ProjectRootDirectory>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <AssemblyAttribute Include="ProjectRootDirectory">
+            <_Parameter1>$(ProjectRootDirectory)</_Parameter1>
+        </AssemblyAttribute>
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="AWSSDK.S3" Version="3.7.103.48" />
+        <PackageReference Include="Microsoft.Extensions.Hosting" Version="7.0.1" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="../Cicd.Utils/Cicd.Utils.csproj" />
+    </ItemGroup>
+</Project>
