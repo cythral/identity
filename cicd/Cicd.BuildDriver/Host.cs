@@ -223,8 +223,8 @@ namespace Brighid.Identity.Cicd.BuildDriver
             Console.WriteLine();
 
             var outputsFilePath = Environment.GetEnvironmentVariable("GITHUB_OUTPUT");
-            File.AppendAllText(outputsFilePath!, $"artifacts-location=s3://{outputs.BucketName}/{options.Version}");
-            File.AppendAllText(outputsFilePath!, $"version={ThisAssembly.AssemblyVersion}");
+            File.AppendAllText(outputsFilePath!, $"\nartifacts-location=s3://{outputs.BucketName}/{options.Version}");
+            File.AppendAllText(outputsFilePath!, $"\nversion={ThisAssembly.AssemblyVersion}\n");
 
             lifetime.StopApplication();
         }
