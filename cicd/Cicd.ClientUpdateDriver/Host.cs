@@ -216,6 +216,20 @@ namespace Brighid.Identity.Cicd.ClientUpdateDriver
                 );
             });
 
+            await Step($"Add File", async () =>
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+
+                var command = new Command(
+                    command: "git add swagger.json"
+                );
+
+                await command.RunOrThrowError(
+                    errorMessage: "Could not add file.",
+                    cancellationToken: cancellationToken
+                );
+            });
+
             await Step($"Commit Changes", async () =>
             {
                 cancellationToken.ThrowIfCancellationRequested();
