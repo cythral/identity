@@ -6,6 +6,7 @@ using System.Security.Cryptography.X509Certificates;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 
 using OpenIddict.Abstractions;
 
@@ -13,6 +14,20 @@ namespace Brighid.Identity
 {
     public static class Utils
     {
+        public static void NormalizeSwaggerForApiOnly(OpenApiDocument swagger)
+        {
+            var paths = new OpenApiPaths();
+            foreach (var (key, value) in swagger.Paths)
+            {
+                if (key.StartsWith("/api"))
+                {
+                    paths[key.Replace("/api", string.Empty)] = value;
+                }
+            }
+
+            swagger.Paths = paths;
+        }
+
         public static string GenerateRandomString(int length)
         {
             using var randomNumberGenerator = RandomNumberGenerator.Create();

@@ -317,7 +317,9 @@ namespace Brighid.Identity.Cicd.BuildDriver
                 .Services;
 
             var swaggerProvider = serviceProvider.GetRequiredService<ISwaggerProvider>();
-            var swagger = swaggerProvider.GetSwagger("v1", "https://identity.brigh.id");
+            var swagger = swaggerProvider.GetSwagger("v1", "https://identity.brigh.id/");
+            Identity.Utils.NormalizeSwaggerForApiOnly(swagger);
+
             using var fileWriter = File.CreateText("bin/Cicd/swagger.json");
             var swaggerWriter = new OpenApiJsonWriter(fileWriter);
             swagger.SerializeAsV3(swaggerWriter);

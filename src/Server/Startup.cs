@@ -156,16 +156,7 @@ namespace Brighid.Identity
             {
                 options.PreSerializeFilters.Add((swaggerDoc, httpReq) =>
                 {
-                    var paths = new OpenApiPaths();
-                    foreach (var (key, value) in swaggerDoc.Paths)
-                    {
-                        if (key.StartsWith("/api"))
-                        {
-                            paths[key.Replace("/api", string.Empty)] = value;
-                        }
-                    }
-
-                    swaggerDoc.Paths = paths;
+                    Utils.NormalizeSwaggerForApiOnly(swaggerDoc);
                     swaggerDoc.Servers = new List<OpenApiServer> { new OpenApiServer { Url = $"{httpReq.Scheme}://{httpReq.Host.Value}/api/" } };
                 });
             });
