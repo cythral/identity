@@ -64,13 +64,13 @@
       },
       "OpenIddict.EntityFrameworkCore": {
         "type": "Direct",
-        "requested": "[4.3.0, )",
-        "resolved": "4.3.0",
-        "contentHash": "DV5dI+P4Vsga7HiYXNqB8KKedMNxvfwgn+oM+M/Rir/K5TzYPXJa1hdXoFC/fnlrxUe4W8MKCgiM+HWHRWnveg==",
+        "requested": "[4.4.0, )",
+        "resolved": "4.4.0",
+        "contentHash": "lEPZF/0ZoVqiP4E7gv4wiPnH2IeBiwSfFuCa1Z2V2IyJ/J/IFemsPXxJ+casBH43KhiPQH5wnBzSCkBPlkBTtg==",
         "dependencies": {
           "Microsoft.EntityFrameworkCore.Relational": "7.0.5",
-          "OpenIddict.Core": "4.3.0",
-          "OpenIddict.EntityFrameworkCore.Models": "4.3.0"
+          "OpenIddict.Core": "4.4.0",
+          "OpenIddict.EntityFrameworkCore.Models": "4.4.0"
         }
       },
       "Pomelo.EntityFrameworkCore.MySql": {
@@ -259,24 +259,24 @@
       },
       "Microsoft.IdentityModel.Abstractions": {
         "type": "Transitive",
-        "resolved": "6.30.0",
-        "contentHash": "vC19oUKs6bycdBqdA5fJAElrgsJ14enyQCONWd5SOmIj1GNomdfZe9sawtFBVjU9XGTUkpGTwIVMMkxcyKlN9w=="
+        "resolved": "6.25.1",
+        "contentHash": "B/WteJwwEuSu4MzTe30w0zfBUi5H9yWiAHACLT5WhLcuyY6WmU82TXY+g55E665/CMxhPCMsPit6Q5PiPBh60w=="
       },
       "Microsoft.IdentityModel.Logging": {
         "type": "Transitive",
-        "resolved": "6.30.0",
-        "contentHash": "QoMnSniPTXLLds1lCGMokaYiCaLZu31LTnWzcITWTjMZX6fHRUNNkQYHEJH+d8AxyAH52tR3DotfkJzZe2gkEA==",
+        "resolved": "6.25.1",
+        "contentHash": "ymv/f8a65m7im+BXTK18XZzFB+x9IIP4l7rEeQ39VH8N5ZxAFTF6J6Nh0lX9Kzr7pWE+CmSd5+TBw0KTohn5CQ==",
         "dependencies": {
-          "Microsoft.IdentityModel.Abstractions": "6.30.0"
+          "Microsoft.IdentityModel.Abstractions": "6.25.1"
         }
       },
       "Microsoft.IdentityModel.Tokens": {
         "type": "Transitive",
-        "resolved": "6.30.0",
-        "contentHash": "5sOI98r76qPYY4hOKslPCzKUVJecdlC5tUOdf6gK/81JFZHpBpkVfMWBV6XBx4l+zeEWTZIJ6cDd6Am6gi8pFg==",
+        "resolved": "6.25.1",
+        "contentHash": "QY6V5wMCh+9dcaZnfM2wxlhAbtGLcEy8Mlo7WHQpwM9bNmfuu0P+h+J39zZ46O81yQlT1qZp759LQvlDsNe8dg==",
         "dependencies": {
           "Microsoft.CSharp": "4.5.0",
-          "Microsoft.IdentityModel.Logging": "6.30.0",
+          "Microsoft.IdentityModel.Logging": "6.25.1",
           "System.Security.Cryptography.Cng": "4.5.0"
         }
       },
@@ -295,29 +295,29 @@
       },
       "OpenIddict.Abstractions": {
         "type": "Transitive",
-        "resolved": "4.3.0",
-        "contentHash": "gG0xlsmgLj3hjiQbnJ808JVuZew9OyPvUOzs0yef9G9WX3xdIw9HjJWBGx/DBPMWlVAk5hCxb2FZIRumhMDHOA==",
+        "resolved": "4.4.0",
+        "contentHash": "YLum6OiQwahzNLJlZW82UT8xV0lfARDLqst94dIXE7aqdZCCNKjFF9yqYyu7nDxfL27QGuTp/Nem16hfM9XClQ==",
         "dependencies": {
           "Microsoft.Extensions.DependencyInjection.Abstractions": "7.0.0",
           "Microsoft.Extensions.Primitives": "7.0.0",
-          "Microsoft.IdentityModel.Tokens": "6.30.0"
+          "Microsoft.IdentityModel.Tokens": "6.25.1"
         }
       },
       "OpenIddict.Core": {
         "type": "Transitive",
-        "resolved": "4.3.0",
-        "contentHash": "HZR6gWazyKCiFwvS0oe6vQ5y8l7Yorkg3P2Ys7DIfzL6T2AqnOgW/LRFSSFmeW3Y/v5INFuYTe6Gj6LeWgEwQw==",
+        "resolved": "4.4.0",
+        "contentHash": "VWx+FZXbE234SdFFb1pMMGm+iznHCxVfIh53PSmLhXpwQVul+1s04EkEnmNqhF0A5IKcd0K44q4GfU4jPHko9A==",
         "dependencies": {
           "Microsoft.Extensions.Caching.Memory": "7.0.0",
           "Microsoft.Extensions.Logging": "7.0.0",
           "Microsoft.Extensions.Options": "7.0.1",
-          "OpenIddict.Abstractions": "4.3.0"
+          "OpenIddict.Abstractions": "4.4.0"
         }
       },
       "OpenIddict.EntityFrameworkCore.Models": {
         "type": "Transitive",
-        "resolved": "4.3.0",
-        "contentHash": "Xus5aAeqKHQ6sSAIFlXIpKvM4SW9qgHG4YhAWAC8Aa4YnzF+REgRKhwf6gzpw+dSD6WVFFnEbKsCaFwWPzDkYQ=="
+        "resolved": "4.4.0",
+        "contentHash": "6omjLY6/CEaiUBuadeqs2AY4wlrMvFNiixznuLOv7RA/CkdYJnLRE0GLEII+IX5Aql95GC/+0F9VCR+ZQcoE0g=="
       },
       "StyleCop.Analyzers.Unstable": {
         "type": "Transitive",
