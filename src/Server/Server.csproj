@@ -11,8 +11,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="AWSSDK.KeyManagementService" Version="3.7.102.17" />
-    <PackageReference Include="AWSSDK.S3" Version="3.7.104.27" />
+    <PackageReference Include="AWSSDK.KeyManagementService" Version="3.7.103" />
+    <PackageReference Include="AWSSDK.S3" Version="3.7.104.28" />
     <PackageReference Include="AWSSDK.SimpleNotificationService" Version="3.7.101.76" />
     <PackageReference Include="AWSSDK.SimpleSystemsManagement" Version="3.7.104.43" />
     <PackageReference Include="AWSXrayRecorder" Version="2.14.0" />
