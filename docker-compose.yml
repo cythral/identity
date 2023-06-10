@@ -51,7 +51,7 @@ services:
       - traefik.http.services.adapter.loadbalancer.server.scheme=h2c
 
   db:
-    image: mariadb:10.11
+    image: mariadb:11.0
     restart: unless-stopped
     environment:
       MYSQL_DATABASE: ${DB_NAME}
