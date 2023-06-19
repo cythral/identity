@@ -4,18 +4,18 @@
     "net7.0": {
       "AWSSDK.CloudFormation": {
         "type": "Direct",
-        "requested": "[3.7.107.4, )",
-        "resolved": "3.7.107.4",
-        "contentHash": "3lWm9/5YAVOmn2//ZBhDK26rwJWisdrIwR+h1dGosDwST2SPk1JRbPED0LQyrwE8M5hR/p4TXevXCinJxAP+pQ==",
+        "requested": "[3.7.108, )",
+        "resolved": "3.7.108",
+        "contentHash": "IGmu9/6Lzvpk27RUwDi9s+zUX8v7W4GWl3t7qHuosTgf4WD76rdg+wOGogYpHjDjKr0LmVIACpucT4E+2iJ7eA==",
         "dependencies": {
           "AWSSDK.Core": "[3.7.107.7, 4.0.0)"
         }
       },
       "AWSSDK.ECS": {
         "type": "Direct",
-        "requested": "[3.7.108.21, )",
-        "resolved": "3.7.108.21",
-        "contentHash": "WPfZuBLK4CiSvn//m0EU2tv0tcKMssQBpUXYpmLJ8Dyq9haG3HIJdkZ6qdlYlvTNi+uy3zkLuVcw6290rn2Yqg==",
+        "requested": "[3.7.108.22, )",
+        "resolved": "3.7.108.22",
+        "contentHash": "l490W2iWs1xBRclRG9C4Z8idxPhxXZSCqLs8GToK38d0vocRl+7iK6g1glBu/8xno7GixwJnrIvru8FcLOgdEA==",
         "dependencies": {
           "AWSSDK.Core": "[3.7.107.7, 4.0.0)"
         }
