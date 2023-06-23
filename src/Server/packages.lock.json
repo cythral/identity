@@ -54,11 +54,11 @@
       },
       "Destructurama.Attributed": {
         "type": "Direct",
-        "requested": "[3.0.0, )",
-        "resolved": "3.0.0",
-        "contentHash": "Wam0fvMhCrtN0HvRIiHpNsW8HhlKHM5CkAlUzrAdzqkzuHVBj3zd/zfY9610NELW296Vugcnmf/TMiaUMvepvA==",
+        "requested": "[3.1.0, )",
+        "resolved": "3.1.0",
+        "contentHash": "WQtdbdLTraFSYl4Peo2YeyKung1SYC8s+HruNsi6o68BybZEd1bq8QPyT/cuwKpO6IPn/gW8F/dEAE+UhMoMWA==",
         "dependencies": {
-          "Serilog": "[2.8.0, 3.0.0)"
+          "Serilog": "[2.10.0, 4.0.0)"
         }
       },
       "Microsoft.AspNetCore.Authentication.JwtBearer": {

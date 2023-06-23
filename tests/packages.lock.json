@@ -257,10 +257,10 @@
       },
       "Destructurama.Attributed": {
         "type": "Transitive",
-        "resolved": "3.0.0",
-        "contentHash": "Wam0fvMhCrtN0HvRIiHpNsW8HhlKHM5CkAlUzrAdzqkzuHVBj3zd/zfY9610NELW296Vugcnmf/TMiaUMvepvA==",
+        "resolved": "3.1.0",
+        "contentHash": "WQtdbdLTraFSYl4Peo2YeyKung1SYC8s+HruNsi6o68BybZEd1bq8QPyT/cuwKpO6IPn/gW8F/dEAE+UhMoMWA==",
         "dependencies": {
-          "Serilog": "[2.8.0, 3.0.0)"
+          "Serilog": "[2.10.0, 4.0.0)"
         }
       },
       "Fare": {
@@ -2328,7 +2328,7 @@
           "AWSXrayRecorder": "[2.14.0, )",
           "Common": "[1.0.0, )",
           "Database": "[1.0.0, )",
-          "Destructurama.Attributed": "[3.0.0, )",
+          "Destructurama.Attributed": "[3.1.0, )",
           "Interface": "[1.0.0, )",
           "Microsoft.AspNetCore.Authentication.JwtBearer": "[7.0.8, )",
           "Microsoft.AspNetCore.Components.WebAssembly.Server": "[7.0.8, )",
