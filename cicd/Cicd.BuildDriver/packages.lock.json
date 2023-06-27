@@ -114,8 +114,8 @@
       },
       "AWSSDK.SimpleSystemsManagement": {
         "type": "Transitive",
-        "resolved": "3.7.104.50",
-        "contentHash": "M/jeIm3RKdKV6d6zoeO3E4xvZXp0iDjTDJhNcgNubKro90QiUv+2OBlJPIOp3G7Ztl2uza/vcdzh8f8tUlRaWg==",
+        "resolved": "3.7.104.51",
+        "contentHash": "Z7kOrcIURMcDixXh88fKoEDJQFJLPUXWc+siEA1ZQLFF+eGtm4HLJCJeF/98qJGnHP9/qIndSdfXJqd8b66K/Q==",
         "dependencies": {
           "AWSSDK.Core": "[3.7.107.8, 4.0.0)"
         }
@@ -1708,7 +1708,7 @@
           "AWSSDK.KeyManagementService": "[3.7.103.6, )",
           "AWSSDK.S3": "[3.7.106.1, )",
           "AWSSDK.SimpleNotificationService": "[3.7.101.83, )",
-          "AWSSDK.SimpleSystemsManagement": "[3.7.104.50, )",
+          "AWSSDK.SimpleSystemsManagement": "[3.7.104.51, )",
           "AWSXrayRecorder": "[2.14.0, )",
           "Common": "[1.0.0, )",
           "Database": "[1.0.0, )",
