@@ -22,11 +22,11 @@
       },
       "AWSSDK.S3": {
         "type": "Direct",
-        "requested": "[3.7.107.3, )",
-        "resolved": "3.7.107.3",
-        "contentHash": "DDjO67Bhi1rg0x9jS7jZACfzXRTJE331kPokm2ogPeDvVCc7EOLaLn69Em1DHIcjQzTjscdgqgjHYPYv8iWazA==",
+        "requested": "[3.7.107.4, )",
+        "resolved": "3.7.107.4",
+        "contentHash": "lULLPDvZjVaxes3sJ155aB372u6vFIXKfz1grPd+u5LuNVvPdefjHeucgf/poueKTTY91h0zi4absix/Ys3XTw==",
         "dependencies": {
-          "AWSSDK.Core": "[3.7.107.12, 4.0.0)"
+          "AWSSDK.Core": "[3.7.108, 4.0.0)"
         }
       },
       "Microsoft.Extensions.Hosting": {
