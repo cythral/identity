@@ -152,26 +152,26 @@
       },
       "AWSSDK.S3": {
         "type": "Transitive",
-        "resolved": "3.7.107.3",
-        "contentHash": "DDjO67Bhi1rg0x9jS7jZACfzXRTJE331kPokm2ogPeDvVCc7EOLaLn69Em1DHIcjQzTjscdgqgjHYPYv8iWazA==",
+        "resolved": "3.7.107.4",
+        "contentHash": "lULLPDvZjVaxes3sJ155aB372u6vFIXKfz1grPd+u5LuNVvPdefjHeucgf/poueKTTY91h0zi4absix/Ys3XTw==",
         "dependencies": {
-          "AWSSDK.Core": "[3.7.107.12, 4.0.0)"
+          "AWSSDK.Core": "[3.7.108, 4.0.0)"
         }
       },
       "AWSSDK.SimpleNotificationService": {
         "type": "Transitive",
-        "resolved": "3.7.101.86",
-        "contentHash": "VM5za67OpumJfT4fncvh+K7EON9eBB80Bkmay7wdbCoXbiFNXk/9NRefrVS50Z42X4shxn9bQLh84iFHUQhDtQ==",
+        "resolved": "3.7.101.87",
+        "contentHash": "qJ4GImUAw3oJe0bwO2VDseAVp4huSS1tx2gJ99q3GONB/OxXx0MxRYeLHhuUp2xeoGBOQLI5ENOC/Sr7hCt3eA==",
         "dependencies": {
-          "AWSSDK.Core": "[3.7.107.12, 4.0.0)"
+          "AWSSDK.Core": "[3.7.108, 4.0.0)"
         }
       },
       "AWSSDK.SimpleSystemsManagement": {
         "type": "Transitive",
-        "resolved": "3.7.104.54",
-        "contentHash": "uNxYZBFC3m9sq9DZdiuRvpat0VTP5cVWiSt6UJznCAFPJlvdAEHGAjIuQo15gsDzGlmhoCgV7S3bkLzrUt2YxQ==",
+        "resolved": "3.7.104.55",
+        "contentHash": "CMLdenvq7ghhiF8nImcORq7ZV8PCSMG4B44C+jtKZ4wT0hAiDnc/FX23bgd0niS0qnem230RKaDAbTNVHC6jSw==",
         "dependencies": {
-          "AWSSDK.Core": "[3.7.107.12, 4.0.0)"
+          "AWSSDK.Core": "[3.7.108, 4.0.0)"
         }
       },
       "AWSXRayRecorder": {
@@ -2322,9 +2322,9 @@
         "type": "Project",
         "dependencies": {
           "AWSSDK.KeyManagementService": "[3.7.104.2, )",
-          "AWSSDK.S3": "[3.7.107.3, )",
-          "AWSSDK.SimpleNotificationService": "[3.7.101.86, )",
-          "AWSSDK.SimpleSystemsManagement": "[3.7.104.54, )",
+          "AWSSDK.S3": "[3.7.107.4, )",
+          "AWSSDK.SimpleNotificationService": "[3.7.101.87, )",
+          "AWSSDK.SimpleSystemsManagement": "[3.7.104.55, )",
           "AWSXrayRecorder": "[2.14.0, )",
           "Common": "[1.0.0, )",
           "Database": "[1.0.0, )",
