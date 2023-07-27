@@ -4,11 +4,11 @@
     "net7.0": {
       "AWSSDK.SecurityToken": {
         "type": "Direct",
-        "requested": "[3.7.201, )",
-        "resolved": "3.7.201",
-        "contentHash": "t6vbapStwy3EDCDxuDpd3e4UG6VjI5EdEH548umQg8bKI/PmfpD2MsRUCZ+1CRYk09besI8u/8sV3cEslc39yA==",
+        "requested": "[3.7.201.1, )",
+        "resolved": "3.7.201.1",
+        "contentHash": "l0msXNa/EPva4Pv/0ITvu16947dNq+7ciX70RJq6tMPUXD8PC0T0zlxNCy3/VO2IfjGlGNr+Pzgg0Pg9XQdipg==",
         "dependencies": {
-          "AWSSDK.Core": "[3.7.200.4, 4.0.0)"
+          "AWSSDK.Core": "[3.7.200.5, 4.0.0)"
         }
       },
       "Microsoft.Extensions.Hosting": {
@@ -106,18 +106,18 @@
       },
       "AWSSDK.SimpleNotificationService": {
         "type": "Transitive",
-        "resolved": "3.7.200.4",
-        "contentHash": "aq2+//DaF27anxw6MhuvLfLGiPYpLNM5FMuHuWUfAA2crC9mkGTLGYW9Txvu7Wh3mTFF/qUR0UJWkoRiGih2eg==",
+        "resolved": "3.7.200.5",
+        "contentHash": "bq6q+ihfk34U7OAo4Ncj6lwWS/KwrqJ1WJsbCSusSKd7sbjM+xYrkOKMOzVqamJdxLAvHqoc4UVfiXWaP4SJEw==",
         "dependencies": {
-          "AWSSDK.Core": "[3.7.200.4, 4.0.0)"
+          "AWSSDK.Core": "[3.7.200.5, 4.0.0)"
         }
       },
       "AWSSDK.SimpleSystemsManagement": {
         "type": "Transitive",
-        "resolved": "3.7.200.4",
-        "contentHash": "S7DZfb0RAXr/GZWLi7/I/KF6tIu0jgpXIE7YwkQmX+XWjzRf8xZX3/pcHpI7J5oldGCl4pvnb41Fo91OlV8cXw==",
+        "resolved": "3.7.200.5",
+        "contentHash": "A4eGctTL4Lz5JcCRpogce6XUN8eiofgI3Bf/httjbtU+nELVqmOBlzuUdITur3q5Sz6aHacevwhmR4J1RfN6ZA==",
         "dependencies": {
-          "AWSSDK.Core": "[3.7.200.4, 4.0.0)"
+          "AWSSDK.Core": "[3.7.200.5, 4.0.0)"
         }
       },
       "AWSXRayRecorder": {
@@ -1707,8 +1707,8 @@
         "dependencies": {
           "AWSSDK.KeyManagementService": "[3.7.200.5, )",
           "AWSSDK.S3": "[3.7.201.3, )",
-          "AWSSDK.SimpleNotificationService": "[3.7.200.4, )",
-          "AWSSDK.SimpleSystemsManagement": "[3.7.200.4, )",
+          "AWSSDK.SimpleNotificationService": "[3.7.200.5, )",
+          "AWSSDK.SimpleSystemsManagement": "[3.7.200.5, )",
           "AWSXrayRecorder": "[2.14.0, )",
           "Common": "[1.0.0, )",
           "Database": "[1.0.0, )",
