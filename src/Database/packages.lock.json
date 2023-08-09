@@ -64,13 +64,13 @@
       },
       "OpenIddict.EntityFrameworkCore": {
         "type": "Direct",
-        "requested": "[4.6.0, )",
-        "resolved": "4.6.0",
-        "contentHash": "fpDAvjFkRAHnLvVqjTUH8WF7jNY4TUu9AP6aRrmu0f/YgGicig9FAlBSilSP7U1CrnNI5jC7u1YMrXj+LA0FMA==",
+        "requested": "[4.7.0, )",
+        "resolved": "4.7.0",
+        "contentHash": "ozWwga4NejDG6t1jzU72n53LYvsMe+1Vj7xy32C4CTR8K9m6fvkJn8PMVaO5LayLWshVY9ixcCMFnf4GvC58Qg==",
         "dependencies": {
           "Microsoft.EntityFrameworkCore.Relational": "7.0.5",
-          "OpenIddict.Core": "4.6.0",
-          "OpenIddict.EntityFrameworkCore.Models": "4.6.0"
+          "OpenIddict.Core": "4.7.0",
+          "OpenIddict.EntityFrameworkCore.Models": "4.7.0"
         }
       },
       "Pomelo.EntityFrameworkCore.MySql": {
@@ -295,8 +295,8 @@
       },
       "OpenIddict.Abstractions": {
         "type": "Transitive",
-        "resolved": "4.6.0",
-        "contentHash": "u9QVn/e6y9dVyrgb0YtE4FgsITYvOypX64jtdAd8FIF9Hpavg8gAfgAILjx6BtPxGVd1ANYOn1D8eLcu3c8Thw==",
+        "resolved": "4.7.0",
+        "contentHash": "eRWuFnc+NdfmCyeZYK7nK6IkbDtd6efI/6yyAm4D4aA0qI6bg2hv5ie2dFGtrlj0HWQ6ahSZDqNvufyYxkXWew==",
         "dependencies": {
           "Microsoft.Extensions.DependencyInjection.Abstractions": "7.0.0",
           "Microsoft.Extensions.Primitives": "7.0.0",
@@ -305,19 +305,19 @@
       },
       "OpenIddict.Core": {
         "type": "Transitive",
-        "resolved": "4.6.0",
-        "contentHash": "JqMBIijD9a0yvu/DcnFvk+1bSMWmGFnGNPMyh5/Y0RDvepq60J5HPrAEVzxPbITDNqS52J23xfZV18F6eRWFgw==",
+        "resolved": "4.7.0",
+        "contentHash": "+D4etJrcUR84BPHcLQumwW5nk8dwxMb7OXrAeOg/1cOaVP4BAnz49EM89Tq2hSWxgEWRbgTiEdoTF45u8YGCgw==",
         "dependencies": {
           "Microsoft.Extensions.Caching.Memory": "7.0.0",
           "Microsoft.Extensions.Logging": "7.0.0",
           "Microsoft.Extensions.Options": "7.0.1",
-          "OpenIddict.Abstractions": "4.6.0"
+          "OpenIddict.Abstractions": "4.7.0"
         }
       },
       "OpenIddict.EntityFrameworkCore.Models": {
         "type": "Transitive",
-        "resolved": "4.6.0",
-        "contentHash": "S0WeCd+jiZK5oWPZdpIA1wFi0/Mo+kmIpL0Eg4qE/AAfAZI41g84ej7p87IbUPMe2hBSigTw7NwFyFEKwyU29w=="
+        "resolved": "4.7.0",
+        "contentHash": "sQJmnLfonVVA3qnxLaeIxDrAcvq0ek0t/tuo7rU8W3rcH+OMZTriGPqm1QiAGoBsGKOuNTQyl/sKrm5YGjCcaw=="
       },
       "StyleCop.Analyzers.Unstable": {
         "type": "Transitive",
