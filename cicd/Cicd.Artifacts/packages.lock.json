@@ -4,14 +4,14 @@
     "net7.0": {
       "Amazon.CDK.Lib": {
         "type": "Direct",
-        "requested": "[2.91.0, )",
-        "resolved": "2.91.0",
-        "contentHash": "llzHEebIyANCKIfBgjripj/r1Q0BPZtPbCAlUmN7gRcbEdH6smxaKsfFrPkcHS/vGMo2BIq51twVlvWyKZwgfw==",
+        "requested": "[2.92.0, )",
+        "resolved": "2.92.0",
+        "contentHash": "xDn6ASFFlg/jpUJ1IXXnbonAe51NtsKDkuOritM2Fg0aHec74lEuxvgsFDeceTXu/1QjWoGGbtQuoaamIHcX9Q==",
         "dependencies": {
           "Amazon.CDK.Asset.AwsCliV1": "[2.2.200, 3.0.0)",
           "Amazon.CDK.Asset.KubectlV20": "[2.1.2, 3.0.0)",
-          "Amazon.CDK.Asset.NodeProxyAgentV5": "[2.0.166, 3.0.0)",
-          "Amazon.JSII.Runtime": "[1.85.0, 2.0.0)",
+          "Amazon.CDK.Asset.NodeProxyAgentV6": "[2.0.1, 3.0.0)",
+          "Amazon.JSII.Runtime": "[1.87.0, 2.0.0)",
           "Constructs": "[10.0.0, 11.0.0)"
         }
       },
@@ -55,18 +55,18 @@
           "Amazon.JSII.Runtime": "[1.70.0, 2.0.0)"
         }
       },
-      "Amazon.CDK.Asset.NodeProxyAgentV5": {
+      "Amazon.CDK.Asset.NodeProxyAgentV6": {
         "type": "Transitive",
-        "resolved": "2.0.166",
-        "contentHash": "lCONoXv4f+08BJrYhsVEdwvB02kTtMnM1JognfwRBUscgOdLP8VALgIS7YWQtzRxBRYP7sSIeaPKw2Iz4ftyyg==",
+        "resolved": "2.0.1",
+        "contentHash": "9U86BpmqYVen/FE9fFuJ3aCTwc0cY4WzjnOAaDQpEBWFyhdc1/7/HJd/YKTI9S/NUTpUQL8UAjaEPMUmIMUi+g==",
         "dependencies": {
-          "Amazon.JSII.Runtime": "[1.85.0, 2.0.0)"
+          "Amazon.JSII.Runtime": "[1.86.1, 2.0.0)"
         }
       },
       "Amazon.JSII.Runtime": {
         "type": "Transitive",
-        "resolved": "1.85.0",
-        "contentHash": "9uEpEVALoF/9rQz2gYB3F0XKN+7ia+MGqm+VmU5NGJqAjQFiMS2G0Nz9IaJBpCcgkLwEV2ww0iA3jtN8k5k87w==",
+        "resolved": "1.87.0",
+        "contentHash": "yj3QKpLwumvY4BFvEvfnoTN7ob7Rl3lRyDvyrIFnWRhnVAW8ckUInNWS255GywPcoPGYw9KNITxNitFVHiF5vA==",
         "dependencies": {
           "Microsoft.Extensions.DependencyInjection": "7.0.0",
           "Microsoft.Extensions.Logging": "5.0.0",
