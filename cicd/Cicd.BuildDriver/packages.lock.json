@@ -334,11 +334,6 @@
         "resolved": "6.0.0",
         "contentHash": "yCtBr1GSGzJrrp1NJUb4ltwFYMKHw/tJLnIDvg9g/FnkGIEzmE19tbCQqXARIJv5kdtBgsoVIdGLL+zmjxvM/A=="
       },
-      "Microsoft.Bcl.AsyncInterfaces": {
-        "type": "Transitive",
-        "resolved": "6.0.0",
-        "contentHash": "UcSjPsst+DfAdJGVDsu346FX0ci0ah+lw3WRtn18NUwEqRt70HaOQ7lI72vy3+1LxtqI3T5GWwV39rQSrCzAeg=="
-      },
       "Microsoft.CodeAnalysis.Analyzers": {
         "type": "Transitive",
         "resolved": "3.3.2",
@@ -1417,11 +1412,8 @@
       },
       "System.Linq.Async": {
         "type": "Transitive",
-        "resolved": "6.0.1",
-        "contentHash": "0YhHcaroWpQ9UCot3Pizah7ryAzQhNvobLMSxeDIGmnXfkQn8u5owvpOH0K6EVB+z9L7u6Cc4W17Br/+jyttEQ==",
-        "dependencies": {
-          "Microsoft.Bcl.AsyncInterfaces": "6.0.0"
-        }
+        "resolved": "6.0.3",
+        "contentHash": "hSHiq2m1ky7zUQgTp+/2h1K3lABIQ+GltRixoclHPg/Sc1vnfeS6g/Uy5moOVZKrZJdQiFPFZd6OobBp3tZcFg=="
       },
       "System.Memory": {
         "type": "Transitive",
@@ -1689,7 +1681,7 @@
           "Microsoft.Extensions.Configuration.EnvironmentVariables": "[7.0.0, )",
           "OpenIddict.EntityFrameworkCore": "[4.7.0, )",
           "Pomelo.EntityFrameworkCore.MySql": "[7.0.0, )",
-          "System.Linq.Async": "[6.0.1, )"
+          "System.Linq.Async": "[6.0.3, )"
         }
       },
       "interface": {
@@ -1724,7 +1716,7 @@
           "Serilog.Filters.Expressions": "[2.1.0, )",
           "Swashbuckle.AspNetCore": "[6.5.0, )",
           "System.IdentityModel.Tokens.Jwt": "[6.32.1, )",
-          "System.Linq.Async": "[6.0.1, )",
+          "System.Linq.Async": "[6.0.3, )",
           "System.Security.Cryptography.Algorithms": "[4.3.1, )",
           "System.Security.Cryptography.OpenSsl": "[5.0.0, )"
         }
