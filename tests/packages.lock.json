@@ -4,21 +4,21 @@
     "net7.0": {
       "AutoFixture.AutoNSubstitute": {
         "type": "Direct",
-        "requested": "[4.18.0, )",
-        "resolved": "4.18.0",
-        "contentHash": "auhC21DicFL4RQPXaEHSaU+oMNwIKFOJGIC/81dfZ4+OB4VSJ6TnyLlHSZzDGoboO8u0P3ZGqWEVsv5Pgr2CTg==",
+        "requested": "[4.18.1, )",
+        "resolved": "4.18.1",
+        "contentHash": "xJxIsShO/1Ceei7BDFCobFANiw5a+enpdklgX/Xic6vKavHo9gSJO7ZGkKlf2lh+TlblTEet9mjzf9wHWIqWGQ==",
         "dependencies": {
-          "AutoFixture": "4.18.0",
+          "AutoFixture": "4.18.1",
           "NSubstitute": "[2.0.3, 6.0.0)"
         }
       },
       "AutoFixture.NUnit3": {
         "type": "Direct",
-        "requested": "[4.18.0, )",
-        "resolved": "4.18.0",
-        "contentHash": "Zyb6K/ZI7h+i6W7iH+0ubGuYtX9jXD0msFWMR/LZSWh2VAE7nLBUib1s3QPMvy/ri2qf4XMdRup0/31Ssh7d1A==",
+        "requested": "[4.18.1, )",
+        "resolved": "4.18.1",
+        "contentHash": "n+7yZWj4SFzwHKbkbCE+i5wsoARD2UyFq5UA/zgBF3FciTwHu8WjSiTagFWytq5costpluJl5I0pINS0r8Ql6g==",
         "dependencies": {
-          "AutoFixture": "4.18.0",
+          "AutoFixture": "4.18.1",
           "NUnit": "[3.7.0, 4.0.0)"
         }
       },
@@ -130,8 +130,8 @@
       },
       "AutoFixture": {
         "type": "Transitive",
-        "resolved": "4.18.0",
-        "contentHash": "xITUSenQsEW3RxXzcDPvxA33PGEQHxfvYjEbiai8URCcmq+osECGdLqGfHmMmcttndWgLxYCV7bRIm089fu7HA==",
+        "resolved": "4.18.1",
+        "contentHash": "BmWZDY4fkrYOyd5/CTBOeXbzsNwV8kI4kDi/Ty1Y5F+WDHBVKxzfWlBE4RSicvZ+EOi2XDaN5uwdrHsItLW6Kw==",
         "dependencies": {
           "Fare": "[2.1.1, 3.0.0)",
           "System.ComponentModel.Annotations": "4.3.0"
