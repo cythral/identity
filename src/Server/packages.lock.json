@@ -54,9 +54,9 @@
       },
       "Destructurama.Attributed": {
         "type": "Direct",
-        "requested": "[3.1.0, )",
-        "resolved": "3.1.0",
-        "contentHash": "WQtdbdLTraFSYl4Peo2YeyKung1SYC8s+HruNsi6o68BybZEd1bq8QPyT/cuwKpO6IPn/gW8F/dEAE+UhMoMWA==",
+        "requested": "[3.2.0, )",
+        "resolved": "3.2.0",
+        "contentHash": "c8zQMIdRJa7fvVo02FUuHr9jVvckSnpyEtTvSlpe0XjOqIvhC1VokH3lTPSHNIMETBvdnReR0e0cxe11IiBHUw==",
         "dependencies": {
           "Serilog": "[2.10.0, 4.0.0)"
         }
